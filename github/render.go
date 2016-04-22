@@ -1,20 +1,22 @@
 package github
 
 import (
-	"fmt"
-
-	"github.com/google/go-github/github"
+	gh "github.com/google/go-github/github"
 )
 
-func Render() {
-	client := github.NewClient(nil)
+func Render(md string) (html string, err error) {
+	client := getClient()
+	opt := &gh.MarkdownOptions{Mode: "gfm", Context: "google/go-github"}
 
-	input := "# heading\n\n1. Link to issue #1\n"
-	opt := &github.MarkdownOptions{Mode: "gfm", Context: "google/go-github"}
+	output, _, err := client.Markdown(md, opt)
+	return output, err
+}
 
-	output, _, err := client.Markdown(input, opt)
-	if err != nil {
-		fmt.Println(err)
+var ghClient *gh.Client
+
+func getClient() *gh.Client {
+	if ghClient == nil {
+		ghClient = gh.NewClient(nil)
 	}
-	fmt.Println(output)
+	return ghClient
 }
