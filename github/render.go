@@ -8,6 +8,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// Render a Markdown fragment into a html fragment
 func Render(md string) (html string, err error) {
 	client := getClient()
 	opt := &gh.MarkdownOptions{Mode: "gfm", Context: "google/go-github"}

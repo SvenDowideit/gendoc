@@ -11,23 +11,23 @@ import (
 )
 
 func main() {
-	fileList := []string{}
+	markdownFiles := []string{}
 	err := filepath.Walk("./docs", func(path string, f os.FileInfo, err error) error {
 		if err != nil {
 			log.Println("ERR: ", err)
 		}
-		fileList = append(fileList, path)
+		if ! f.IsDir() {
+			if strings.HasSuffix(path, ".md") {
+				markdownFiles = append(markdownFiles, path)
+			}
+		}
 		return nil
 	})
 	if err != nil {
 		log.Println("ERR: ", err)
 	}
 	
-	for _, file := range fileList {
-		if !strings.HasSuffix(file, ".md") {
-			log.Println("INFO: skipping non markdown file", file)
-			continue
-		}
+	for _, file := range markdownFiles {
 		log.Println("INFO: ", file)
 		input, err := ioutil.ReadFile(file)
 		if err != nil {
