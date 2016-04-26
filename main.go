@@ -20,14 +20,13 @@ func main() {
 		StaticFiles: []string{},
 	}
 	
-	gatherFilenames(&site)
+	gatherFilenames("./docs", &site)
 	
-	render.GithubAPI(site.MarkdownFiles)
-
+	render.GithubAPI("./output_gh", site.MarkdownFiles)
 }
 
-func gatherFilenames(site *SiteData) {
-	err := filepath.Walk("./docs", func(path string, f os.FileInfo, err error) error {
+func gatherFilenames(docsDir string, site *SiteData) {
+	err := filepath.Walk(docsDir, func(path string, f os.FileInfo, err error) error {
 		if err != nil {
 			log.Println("ERR: ", err)
 		}
