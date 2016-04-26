@@ -23,6 +23,7 @@ func main() {
 	gatherFilenames("./docs", &site)
 	
 	render.GithubAPI("./output_gh", site.MarkdownFiles)
+	render.CopyStaticFiles("./output_gh", site.StaticFiles)
 }
 
 func gatherFilenames(docsDir string, site *SiteData) {
