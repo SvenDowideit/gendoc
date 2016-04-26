@@ -1,24 +1,41 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
-	gh "github.com/SvenDowideit/gendoc/github"
+	render "github.com/SvenDowideit/gendoc/render"
 )
 
+type SiteData struct {
+	MarkdownFiles []string
+	StaticFiles []string
+}
+
 func main() {
-	markdownFiles := []string{}
+	site := SiteData{
+		MarkdownFiles: []string{},
+		StaticFiles: []string{},
+	}
+	
+	gatherFilenames(&site)
+	
+	render.GithubAPI(site.MarkdownFiles)
+
+}
+
+func gatherFilenames(site *SiteData) {
 	err := filepath.Walk("./docs", func(path string, f os.FileInfo, err error) error {
 		if err != nil {
 			log.Println("ERR: ", err)
 		}
 		if ! f.IsDir() {
 			if strings.HasSuffix(path, ".md") {
-				markdownFiles = append(markdownFiles, path)
+				site.MarkdownFiles = append(site.MarkdownFiles, path)
+			} else {
+				site.StaticFiles = append(site.StaticFiles, path)
 			}
 		}
 		return nil
@@ -26,24 +43,4 @@ func main() {
 	if err != nil {
 		log.Println("ERR: ", err)
 	}
-	
-	for _, file := range markdownFiles {
-		log.Println("INFO: ", file)
-		input, err := ioutil.ReadFile(file)
-		if err != nil {
-			log.Println("ERR: ", err)
-			continue
-		}
-		html, err := gh.Render(string(input))
-		if err != nil {
-			log.Println("ERR: ", err)
-			continue
-		}
-		outfile := strings.TrimSuffix(file, ".md")+".html"
-		if err = ioutil.WriteFile(outfile, []byte(html), 0644); err != nil {
-			log.Println("ERR: ", err)
-			continue
-		}
-	}
-	
 }
