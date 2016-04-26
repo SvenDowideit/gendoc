@@ -11,17 +11,17 @@ import (
 
 type SiteData struct {
 	MarkdownFiles []string
-	StaticFiles []string
+	StaticFiles   []string
 }
 
 func main() {
 	site := SiteData{
 		MarkdownFiles: []string{},
-		StaticFiles: []string{},
+		StaticFiles:   []string{},
 	}
-	
+
 	gatherFilenames("./docs", &site)
-	
+
 	render.GithubAPI("./output_gh", site.MarkdownFiles)
 	render.CopyStaticFiles("./output_gh", site.StaticFiles)
 }
@@ -31,7 +31,7 @@ func gatherFilenames(docsDir string, site *SiteData) {
 		if err != nil {
 			log.Println("ERR: ", err)
 		}
-		if ! f.IsDir() {
+		if !f.IsDir() {
 			if strings.HasSuffix(path, ".md") {
 				site.MarkdownFiles = append(site.MarkdownFiles, path)
 			} else {

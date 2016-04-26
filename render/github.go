@@ -3,8 +3,8 @@ package render
 import (
 	"io/ioutil"
 	"log"
-    "os"
-    "path/filepath"
+	"os"
+	"path/filepath"
 	"strings"
 
 	gh "github.com/SvenDowideit/gendoc/render/github"
@@ -25,10 +25,10 @@ func GithubAPI(outputDir string, markdownFiles []string) {
 			continue
 		}
 		outfile := filepath.FromSlash(filepath.Join(outputDir, strings.TrimSuffix(file, ".md")+".html"))
-        if err := os.MkdirAll(filepath.Dir(outfile), 0755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(outfile), 0755); err != nil {
 			log.Println("ERR: ", err)
 			continue
-        }
+		}
 		if err = ioutil.WriteFile(outfile, []byte(html), 0644); err != nil {
 			log.Println("ERR: ", err)
 			continue
