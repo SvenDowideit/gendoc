@@ -11,6 +11,47 @@ import (
 	mmark "github.com/SvenDowideit/gendoc/render/mmark"
 )
 
+type SiteData struct {
+	MarkdownFiles []string
+	StaticFiles   []string
+}
+// RenderDocsDir will find all the markdown files, and static files in the docs subdir
+// and convert them to html in the output_mmark dir
+func RenderDocsDir() {
+	site := SiteData{
+		MarkdownFiles: []string{},
+		StaticFiles:   []string{},
+	}
+
+	gatherFilenames("./docs", &site)
+
+//	render.GithubAPI("./output_gh", site.MarkdownFiles)
+//	render.CopyStaticFiles("./output_gh", site.StaticFiles)
+
+	render.MMark("./output_mmark", site.MarkdownFiles)
+	render.CopyStaticFiles("./output_mmark", site.StaticFiles)
+}
+
+func gatherFilenames(docsDir string, site *SiteData) {
+	err := filepath.Walk(docsDir, func(path string, f os.FileInfo, err error) error {
+		if err != nil {
+			log.Println("ERR: ", err)
+		}
+		if !f.IsDir() {
+			if strings.HasSuffix(path, ".md") {
+				site.MarkdownFiles = append(site.MarkdownFiles, path)
+			} else {
+				site.StaticFiles = append(site.StaticFiles, path)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		log.Println("ERR: ", err)
+	}
+}
+
+
 type renderFunc func(string) (string, error)
 
 func GithubAPI(outputDir string, markdownFiles []string) {

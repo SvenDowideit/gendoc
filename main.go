@@ -1,49 +1,27 @@
 package main
 
 import (
-	"log"
-	"os"
-	"path/filepath"
-	"strings"
+	"fmt"
 
-	render "github.com/SvenDowideit/gendoc/render"
+	// render "github.com/SvenDowideit/gendoc/render"
+	allprojects "github.com/SvenDowideit/gendoc/allprojects"
 )
 
-type SiteData struct {
-	MarkdownFiles []string
-	StaticFiles   []string
-}
+
 
 func main() {
-	site := SiteData{
-		MarkdownFiles: []string{},
-		StaticFiles:   []string{},
-	}
-
-	gatherFilenames("./docs", &site)
-
-//	render.GithubAPI("./output_gh", site.MarkdownFiles)
-//	render.CopyStaticFiles("./output_gh", site.StaticFiles)
-
-	render.MMark("./output_mmark", site.MarkdownFiles)
-	render.CopyStaticFiles("./output_mmark", site.StaticFiles)
-}
-
-func gatherFilenames(docsDir string, site *SiteData) {
-	err := filepath.Walk(docsDir, func(path string, f os.FileInfo, err error) error {
-		if err != nil {
-			log.Println("ERR: ", err)
-		}
-		if !f.IsDir() {
-			if strings.HasSuffix(path, ".md") {
-				site.MarkdownFiles = append(site.MarkdownFiles, path)
-			} else {
-				site.StaticFiles = append(site.StaticFiles, path)
-			}
-		}
-		return nil
-	})
+	setName, projects, err := allprojects.Load("./all-projects.yml")
 	if err != nil {
-		log.Println("ERR: ", err)
+		fmt.Println(err)
+		return
 	}
+	fmt.Printf("publish-set: %s\n", setName)
+	fmt.Printf("projects: %#v\n\n", projects)
+	
+    for _, p := range *projects {
+        repo, _ := allprojects.GetGitRepo(p)
+        fmt.Println(repo)
+    }
 }
+
+
