@@ -2,26 +2,65 @@ package main
 
 import (
 	"fmt"
+	"os"
 
-	// render "github.com/SvenDowideit/gendoc/render"
-	allprojects "github.com/SvenDowideit/gendoc/allprojects"
+	"github.com/SvenDowideit/gendoc/commands"
+
+	"github.com/Sirupsen/logrus"
+	"github.com/codegangsta/cli"
 )
 
-
-
-func main() {
-	setName, projects, err := allprojects.Load("./all-projects.yml")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Printf("publish-set: %s\n", setName)
-	fmt.Printf("projects: %#v\n\n", projects)
-	
-    for _, p := range *projects {
-        repo, _ := allprojects.GetGitRepo(p)
-        fmt.Println(repo)
-    }
+type Exit struct {
+	Code int
 }
 
+func main() {
+	// We want our defer functions to be run when calling fatal()
+	defer func() {
+		if e := recover(); e != nil {
+			if ex, ok := e.(Exit); ok == true {
+				os.Exit(ex.Code)
+			}
+			panic(e)
+		}
+	}()
+	app := cli.NewApp()
+	app.Name = "gendoc"
+	app.Version = "not-yet"
+	app.Usage = "Generate documentation from multiple GitHub repositoiries"
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "debug",
+			Usage: "enable debug output in the logs",
+		},
+	}
+	app.Commands = []cli.Command{
+		versionCommand,
+		commands.Clone,
+		commands.Render,
+	}
+	app.Before = func(context *cli.Context) error {
+		if context.GlobalBool("debug") {
+			logrus.SetLevel(logrus.DebugLevel)
+		}
+		return nil
+	}
+	if err := app.Run(os.Args); err != nil {
+		logrus.Fatal(err)
+	}
+}
+
+var versionCommand = cli.Command{
+	Name:  "version",
+	Usage: "return the version",
+	Action: func(context *cli.Context) error {
+		fmt.Println(context.App.Version)
+		return nil
+	},
+}
+
+func fatal(err string, code int) {
+	fmt.Fprintf(os.Stderr, "[ctr] %s\n", err)
+	panic(Exit{code})
+}
 
