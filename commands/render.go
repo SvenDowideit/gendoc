@@ -1,12 +1,10 @@
 package commands
 
 import (
-
 	render "github.com/SvenDowideit/gendoc/render"
 
 	"github.com/codegangsta/cli"
 )
-
 
 var Render = cli.Command{
 	Name:  "render",
@@ -16,4 +14,3 @@ var Render = cli.Command{
 		return nil
 	},
 }
-

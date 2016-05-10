@@ -15,6 +15,7 @@ type SiteData struct {
 	MarkdownFiles []string
 	StaticFiles   []string
 }
+
 // RenderDocsDir will find all the markdown files, and static files in the docs subdir
 // and convert them to html in the output_mmark dir
 func RenderDocsDir() {
@@ -25,8 +26,8 @@ func RenderDocsDir() {
 
 	gatherFilenames("./docs", &site)
 
-//	GithubAPI("./output_gh", site.MarkdownFiles)
-//	CopyStaticFiles("./output_gh", site.StaticFiles)
+	//	GithubAPI("./output_gh", site.MarkdownFiles)
+	//	CopyStaticFiles("./output_gh", site.StaticFiles)
 
 	MMark("./output_mmark", site.MarkdownFiles)
 	CopyStaticFiles("./output_mmark", site.StaticFiles)
@@ -50,7 +51,6 @@ func gatherFilenames(docsDir string, site *SiteData) {
 		log.Println("ERR: ", err)
 	}
 }
-
 
 type renderFunc func(string) (string, error)
 

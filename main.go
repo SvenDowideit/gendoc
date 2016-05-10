@@ -63,4 +63,3 @@ func fatal(err string, code int) {
 	fmt.Fprintf(os.Stderr, "[ctr] %s\n", err)
 	panic(Exit{code})
 }
-
