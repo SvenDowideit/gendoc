@@ -28,10 +28,17 @@ func main() {
 	app.Name = "gendoc"
 	app.Version = "not-yet"
 	app.Usage = "Generate documentation from multiple GitHub repositoiries"
+	app.EnableBashCompletion = true
+
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
 			Name:  "debug",
 			Usage: "enable debug output in the logs",
+		},
+		cli.StringFlag{
+			Name:   "ghtoken",
+			Usage:  "GITHUB_TOKEN for git and GitHub API",
+			EnvVar: "GITHUB_TOKEN",
 		},
 	}
 	app.Commands = []cli.Command{

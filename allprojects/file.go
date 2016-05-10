@@ -2,6 +2,7 @@ package allprojects
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"strings"
 	"text/template"
@@ -66,7 +67,23 @@ func (projects *ProjectList) GetGitRepos() ([]string, error) {
 	return repos, nil
 }
 
-func GetGitRepo(p Project) (string, error) {
+func ParseRepoName(name string) Project {
+	return Project{
+		Org:      "docker",
+		Name:     name,
+		RepoName: name,
+		Ref:      "master",
+	}
+}
+
+func (p Project) CloneRepo() error {
+	repo, _ := p.GetGitRepo()
+	fmt.Println(repo)
+
+	return nil
+}
+
+func (p Project) GetGitRepo() (string, error) {
 	//TODO: extract Template parse
 	ghTemplate, err := template.New("repo").Parse("git@github.com:{{.Org}}/{{.RepoName}}")
 	var s bytes.Buffer
