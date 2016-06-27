@@ -15,20 +15,9 @@ type Project struct {
 	RepoName string `yaml:"repo_name"`
 	Ref      string
 	Branch   string
-	Path     string
+	Path     *string
 	Target   string
 	Ignores  []string
-}
-
-func (p Project) CloneRepo() error {
-	repo, _ := p.GetGitRepo()
-	fmt.Println(repo)
-
-    //TODO if it exists, make sure there's a valid remote
-    err := Git("clone", repo, "--branch", p.Ref, p.RepoName)
-//    err := Git("clone", repo, "--branch", p.Ref, "--depth", "1", p.RepoName)
-
-	return err
 }
 
 func PrintVerboseCommand(cmd *exec.Cmd) {

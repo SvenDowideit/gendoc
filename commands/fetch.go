@@ -15,7 +15,7 @@ import (
 
 var Fetch = cli.Command{
 	Name:  "fetch",
-	Usage: "fetch versions from "+allprojects.AllProjectsPath+" file into publish-set dir",
+	Usage: "fetch versions from "+allprojects.AllProjectsPath+" file into docs-source/<publish-set> dir",
 	Flags: []cli.Flag{
 	},
 	Action: func(context *cli.Context) error {
@@ -31,14 +31,15 @@ var Fetch = cli.Command{
         // TODO add a watch at the end.
         for _, p := range *projects {
             //TODO exclude?
-            from := filepath.Join(p.RepoName, p.Path)
-            to := filepath.Join(setName, p.Target)
+            from := filepath.Join(p.RepoName, *p.Path)
+            to := filepath.Join("docs-source", setName, p.Target)
             os.MkdirAll(to, 0755)
 	        fmt.Printf("copy %s TO %s\n", from, to)
             err = CopyDir(from, to)
             if err != nil {
                 return err
             }
+            // TODO: write build.json file
         }
         return nil
 	},
@@ -46,7 +47,7 @@ var Fetch = cli.Command{
 
 // Copies file source to destination dest.
 func CopyFile(source string, dest string) (err error) {
-	fmt.Printf("CopyFile %s TO %s\n", source, dest)
+	//fmt.Printf("CopyFile %s TO %s\n", source, dest)
 
     sf, err := os.Open(source)
     if err != nil {

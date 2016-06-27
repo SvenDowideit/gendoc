@@ -100,8 +100,14 @@ func expandDefaults(defaults, entry Project) *Project {
 	if project.Branch == "" {
 		project.Branch = defaults.Branch
 	}
-	if project.Path == "" {
-		project.Path = defaults.Path
+	if project.Path == nil {
+		project.Path = new(string)
+		*project.Path = *defaults.Path
+	} else {
+		if *project.Path == "" {
+			// yeah, !!null - thanks.
+			*project.Path = "."
+		}
 	}
 	if project.Target == "" {
 		project.Target = defaults.Target

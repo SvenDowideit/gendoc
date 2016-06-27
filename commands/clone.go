@@ -28,7 +28,7 @@ var Clone = cli.Command{
 			// clone allProjectsRepo
 			// TODO: what if we want londoncalling/docs.docker.com-testing ?
 			project := projects.GetProjectByName(allprojects.AllProjectsRepo)
-			err = project.CloneRepo()
+			err = CloneRepo(project)
 			if err != nil {
 				return err
 			}
@@ -47,7 +47,7 @@ var Clone = cli.Command{
 		if context.NArg() > 0 {
 			name := context.Args()[0]
 			project := projects.GetProjectByName(name)
-			return project.CloneRepo()
+			return CloneRepo(project)
 		}
 
 		return fmt.Errorf("No repository (or --all) specified.")
@@ -56,8 +56,22 @@ var Clone = cli.Command{
 
 func cloneAll(projects *allprojects.ProjectList) error {
 	for _, p := range *projects {
-		p.CloneRepo()
+		CloneRepo(p)
 	}
 
 	return nil
+}
+
+func CloneRepo(p allprojects.Project) error {
+	repo, _ := p.GetGitRepo()
+	fmt.Println(repo)
+
+    //TODO if it exists, make sure there's a valid remote
+    err := allprojects.Git("clone", repo, "--branch", p.Ref, p.RepoName)
+	if err != nil {
+	    err = allprojects.Git("clone", repo, p.RepoName)
+		// TODO checkout?
+	}
+
+	return err
 }
