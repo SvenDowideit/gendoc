@@ -43,8 +43,11 @@ func main() {
 	}
 	app.Commands = []cli.Command{
 		versionCommand,
+		commands.Fetch,
 		commands.Clone,
+		commands.Checkout,
 		commands.Render,
+		commands.Status,
 	}
 	app.Before = func(context *cli.Context) error {
 		if context.GlobalBool("debug") {

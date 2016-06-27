@@ -2,7 +2,6 @@ package allprojects
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"strings"
 	"text/template"
@@ -10,16 +9,8 @@ import (
 	"github.com/cloudfoundry-incubator/candiedyaml"
 )
 
-type Project struct {
-	Name     string
-	Org      string
-	RepoName string `yaml:"repo_name"`
-	Ref      string
-	Branch   string
-	Path     string
-	Target   string
-	Ignores  []string
-}
+var AllProjectsRepo = "docs.docker.com"
+var AllProjectsPath = "./docs.docker.com/all-projects.yml"
 
 type ProjectList []Project
 
@@ -44,7 +35,7 @@ func Load(filename string) (string, *ProjectList, error) {
 
 	projects := make(ProjectList, 0)
 	for _, p := range document.Projects {
-		projects = append(projects, *expand(document.Defaults, p))
+		projects = append(projects, *expandDefaults(document.Defaults, p))
 	}
 
 	return document.PublishSet, &projects, nil
@@ -67,7 +58,20 @@ func (projects *ProjectList) GetGitRepos() ([]string, error) {
 	return repos, nil
 }
 
-func ParseRepoName(name string) Project {
+func (projects *ProjectList) GetProjectByName(name string) Project {
+
+	// TODO: I presume this is naughty :)
+	if projects != nil {
+		for _, p := range *projects {
+			if p.Name == name {
+				return p
+			}
+		}
+	}
+	// project not in all-projects.yml
+	return makeProject(name)
+}
+func makeProject(name string) Project {
 	return Project{
 		Org:      "docker",
 		Name:     name,
@@ -76,28 +80,8 @@ func ParseRepoName(name string) Project {
 	}
 }
 
-func (p Project) CloneRepo() error {
-	repo, _ := p.GetGitRepo()
-	fmt.Println(repo)
-
-	return nil
-}
-
-func (p Project) GetGitRepo() (string, error) {
-	//TODO: extract Template parse
-	ghTemplate, err := template.New("repo").Parse("git@github.com:{{.Org}}/{{.RepoName}}")
-	var s bytes.Buffer
-	if err != nil {
-		return "", err
-	}
-	err = ghTemplate.Execute(&s, p)
-	if err != nil {
-		return "", err
-	}
-	return s.String(), nil
-}
-
-func expand(defaults, entry Project) *Project {
+// expandDefaults is only used to default values when parsing the yaml
+func expandDefaults(defaults, entry Project) *Project {
 	var project Project
 	project = entry
 
