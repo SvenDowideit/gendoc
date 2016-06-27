@@ -28,7 +28,9 @@ var Serve = cli.Command{
 		fmt.Printf("publish-set: %s\n", setName)
 
         //TODO: confirm that we have the right publish set fetched.
-        cmd := exec.Command("hugo", "serve")
+        htmlDir := filepath.Join("../../docs-html/", setName)
+
+        cmd := exec.Command("hugo", "serve", "--destination", htmlDir, "--cleanDestinationDir")
         cmd.Dir = filepath.Join("docs-source", setName)
 
         //PrintVerboseCommand(cmd)

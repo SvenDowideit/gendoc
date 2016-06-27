@@ -41,6 +41,12 @@ var Clone = cli.Command{
 		fmt.Printf("publish-set: %s\n", setName)
 
 		if cloneAllFlag {
+			// get the book keeping repos
+			project := projects.GetProjectByName("docs-source")
+			CloneRepo(project)
+			project = projects.GetProjectByName("docs-html")
+			CloneRepo(project)
+
 			return cloneAll(projects)
 		}
 
