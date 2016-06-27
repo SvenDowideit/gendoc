@@ -47,6 +47,7 @@ func main() {
 		commands.Clone,
 		commands.Checkout,
 		commands.Render,
+		commands.Serve,
 		commands.Status,
 	}
 	app.Before = func(context *cli.Context) error {
