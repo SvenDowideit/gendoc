@@ -56,6 +56,10 @@ func checkout(repoPath, ref string) error {
             if err != nil {
                 return err
             }
+            err = allprojects.GitIn(repoPath, "fetch", "--tag")
+            if err != nil {
+                return err
+            }
         }
         err = allprojects.GitIn(repoPath, "checkout", ref)
         if err != nil {

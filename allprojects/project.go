@@ -4,9 +4,10 @@ import (
 	"bytes"
     "os"
     "os/exec"
-	"fmt"
 	"strings"
 	"text/template"
+
+	"github.com/Sirupsen/logrus"
 )
 
 type Project struct {
@@ -21,7 +22,7 @@ type Project struct {
 }
 
 func PrintVerboseCommand(cmd *exec.Cmd) {
-	fmt.Fprintf(os.Stderr, "executing %q ...\n", strings.Join(cmd.Args, " "))
+	logrus.Debugf("executing %q ...\n", strings.Join(cmd.Args, " "))
 }
 
 

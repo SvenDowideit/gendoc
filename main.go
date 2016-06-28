@@ -31,6 +31,7 @@ func main() {
 	app.EnableBashCompletion = true
 
 	app.Flags = []cli.Flag{
+		// TODO: add a debug / info log file
 		cli.BoolFlag{
 			Name:  "debug",
 			Usage: "enable debug output in the logs",
