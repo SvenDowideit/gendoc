@@ -46,6 +46,7 @@ func main() {
 		commands.Fetch,
 		commands.Clone,
 		commands.Checkout,
+		commands.Remote,
 		commands.Render,
 		commands.Serve,
 		commands.Status,

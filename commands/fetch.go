@@ -28,21 +28,25 @@ var Fetch = cli.Command{
 		}
 		fmt.Printf("publish-set: %s\n", setName)
 
-        // TODO add a watch at the end.
-        for _, p := range *projects {
-            //TODO exclude?
-            from := filepath.Join(p.RepoName, *p.Path)
-            to := filepath.Join("docs-source", setName, p.Target)
-            os.MkdirAll(to, 0755)
-	        fmt.Printf("copy %s TO %s\n", from, to)
-            err = CopyDir(from, to)
-            if err != nil {
-                return err
-            }
-            // TODO: write build.json file
-        }
-        return nil
+        return DoFetch(setName, projects)
 	},
+}
+
+func DoFetch(setName string, projects *allprojects.ProjectList) error {
+    // TODO add a watch at the end.
+    for _, p := range *projects {
+        //TODO exclude?
+        from := filepath.Join(p.RepoName, *p.Path)
+        to := filepath.Join("docs-source", setName, p.Target)
+        os.MkdirAll(to, 0755)
+        fmt.Printf("copy %s TO %s\n", from, to)
+        err := CopyDir(from, to)
+        if err != nil {
+            return err
+        }
+        // TODO: write build.json file
+    }
+    return nil
 }
 
 // Copies file source to destination dest.

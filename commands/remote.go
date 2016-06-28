@@ -9,12 +9,18 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-var Status = cli.Command{
-	Name:  "status",
-	Usage: "status versions from "+allprojects.AllProjectsPath+" file",
+var Remote = cli.Command{
+	Name:  "remote",
+	Usage: "Add a git remote",
 	Flags: []cli.Flag{
 	},
 	Action: func(context *cli.Context) error {
+		if context.NArg() != 2 {
+            return fmt.Errorf("Please specify the remote name and repo org to add")
+		}
+		name := context.Args()[0]
+		org := context.Args()[1]
+
 		setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
 		if err != nil {
             if os.IsNotExist(err) {
@@ -29,12 +35,14 @@ var Status = cli.Command{
         for _, p := range *projects {
             // TODO: don't ignore errors.
             fmt.Printf("-- %s\n", p.RepoName)
-            status(p.RepoName)
+            addRemote(p, name, org)
         }
         return nil
 	},
 }
 
-func status(repoPath string) error {
-    return allprojects.GitIn(repoPath, "branch", "--contains")
+func addRemote(p allprojects.Project, name, org string) error {
+    p.Org = org
+   	repo, _ := p.GetGitRepo()
+    return allprojects.GitIn(p.RepoName, "remote", "add", name, repo)
 }
