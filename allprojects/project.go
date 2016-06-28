@@ -47,6 +47,15 @@ func GitIn(dir string, args ...string) error {
         return cmd.Run()
 }
 
+func GitResultsIn(dir string, args ...string) (string, error) {
+        cmd := exec.Command("git", args...)
+        cmd.Dir = dir
+        PrintVerboseCommand(cmd)
+
+        out, err := cmd.Output()
+		return string(out), err
+}
+
 func (p Project) GetGitRepo() (string, error) {
 	//TODO: extract Template parse
 	ghTemplate, err := template.New("repo").Parse("git@github.com:{{.Org}}/{{.RepoName}}")
