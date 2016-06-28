@@ -15,14 +15,16 @@ var Checkout = cli.Command{
 	Flags: []cli.Flag{
 	},
 	Action: func(context *cli.Context) error {
-        // TODO: checkout the version specified as the arg
-		if context.NArg() != 1 {
-            return fmt.Errorf("please specify a docs.docker.com branch to checkout")
-        }
-        publishSetBranch := context.Args()[0]
-        err := checkout(allprojects.AllProjectsRepo, publishSetBranch)
-        if err != nil {
-            return err
+        // TODO: checkout what's in the current file - we might be testing a branch
+		if context.NArg() == 1 {
+            publishSetBranch := context.Args()[0]
+            fmt.Printf("Checking out %s %s.\n", allprojects.AllProjectsRepo, publishSetBranch)
+            err := checkout(allprojects.AllProjectsRepo, publishSetBranch)
+            if err != nil {
+                return err
+            }
+        } else {
+            fmt.Printf("Using the docs.docker.com/all-projects.yml as is.\n")
         }
 
 		setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
