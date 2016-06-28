@@ -43,6 +43,7 @@ var Checkout = cli.Command{
 	},
 }
 
+// TODO: re-write this to use --fetch - defaulting to true
 func checkout(repoPath, ref string) error {
     //TODO what if its a tag
     err := allprojects.GitIn(repoPath, "checkout", ref)

@@ -9,6 +9,7 @@ import (
 	"github.com/codegangsta/cli"
 )
 
+//TODO add this to clone..
 var Remote = cli.Command{
 	Name:  "remote",
 	Usage: "Add a git remote",
