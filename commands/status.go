@@ -16,7 +16,7 @@ var Status = cli.Command{
 	Name:  "status",
 	Usage: "status versions from "+allprojects.AllProjectsPath+" file",
 	Flags: []cli.Flag{
-		cli.BoolTFlag{
+		cli.BoolFlag{
 			Name:        "log",
 			Usage:       "Show the commits that are different between checkout and remote",
 			Destination: &logFlag,
@@ -51,21 +51,31 @@ var Status = cli.Command{
             if err != nil {
                 fmt.Printf("error: failed to run `git rev-parse --verify --quiet HEAD`\n")
             }
-            differences := false
-            if p.Ref != currentSha {
-                differences = true
-                fmt.Printf("Checkout Sha (%s) NOT the same as ref: in all-projects (%s)\n", currentSha, p.Ref)
-            }
             // TODO: need to use the branch name from ...
             masterBranch := "origin/master"
             masterSha, err := allprojects.GitResultsIn(p.RepoName, "show-ref", "--hash", masterBranch)
-            masterSha = strings.TrimSpace(masterSha)
             if err != nil {
                 fmt.Printf("error: failed to run `git show-rev %s --hash`\n", masterBranch)
+                masterSha = masterBranch
             }
+            masterSha = strings.TrimSpace(masterSha)
+
+            differences := false
+
+            allProjectsSHA := p.Ref
+            if sha, err := allprojects.GitResultsIn(p.RepoName, "show-ref", "--hash", "origin/" + p.Ref); err == nil {
+                // convert to SHA if ref: master
+                allProjectsSHA = strings.TrimSpace(sha)
+            }
+            if allProjectsSHA != currentSha {
+                differences = true
+                fmt.Printf("Checkout Sha (%s) NOT the same as ref: in all-projects %s (%s)\n", currentSha, p.Ref, allProjectsSHA)
+            }
+
             if currentSha != masterSha {
                 differences = true
                 fmt.Printf("Checkout Sha (%s) NOT the same as tip of %s (%s)\n", currentSha, masterBranch, masterSha)
+                fmt.Printf("\tConsider a `git reset --hard %s`\n", masterBranch)
             }
             if logFlag && differences {
                 allprojects.GitIn(p.RepoName, "log", "--oneline", currentSha+".."+masterSha)

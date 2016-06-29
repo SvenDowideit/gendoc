@@ -46,6 +46,7 @@ var Checkout = cli.Command{
 }
 
 // TODO: re-write this to use --fetch - defaulting to true
+// TODO: what about reset --hard?
 func checkout(repoPath, ref string) error {
     //TODO what if its a tag
     err := allprojects.GitIn(repoPath, "checkout", ref)
@@ -70,6 +71,8 @@ func checkout(repoPath, ref string) error {
                 return err
             }
         }
+        // If ref == master && there are no local commits / isdirty
+        // then git reset --hard origin/master
     }
     return err
 }
