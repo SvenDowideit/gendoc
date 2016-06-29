@@ -15,16 +15,16 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-var fetchFlag, serveFlag bool
+var vendorFlag, serveFlag bool
 
 var Render = cli.Command{
 	Name:  "render",
 	Usage: "render html of docs checked out.",
 	Flags: []cli.Flag{
 		cli.BoolTFlag{
-			Name:        "fetch",
-			Usage:       "do a fetch of files from the checked out repos first",
-			Destination: &fetchFlag,
+			Name:        "vandor",
+			Usage:       "vendor changes into docs-source (disable to ignore new changes)",
+			Destination: &vendorFlag,
 		},
 		cli.BoolTFlag{
 			Name:        "serve",
@@ -41,7 +41,7 @@ var Render = cli.Command{
 			return err
 		}
 		fmt.Printf("publish-set: %s\n", setName)
-        if fetchFlag {
+        if vendorFlag {
             err = VendorSource(setName, projects)
 			if err != nil {
 				return err

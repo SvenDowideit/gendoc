@@ -9,10 +9,22 @@ import (
 	"github.com/codegangsta/cli"
 )
 
+var fetchFlag, resetFlag bool
+
 var Checkout = cli.Command{
 	Name:  "checkout",
 	Usage: "checkout versions from "+allprojects.AllProjectsPath+" file",
 	Flags: []cli.Flag{
+		cli.BoolFlag{
+			Name:        "fetch",
+			Usage:       "git fetch origin",
+			Destination: &fetchFlag,
+		},
+		cli.BoolFlag{
+			Name:        "reset",
+			Usage:       "get reset --hard origin/<ref>",
+			Destination: &resetFlag,
+		},        
 	},
 	Action: func(context *cli.Context) error {
         // TODO: checkout what's in the current file - we might be testing a branch
@@ -45,9 +57,18 @@ var Checkout = cli.Command{
 	},
 }
 
-// TODO: re-write this to use --fetch - defaulting to true
-// TODO: what about reset --hard?
+//TODO: bail out if there are local commits, or isdirty
 func checkout(repoPath, ref string) error {
+    if fetchFlag {
+        if _, err := allprojects.GitResultsIn(repoPath, "show-ref", "--hash", "origin/" + ref); err == nil {
+            // its not a SHA, so we should fetch
+            err = allprojects.GitIn(repoPath, "fetch", "origin", ref+":remotes/origin/"+ref)
+            if err != nil {
+                return err
+            }
+        }
+    }
+
     //TODO what if its a tag
     err := allprojects.GitIn(repoPath, "checkout", ref)
     if err != nil {
@@ -71,8 +92,15 @@ func checkout(repoPath, ref string) error {
                 return err
             }
         }
-        // If ref == master && there are no local commits / isdirty
-        // then git reset --hard origin/master
+    }
+    if resetFlag {
+        if _, err := allprojects.GitResultsIn(repoPath, "show-ref", "--hash", "origin/" + ref); err == nil {
+            // its not a SHA, so we can reset
+            err = allprojects.GitIn(repoPath, "reset", "--hard", "origin/"+ref)
+            if err != nil {
+                return err
+            }
+        }
     }
     return err
 }
