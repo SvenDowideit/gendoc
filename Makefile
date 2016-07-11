@@ -37,17 +37,17 @@ RELEASE_DATE=`date +%F`
 
 release: docker
 	# TODO: check that we have upstream master, bail if not
-	docker run --rm -it -e GITHUB_TOKEN linkcheck \
-		github-release release --user docker --repo linkcheck --tag $(RELEASE_DATE)
-	docker run --rm -it -e GITHUB_TOKEN linkcheck \
-		github-release upload --user docker --repo linkcheck --tag $(RELEASE_DATE) \
-			--name linkcheck \
-			--file linkcheck
-	docker run --rm -it -e GITHUB_TOKEN linkcheck \
-		github-release upload --user docker --repo linkcheck --tag $(RELEASE_DATE) \
-			--name linkcheck-osx \
-			--file linkcheck.app
-	docker run --rm -it -e GITHUB_TOKEN linkcheck \
-		github-release upload --user docker --repo linkcheck --tag $(RELEASE_DATE) \
-			--name linkcheck.exe \
-			--file linkcheck.exe
+	docker run --rm -it -e GITHUB_TOKEN gendoc \
+		github-release release --user docker --repo gendoc --tag $(RELEASE_DATE)
+	docker run --rm -it -e GITHUB_TOKEN gendoc \
+		github-release upload --user docker --repo gendoc --tag $(RELEASE_DATE) \
+			--name gendoc \
+			--file gendoc
+	docker run --rm -it -e GITHUB_TOKEN gendoc \
+		github-release upload --user docker --repo gendoc --tag $(RELEASE_DATE) \
+			--name gendoc-osx \
+			--file gendoc.app
+	docker run --rm -it -e GITHUB_TOKEN gendoc \
+		github-release upload --user docker --repo gendoc --tag $(RELEASE_DATE) \
+			--name gendoc.exe \
+			--file gendoc.exe
