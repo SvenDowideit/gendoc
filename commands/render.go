@@ -22,7 +22,7 @@ var Render = cli.Command{
 	Usage: "render html of docs checked out.",
 	Flags: []cli.Flag{
 		cli.BoolTFlag{
-			Name:        "vandor",
+			Name:        "vendor",
 			Usage:       "vendor changes into docs-source (disable to ignore new changes)",
 			Destination: &vendorFlag,
 		},
@@ -63,7 +63,10 @@ var Render = cli.Command{
 			hugoCmd := []string{"serve"}
 
 			opts = append(hugoCmd, opts...)
-			opts = append(opts, "--port", "8080", "--watch")
+			opts = append(opts,
+                "--port", "8080",
+                "--bind", "0.0.0.0",
+                "--watch")
 		}
 		cmd = exec.Command("hugo", opts...)
 
@@ -81,6 +84,9 @@ var Render = cli.Command{
 func VendorSource(setName string, projects *allprojects.ProjectList) error {
     // TODO add a watch at the end.
     for _, p := range *projects {
+        if p.RepoName == "docs.docker.com" {
+            continue
+        }
         //TODO exclude?
         from := filepath.Join(p.RepoName, *p.Path)
         to := filepath.Join("docs-source", setName, p.Target)

@@ -1,0 +1,9 @@
+Makefile
+Dockerfile
+.dockerignore
+gendoc.zip
+gendoc
+gendoc.app
+gendoc.exe
+README.md
+LICENSE

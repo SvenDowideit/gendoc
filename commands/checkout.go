@@ -39,6 +39,8 @@ var Checkout = cli.Command{
             fmt.Printf("Using the docs.docker.com/all-projects.yml as is.\n")
         }
 
+        //TODO need to fetch&reset docs.docekr.com, docs-html and docs-src
+
 		setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
 		if err != nil {
             if os.IsNotExist(err) {

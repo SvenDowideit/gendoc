@@ -35,8 +35,9 @@ func Load(filename string) (string, *ProjectList, error) {
 
 	projects := make(ProjectList, 0)
 
-	docsDockerComproject := projects.GetProjectByName(AllProjectsRepo)
-	projects = append(projects, *expandDefaults(document.Defaults, docsDockerComproject))
+	// Can't do this here - the values are all wrong.
+	//docsDockerComproject := projects.GetProjectByName(AllProjectsRepo)
+	//projects = append(projects, *expandDefaults(document.Defaults, docsDockerComproject))
 
 	for _, p := range document.Projects {
 		projects = append(projects, *expandDefaults(document.Defaults, p))
