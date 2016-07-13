@@ -13,6 +13,7 @@ then open a terminal and run the following (example for OS X):
 
 ```
 $ cd Downloads
+$ chmod 755 gendoc.app
 $ ./gendoc.app setup
 ```
 
