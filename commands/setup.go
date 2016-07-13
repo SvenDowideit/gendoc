@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"net/http"
+	"runtime"
 
 	"github.com/codegangsta/cli"
 )
@@ -27,20 +28,44 @@ var Setup = cli.Command{
 	},
 	Action: func(context *cli.Context) error {
 		//install gendoc
-		if err := install(os.Args[0], binPath); err != nil {
+		gendocTo := binPath
+		if runtime.GOOS == "darwin" {
+			// lose the .app extension
+			gendocTo = binPath + "gendoc"
+		}
+		if err := install(os.Args[0], gendocTo); err != nil {
 			return err
 		}
 
 		// install hugo
-		hugotgz := "hugo_0.16_linux-64bit.tgz"
-		if _, err := os.Stat(hugotgz); os.IsNotExist(err) {
-			if err := wget("https://github.com/spf13/hugo/releases/download/v0.16/hugo_0.16_linux-64bit.tgz", hugotgz); err != nil {
+		arch := runtime.GOARCH
+		if arch == "amd64" {
+			arch = "64bit"
+		}
+		if arch == "386" {
+			arch = "32bit"
+		}
+		ext := "tgz"
+		if runtime.GOOS == "windows" {
+			ext = "zip"
+		}
+		goos := runtime.GOOS
+		if goos == "darwin" {
+			goos = "osx"
+		}
+		hugoarchive := "hugo_0.16_"+goos+"-"+arch+"."+ext
+		if _, err := os.Stat(hugoarchive); os.IsNotExist(err) {
+			if err := wget("https://github.com/spf13/hugo/releases/download/v0.16/" + hugoarchive, hugoarchive); err != nil {
 				return err
 			}
 		}
 		hugo := "./hugo"
-		if err := processTGZ(hugotgz, hugo); err != nil {
-			return err
+		if ext == "tgz" {
+			if err := processTGZ(hugoarchive, hugo); err != nil {
+				return err
+			}
+		} else {
+			return fmt.Errorf("BOOM, zip files not coded yet")
 		}
 		if err := install(hugo, binPath); err != nil {
 			return err
