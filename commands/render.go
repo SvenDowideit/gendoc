@@ -15,7 +15,7 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-var vendorFlag, serveFlag bool
+var vendorFlag, serveFlag, doitFlag bool
 
 var Render = cli.Command{
 	Name:  "render",
@@ -30,6 +30,11 @@ var Render = cli.Command{
 			Name:        "serve",
 			Usage:       "serve HTML using hugo on port 8080",
 			Destination: &serveFlag,
+		},
+		cli.BoolFlag{
+			Name:        "doit",
+			Usage:       "render even though some projects are missing",
+			Destination: &doitFlag,
 		},
 	},
 	Action: func(context *cli.Context) error {
@@ -93,7 +98,8 @@ func VendorSource(setName string, projects *allprojects.ProjectList) error {
         os.MkdirAll(to, 0755)
         fmt.Printf("copy %s TO %s\n", from, to)
         err := CopyDir(from, to)
-        if err != nil {
+        if !doitFlag && err != nil {
+		fmt.Println("add the --doit flag to render when repos are missing")
             return err
         }
         // TODO: write build.json file

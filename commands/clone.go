@@ -88,7 +88,7 @@ func CloneRepo(p allprojects.Project) error {
 
 		//err := allprojects.Git("clone", repo, "--branch", p.Ref, p.RepoName)
 		//if err != nil {
-			err = allprojects.Git("clone", repo, p.RepoName)
+			err = allprojects.Git("clone", "--origin", "upstream", repo, p.RepoName)
 		//}
 		return err
 	} else {

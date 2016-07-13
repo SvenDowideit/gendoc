@@ -17,12 +17,12 @@ var Checkout = cli.Command{
 	Flags: []cli.Flag{
 		cli.BoolFlag{
 			Name:        "fetch",
-			Usage:       "git fetch origin",
+			Usage:       "git fetch upstream",
 			Destination: &fetchFlag,
 		},
 		cli.BoolFlag{
 			Name:        "reset",
-			Usage:       "get reset --hard origin/<ref>",
+			Usage:       "get reset --hard upstream/<ref>",
 			Destination: &resetFlag,
 		},        
 	},
@@ -62,9 +62,9 @@ var Checkout = cli.Command{
 //TODO: bail out if there are local commits, or isdirty
 func checkout(repoPath, ref string) error {
     if fetchFlag {
-        if _, err := allprojects.GitResultsIn(repoPath, "show-ref", "--hash", "origin/" + ref); err == nil {
+        if _, err := allprojects.GitResultsIn(repoPath, "show-ref", "--hash", "upstream/" + ref); err == nil {
             // its not a SHA, so we should fetch
-            err = allprojects.GitIn(repoPath, "fetch", "origin", ref+":remotes/origin/"+ref)
+            err = allprojects.GitIn(repoPath, "fetch", "upstream", ref+":remotes/upstream/"+ref)
             if err != nil {
                 return err
             }
@@ -75,9 +75,9 @@ func checkout(repoPath, ref string) error {
     err := allprojects.GitIn(repoPath, "checkout", ref)
     if err != nil {
         // do a fetch, in case it exists in remote
-        err = allprojects.GitIn(repoPath, "fetch", "origin", ref+":remotes/origin/"+ref)
+        err = allprojects.GitIn(repoPath, "fetch", "upstream", ref+":remotes/upstream/"+ref)
         if err != nil {
-            // Last resourt, fetch all origin, and undo depth
+            // Last resourt, fetch all upstream, and undo depth
             err = allprojects.GitIn(repoPath, "fetch", "--all")
             if err != nil {
                 return err
@@ -89,16 +89,16 @@ func checkout(repoPath, ref string) error {
         }
         err = allprojects.GitIn(repoPath, "checkout", ref)
         if err != nil {
-            err = allprojects.GitIn(repoPath, "checkout", "-b", ref, "remotes/origin/"+ref)
+            err = allprojects.GitIn(repoPath, "checkout", "-b", ref, "remotes/upstream/"+ref)
             if err != nil {
                 return err
             }
         }
     }
     if resetFlag {
-        if _, err := allprojects.GitResultsIn(repoPath, "show-ref", "--hash", "origin/" + ref); err == nil {
+        if _, err := allprojects.GitResultsIn(repoPath, "show-ref", "--hash", "upstream/" + ref); err == nil {
             // its not a SHA, so we can reset
-            err = allprojects.GitIn(repoPath, "reset", "--hard", "origin/"+ref)
+            err = allprojects.GitIn(repoPath, "reset", "--hard", "upstream/"+ref)
             if err != nil {
                 return err
             }

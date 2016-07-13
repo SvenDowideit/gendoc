@@ -46,7 +46,7 @@ var Status = cli.Command{
 
             // `gendoc update-yaml` :compare 
             // the sha we have checked out `git rev-parse --verify --quiet HEAD`
-            // the head of the branch `git show-ref origin/master`
+            // the head of the branch `git show-ref upstream/master`
             // and the ref sha in the all-projects
             // if they differ, then tell the user they can update the all-projects
             // add a DOIT flag
@@ -57,7 +57,7 @@ var Status = cli.Command{
                 fmt.Printf("error: failed to run `git rev-parse --verify --quiet HEAD`\n")
             }
             // TODO: need to use the branch name from ...
-            masterBranch := "origin/master"
+            masterBranch := "upstream/master"
             masterSha, err := allprojects.GitResultsIn(p.RepoName, "show-ref", "--hash", masterBranch)
             if err != nil {
                 fmt.Printf("error: failed to run `git show-rev %s --hash`\n", masterBranch)
@@ -68,7 +68,7 @@ var Status = cli.Command{
             differences := false
 
             allProjectsSHA := p.Ref
-            if sha, err := allprojects.GitResultsIn(p.RepoName, "show-ref", "--hash", "origin/" + p.Ref); err == nil {
+            if sha, err := allprojects.GitResultsIn(p.RepoName, "show-ref", "--hash", "upstream/" + p.Ref); err == nil {
                 // convert to SHA if ref: master
                 allProjectsSHA = strings.TrimSpace(sha)
             }
