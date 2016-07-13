@@ -1,8 +1,27 @@
 
-# initialize your workspace with
+# Docker documentation tooling
+
+## pre-req's
+
+You need to have a working installation of `git`
+
+## install
+
+Download the latest release for your platform from https://github.com/SvenDowideit/gendoc/releases
+
+then open a terminal and run the following (example for OS X):
 
 ```
-$ gendoc clone --all
+$ cd Downloads
+$ ./gendoc.app setup
+```
+
+This will install `gendoc` into `/usr/local/bin/`, and then download `hugo` and install it too.
+
+## initialize your workspace with
+
+```
+$ gendoc clone
 ```
 
 If there is no `docs.docker.com` repo found, will clone it, and then
@@ -27,7 +46,7 @@ $ gendoc checkout v1.10 && gendoc --serve=false render
 will use the files in the `docs-source/<publish-set>` dir to generate files in the `docs-html/<publish-set>`
 dir
 
-## status
+## status (very preliminary, and changing atm)
 
 tells you what you have checked out, and what its related to.
 
