@@ -48,6 +48,7 @@ func main() {
 		commands.Checkout,
 		commands.Remote,
 		commands.Render,
+		commands.Setup,
 		commands.Status,
 	}
 	app.Before = func(context *cli.Context) error {

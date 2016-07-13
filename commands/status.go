@@ -10,7 +10,7 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-var logFlag bool
+var logFlag, diffFlag bool
 
 var Status = cli.Command{
 	Name:  "status",
@@ -20,6 +20,11 @@ var Status = cli.Command{
 			Name:        "log",
 			Usage:       "Show the commits that are different between checkout and remote",
 			Destination: &logFlag,
+		},
+		cli.BoolFlag{
+			Name:        "diff",
+			Usage:       "Show the changes that are different between checkout and remote",
+			Destination: &diffFlag,
 		},
 	},
 	Action: func(context *cli.Context) error {
@@ -77,8 +82,11 @@ var Status = cli.Command{
                 fmt.Printf("Checkout Sha (%s) NOT the same as tip of %s (%s)\n", currentSha, masterBranch, masterSha)
                 fmt.Printf("\tConsider a `git reset --hard %s`\n", masterBranch)
             }
-            if logFlag && differences {
-                allprojects.GitIn(p.RepoName, "log", "--oneline", currentSha+".."+masterSha, *p.Path)
+            if (logFlag || diffFlag) && differences {
+                allprojects.GitIn(p.RepoName, "log", "--first-parent", "--oneline", currentSha+".."+masterSha, *p.Path)
+		// TODO 
+		//foreach commit in the log, show the diff
+		// git diff  a63a059^1..a63a059 docs/
             }
         }
         return nil

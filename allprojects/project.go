@@ -53,7 +53,7 @@ func GitResultsIn(dir string, args ...string) (string, error) {
         PrintVerboseCommand(cmd)
 
         out, err := cmd.Output()
-		return string(out), err
+	return string(out), err
 }
 
 func (p Project) GetGitRepo() (string, error) {
