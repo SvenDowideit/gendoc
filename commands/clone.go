@@ -9,16 +9,21 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-var cloneAllFlag = true
+var cloneSingle, cloneVendoringFlag bool
 
 var Clone = cli.Command{
 	Name:  "clone",
 	Usage: "clone repos from the "+allprojects.AllProjectsPath+" file",
 	Flags: []cli.Flag{
 		cli.BoolFlag{
-			Name:        "all",
+			Name:        "single",
 			Usage:       "clone all repositories in "+allprojects.AllProjectsPath+" file",
-			Destination: &cloneAllFlag,
+			Destination: &cloneSingle,
+		},
+		cli.BoolFlag{
+			Name:        "bookkeeping",
+			Usage:       "clone docker/docs-html and docker/docs-src too (very large)",
+			Destination: &cloneVendoringFlag,
 		},
 		//TODO: add an shallow clone flag
 	},
@@ -40,13 +45,19 @@ var Clone = cli.Command{
 		}
 		fmt.Printf("publish-set: %s\n", setName)
 
-		if cloneAllFlag {
+		if cloneVendoringFlag {
 			// get the book keeping repos
 			project := projects.GetProjectByName("docs-source")
-			CloneRepo(project)
+			if err := CloneRepo(project); err != nil {
+                                return err
+                        }
 			project = projects.GetProjectByName("docs-html")
-			CloneRepo(project)
+			if err := CloneRepo(project); err != nil {
+                                return err
+                        }
+		}
 
+		if !cloneSingle {
 			return cloneAll(projects)
 		}
 
@@ -69,15 +80,19 @@ func cloneAll(projects *allprojects.ProjectList) error {
 }
 
 func CloneRepo(p allprojects.Project) error {
-	repo, _ := p.GetGitRepo()
-	fmt.Println(repo)
+	fmt.Printf("-- %s\n", p.Name)
+	//TODO if it exists, make sure there's a valid remote
+	if _, err := os.Stat(p.RepoName); os.IsNotExist(err) {
+		repo, _ := p.GetGitRepo()
+		fmt.Printf("Cloning from %s\n", repo)
 
-    //TODO if it exists, make sure there's a valid remote
-    err := allprojects.Git("clone", repo, "--branch", p.Ref, p.RepoName)
-	if err != nil {
-	    err = allprojects.Git("clone", repo, p.RepoName)
-		// TODO checkout?
+		//err := allprojects.Git("clone", repo, "--branch", p.Ref, p.RepoName)
+		//if err != nil {
+			err = allprojects.Git("clone", repo, p.RepoName)
+		//}
+		return err
+	} else {
+		fmt.Printf("Dir already exists\n")
 	}
-
-	return err
+	return nil
 }
