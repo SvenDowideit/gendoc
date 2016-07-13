@@ -36,7 +36,7 @@ var Status = cli.Command{
         // TODO: confirm there are no changes - or list them
         for _, p := range *projects {
             // TODO: don't ignore errors.
-            fmt.Printf("-- %s\n", p.RepoName)
+            fmt.Printf("-- %s (in %s)\n", p.RepoName, *p.Path)
             status(p.RepoName)
 
             // `gendoc update-yaml` :compare 
@@ -78,7 +78,7 @@ var Status = cli.Command{
                 fmt.Printf("\tConsider a `git reset --hard %s`\n", masterBranch)
             }
             if logFlag && differences {
-                allprojects.GitIn(p.RepoName, "log", "--oneline", currentSha+".."+masterSha)
+                allprojects.GitIn(p.RepoName, "log", "--oneline", currentSha+".."+masterSha, *p.Path)
             }
         }
         return nil
