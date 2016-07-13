@@ -16,6 +16,7 @@ import (
 )
 
 var vendorFlag, serveFlag, doitFlag bool
+var portFlag int
 
 var Render = cli.Command{
 	Name:  "render",
@@ -28,8 +29,14 @@ var Render = cli.Command{
 		},
 		cli.BoolTFlag{
 			Name:        "serve",
-			Usage:       "serve HTML using hugo on port 8080",
+			Usage:       "serve HTML using hugo on port 8000 (use --port <num> to change it)",
 			Destination: &serveFlag,
+		},
+		cli.IntFlag{
+			Name:        "port",
+			Usage:       "TCP port the rendered docs should be served from",
+			Destination: &portFlag,
+			Value:       8000,
 		},
 		cli.BoolFlag{
 			Name:        "doit",
@@ -69,7 +76,7 @@ var Render = cli.Command{
 
 			opts = append(hugoCmd, opts...)
 			opts = append(opts,
-                "--port", "8080",
+                "--port", fmt.Sprintf("%d", portFlag),
                 "--bind", "0.0.0.0",
                 "--watch")
 		}
