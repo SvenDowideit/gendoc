@@ -15,8 +15,8 @@ import (
 
 var binPath string
 
-var Setup = cli.Command{
-	Name:  "setup",
+var Install = cli.Command{
+	Name:  "install",
 	Usage: "Install gendoc and its pre-req's into your PATH",
 	Flags: []cli.Flag{
 		cli.StringFlag{

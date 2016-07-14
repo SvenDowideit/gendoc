@@ -14,7 +14,7 @@ then open a terminal and run the following (example for OS X):
 ```
 $ cd Downloads
 $ chmod 755 gendoc-osx
-$ ./gendoc-osx setup
+$ ./gendoc-osx install
 ```
 
 This will install `gendoc` into `/usr/local/bin/`, and then download `hugo` and install it too.
