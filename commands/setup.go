@@ -145,6 +145,7 @@ func processTGZ(srcFile, filename string) error {
 				}
 				defer out.Close()
 				io.Copy(out, tarReader)
+				out.Chmod(0755)
 				return nil
 			}
 		default:
