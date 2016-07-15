@@ -10,6 +10,9 @@ import (
 	"github.com/codegangsta/cli"
 )
 
+// Set from the go build commandline
+var Version, CommitHash string
+
 type Exit struct {
 	Code int
 }
@@ -26,8 +29,8 @@ func main() {
 	}()
 	app := cli.NewApp()
 	app.Name = "gendoc"
-	app.Version = "not-yet"
-	app.Usage = "Generate documentation from multiple GitHub repositoiries"
+	app.Version = Version
+	app.Usage = "Generate documentation from multiple GitHub repositories"
 	app.EnableBashCompletion = true
 
 	app.Flags = []cli.Flag{
@@ -68,6 +71,7 @@ var versionCommand = cli.Command{
 	Usage: "return the version",
 	Action: func(context *cli.Context) error {
 		fmt.Println(context.App.Version)
+		fmt.Println(CommitHash)
 		return nil
 	},
 }

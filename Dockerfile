@@ -25,7 +25,10 @@ ADD . /go/src/github.com/SvenDowideit/gendoc
 RUN go get -d -v
 RUN go test -v ./...
 
-RUN go build -o gendoc main.go \
-	&& GOOS=windows GOARCH=amd64 go build -o gendoc.exe main.go \
-	&& GOOS=darwin GOARCH=amd64 go build -o gendoc.app main.go \
+ARG RELEASE_DATE="developer build"
+ARG COMMIT_HASH="unknown"
+
+RUN go build -o gendoc -ldflags "-X main.Version=${RELEASE_DATE} -X main.CommitHash=${COMMIT_HASH}" main.go \
+	&& GOOS=windows GOARCH=amd64 go build -o gendoc.exe -ldflags "-X main.Version=${RELEASE_DATE} -X main.CommitHash=${COMMIT_HASH}" main.go \
+	&& GOOS=darwin GOARCH=amd64 go build -o gendoc.app -ldflags "-X main.Version=${RELEASE_DATE} -X main.CommitHash=${COMMIT_HASH}" main.go \
 	&& zip gendoc.zip gendoc gendoc.exe gendoc.app

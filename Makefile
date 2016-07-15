@@ -1,26 +1,26 @@
+.PHONY: build shell docker-build docker run release
 
-# Adds build information from git repo
-#
-# as suggested by tatsushid in
-# https://github.com/spf13/hugo/issues/540
-
-COMMIT_HASH=`git rev-parse --short HEAD 2>/dev/null`
-BUILD_DATE=`date +%FT%T%z`
-LDFLAGS=-ldflags "-X github.com/spf13/hugo/hugolib.CommitHash=${COMMIT_HASH} -X github.com/spf13/hugo/hugolib.BuildDate=${BUILD_DATE}"
+RELEASE_DATE=$(shell date +%F)
+COMMIT_HASH=$(shell git rev-parse --short HEAD 2>/dev/null)
+BUILD_DATE=$(date +%FT%T%z)
+LDFLAGS=-ldflags "-X github.com/SvenDowideit/gendoc.CommitHash=${COMMIT_HASH} -X github.com/SvenDowideit/gendoc.Version=${RELEASE_DATE}"
 
 AWSTOKENSFILE ?= ../aws.env
 -include $(AWSTOKENSFILE)
 export GITHUB_USERNAME GITHUB_TOKEN
 
 build:
-	go build -o gendoc main.go
+	go build $(LDFLAGS) -o gendoc main.go
 
 shell: docker-build
 	docker run --rm -it -v $(CURDIR):/go/src/github.com/SvenDowideit/gendoc gendoc bash
 
 docker-build:
 	rm -f gendoc.gz
-	docker build -t gendoc .
+	docker build \
+		--build-arg RELEASE_DATE=$(RELEASE_DATE) \
+		--build-arg COMMIT_HASH=$(COMMIT_HASH) \
+		-t gendoc .
 
 docker: docker-build
 	docker run --name gendoc-build gendoc
@@ -33,7 +33,6 @@ run:
 	./gendoc .
 
 
-RELEASE_DATE=`date +%F`
 
 release: docker
 	# TODO: check that we have upstream master, bail if not

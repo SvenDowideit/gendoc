@@ -9,11 +9,14 @@ import (
 	"os/exec"
 	"net/http"
 	"runtime"
+	"strings"
+	"time"
 
 	"github.com/codegangsta/cli"
 )
 
 var binPath string
+var updateFlag bool
 
 var Install = cli.Command{
 	Name:  "install",
@@ -25,16 +28,58 @@ var Install = cli.Command{
 			Value:       "/usr/local/bin/",
 			Destination: &binPath,
 		},
+		cli.BoolFlag{
+			Name:        "update",
+			Usage:       "Check for updated releases",
+			Destination: &updateFlag,
+		},
 	},
 	Action: func(context *cli.Context) error {
-		//install gendoc
-		gendocTo := binPath
-		if runtime.GOOS == "darwin" {
-			// lose the .app extension
-			gendocTo = binPath + "gendoc"
+		gendocFileToInstall := os.Args[0]
+		gendocTo := binPath + "gendoc"
+		if runtime.GOOS == "windows" {
+			gendocTo = binPath + ".exe"
 		}
-		if err := install(os.Args[0], gendocTo); err != nil {
-			return err
+
+		if updateFlag || os.Args[0] == gendocTo {
+			// If the user is running setup from an already installed gendoc, assume update
+			// TODO: if main.Version == today, maybe don't bother?
+			fmt.Printf("Checking for newer version of gendoc.\n")
+			resp, err := http.Get("https://github.com/SvenDowideit/gendoc/releases/latest")
+			if err != nil {
+				fmt.Printf("Error checking for latest version \n%s\n", err)
+			} else {
+				releaseUrl := resp.Request.URL.String()
+				latestVersion := releaseUrl[strings.LastIndex(releaseUrl, "/")+1:]
+				fmt.Printf("this version == %s, latest version == %s\n", context.App.Version, latestVersion)
+				thisDate, _ := time.Parse("2006-01-02", context.App.Version)
+				latestDate, _ := time.Parse("2006-01-02", latestVersion)
+
+				if !latestDate.After(thisDate) {
+					gendocFileToInstall = gendocTo
+				} else {
+					fmt.Printf("Downloading new version of gendoc.")
+					gendocFile := "gendoc"
+					if runtime.GOOS == "darwin" {
+						gendocFile += "-osx"
+					}
+					if runtime.GOOS == "windows" {
+						gendocFile += ".exec"
+					}
+					gendocFileToInstall := "gendoc-latest"
+					if err := wget("https://github.com/SvenDowideit/gendoc/releases/download/" + latestVersion + "/" + gendocFile, gendocFileToInstall); err != nil {
+						return err
+					}
+				}
+			}
+		}
+
+		if gendocFileToInstall == gendocTo {
+			fmt.Printf("Latest gendoc already installed at %s\n", gendocTo)
+		} else {
+			if err := install(gendocFileToInstall, gendocTo); err != nil {
+				return err
+			}
 		}
 
 		// install hugo
@@ -137,7 +182,7 @@ func processTGZ(srcFile, filename string) error {
 		case tar.TypeDir:
 			continue
 		case tar.TypeReg:
-			fmt.Println("(", i, ")", "Name: ", name)
+			fmt.Printf("Found %s file\n", name)
 			if filename == name {
 				out, err := os.Create(name)
 				if err != nil {
