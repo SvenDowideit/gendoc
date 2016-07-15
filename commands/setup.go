@@ -38,7 +38,7 @@ var Install = cli.Command{
 		gendocFileToInstall := os.Args[0]
 		gendocTo := binPath + "gendoc"
 		if runtime.GOOS == "windows" {
-			gendocTo = binPath + ".exe"
+			gendocTo = gendocTo + ".exe"
 		}
 
 		if updateFlag || os.Args[0] == gendocTo {
@@ -82,6 +82,16 @@ var Install = cli.Command{
 			}
 		}
 
+		hugoFileToInstall := binPath + "hugo"
+		if runtime.GOOS == "windows" {
+			hugoFileToInstall = hugoFileToInstall + ".exe"
+		}
+		if _, err := os.Stat(hugoFileToInstall); !os.IsNotExist(err) {
+			fmt.Println("Hugo is already installed")
+			// TODO: add update code.
+			return nil
+		}
+
 		// install hugo
 		arch := runtime.GOARCH
 		if arch == "amd64" {
@@ -112,7 +122,7 @@ var Install = cli.Command{
 		} else {
 			return fmt.Errorf("BOOM, zip files not coded yet")
 		}
-		if err := install(hugo, binPath); err != nil {
+		if err := install(hugo, hugoFileToInstall); err != nil {
 			return err
 		}
 
