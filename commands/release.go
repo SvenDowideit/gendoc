@@ -2,11 +2,12 @@ package commands
 
 import (
 	"fmt"
-	"os"
+	"strings"
 
 	allprojects "github.com/SvenDowideit/gendoc/allprojects"
 
 	"github.com/codegangsta/cli"
+	"github.com/Sirupsen/logrus"
 )
 
 var Release = cli.Command{
@@ -21,13 +22,23 @@ var Release = cli.Command{
             Flags: []cli.Flag{
             },
             Action: func(context *cli.Context) error {
-                setName, _, err := allprojects.Load(allprojects.AllProjectsPath)
+                setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
                 if err != nil {
                     return err
                 }
                 fmt.Printf("publish-set: %s\n", setName)
+		if context.NArg() > 0 {
+			name := context.Args()[0]
+			project := projects.GetProjectByName(name)
+			findDocsPRsNeedingMerge(project)
+			return nil
+		}
 
-                return fmt.Errorf("i've got nothin")
+                for _, p := range *projects {
+			findDocsPRsNeedingMerge(p)
+                }
+
+                return nil
             },
         },
         {
@@ -63,20 +74,61 @@ var Release = cli.Command{
     },
 }
 
-func SOMETHINGCloneRepo(p allprojects.Project) error {
-	fmt.Printf("-- %s\n", p.Name)
-	//TODO if it exists, make sure there's a valid remote
-	if _, err := os.Stat(p.RepoName); os.IsNotExist(err) {
-		repo, _ := p.GetGitRepo()
-		fmt.Printf("Cloning from %s\n", repo)
 
-		//err := allprojects.Git("clone", repo, "--branch", p.Ref, p.RepoName)
-		//if err != nil {
-			err = allprojects.Git("clone", "--origin", "upstream", repo, p.RepoName)
-		//}
-		return err
-	} else {
-		fmt.Printf("Dir already exists\n")
-	}
-	return nil
+// I think I can't just use 
+// git log --merges --oneline 93cc2675c8f97e1a30b3bf2dbc287f0295ffc4fa..upstream/master --parents
+// becuase that presumes we have a linear history
+
+func findDocsPRsNeedingMerge(p allprojects.Project) {
+			fmt.Printf("-- %s in %s\n", p.Name, p.RepoName)
+                	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", p.Ref, "upstream/master")
+			if err != nil {
+				fmt.Printf("ERROR %s\n", err)
+				return
+			}
+			for out.Scan() {
+		 		// fmt.Printf("%s\n", out.Text())
+				// + ffdef1abbd01c2479d02270d919aed9fa40a52e4 use tabwriter in favour of tablewriter
+				oneline := strings.SplitN(out.Text(), " ", 3)
+				if oneline[0] != "+" {
+					continue
+				}
+				// Find out if there were doc changes..
+				// git diff-tree --no-commit-id --name-only -r <sha> <docs-dir>
+                		files, err := allprojects.GitResultsIn(p.RepoName, "diff-tree", "--no-commit-id", "--name-only", "-r", oneline[1], *p.Path)
+				if err != nil {
+					fmt.Printf("ERROR diff-tree %s\n", err)
+					//continue
+				}
+				// Find the merge commit for it
+				// merge commit with PR# is first line of 
+				// git log --ancestry-path --merges --oneline --reverse c9bf41955c53cf1780e043db2d8887c2cac62429..upstream/master
+				// OR per http://stackoverflow.com/questions/8475448/find-merge-commit-which-include-a-specific-commit
+				// git rev-list $1..master --ancestry-path | grep -f <(git rev-list $1..master --first-parent) | tail -1
+                		ancestor, _, err := allprojects.GitScannerIn(p.RepoName, "log", "--ancestry-path", "--merges", "--oneline", "--reverse", oneline[1]+"..upstream/master")
+				if err != nil {
+					fmt.Printf("ERROR find merge commit  %s\n", err)
+					//continue
+				}
+				ancestor.Scan()
+				// 1e176b5 Merge pull request #3592 from stakodiak/fix-privilege-typo
+				a := strings.Split(ancestor.Text(), " ")
+				mergeSHA := a[0]
+				mergePR := a[4]
+				mergeBranch := a[6]
+				// labels, milestone, err := githubapi.GetPRInfo(org, repo, mergePR)
+				if files == "" {
+					// TODO: maybe only do the find merge PR if debug?
+					logrus.Debugf("%s (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
+					logrus.Debugf("\tNO %s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
+					continue
+				}
+				
+				fmt.Printf("%s (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
+				fmt.Printf("\t%s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
+				fmt.Printf("%s\n", files)
+			}
+			if err := out.Err(); err != nil {
+			    fmt.Printf("ERROR: %s\n", err)
+			}
 }

@@ -2,6 +2,7 @@ package allprojects
 
 import (
 	"bytes"
+	"bufio"
     "os"
     "os/exec"
 	"strings"
@@ -54,6 +55,23 @@ func GitResultsIn(dir string, args ...string) (string, error) {
 
         out, err := cmd.Output()
 	return string(out), err
+}
+
+func GitScannerIn(dir string, args ...string) (*bufio.Scanner, *bufio.Scanner, error) {
+        cmd := exec.Command("git", args...)
+        cmd.Dir = dir
+        PrintVerboseCommand(cmd)
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+	    return nil, nil, err
+	}
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+	    return nil, nil, err
+	}
+
+	return bufio.NewScanner(stdout), bufio.NewScanner(stderr), cmd.Start()
 }
 
 func (p Project) GetGitRepo() (string, error) {
