@@ -3,12 +3,13 @@ package allprojects
 import (
 	"bytes"
 	"bufio"
-    "os"
-    "os/exec"
+	"os"
+	"os/exec"
 	"strings"
 	"text/template"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/google/go-github/github"
 )
 
 type Project struct {
@@ -88,3 +89,23 @@ func (p Project) GetGitRepo() (string, error) {
 	return s.String(), nil
 }
 
+
+func GetPRInfo(org, repo string, pr int) (lables, milstone string, err error) {
+	// TODO:use token env for oauth
+	client := github.NewClient(nil)
+	issue, _, err := client.Issues.Get(org, repo, pr)
+	if err != nil {
+		return "", "", err
+	}
+	labels := ""
+	if issue.Labels != nil {
+		for _, l := range issue.Labels {
+			labels += *l.Name + " "
+		}
+	}
+	milestone := ""
+	if issue.Milestone != nil {
+		milestone = *issue.Milestone.Title
+	}
+	return labels, milestone, err
+}

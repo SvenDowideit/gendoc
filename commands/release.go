@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"strings"
+	"strconv"
 
 	allprojects "github.com/SvenDowideit/gendoc/allprojects"
 
@@ -87,9 +88,10 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				return
 			}
 			for out.Scan() {
+				line := out.Text()
 		 		// fmt.Printf("%s\n", out.Text())
 				// + ffdef1abbd01c2479d02270d919aed9fa40a52e4 use tabwriter in favour of tablewriter
-				oneline := strings.SplitN(out.Text(), " ", 3)
+				oneline := strings.SplitN(line, " ", 3)
 				if oneline[0] != "+" {
 					continue
 				}
@@ -110,21 +112,43 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 					fmt.Printf("ERROR find merge commit  %s\n", err)
 					//continue
 				}
-				ancestor.Scan()
 				// 1e176b5 Merge pull request #3592 from stakodiak/fix-privilege-typo
-				a := strings.Split(ancestor.Text(), " ")
+				if !ancestor.Scan() {
+					fmt.Printf("ERROR scan (%s) %s\n", line, ancestor.Err())
+					continue
+				}
+				text := ancestor.Text()
+				if text == "" {
+					if ancestor.Scan() {
+						fmt.Printf("ERROR scan2 (%s) %s\n", line, ancestor.Err())
+						continue
+					}
+					text := ancestor.Text()
+					fmt.Printf("-- scan err %s\n", text)
+					continue
+				}
+				logrus.Debugf("test: %s\n", text)
+				a := strings.Split(text, " ")
 				mergeSHA := a[0]
-				mergePR := a[4]
-				mergeBranch := a[6]
-				// labels, milestone, err := githubapi.GetPRInfo(org, repo, mergePR)
+				mergePR := 0
+				mergeBranch := "NOT GitHub"
+				if a[1] == "Merge" && a[2] == "pull" && a[3] == "request" && a[5] == "from" {
+					// Then this is likely a GitHub PR merge commit
+					mergePR, _ = strconv.Atoi(strings.TrimLeft(a[4], "#"))
+					mergeBranch = a[6]
+				}
 				if files == "" {
 					// TODO: maybe only do the find merge PR if debug?
-					logrus.Debugf("%s (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
+					labels, milestone, _ := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
+					logrus.Debugf("%d (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
+					logrus.Debugf("\t %s: %s\n", milestone, labels)
 					logrus.Debugf("\tNO %s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
 					continue
 				}
 				
-				fmt.Printf("%s (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
+				labels, milestone, err := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
+				fmt.Printf("%d (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
+				fmt.Printf("\t %s %s\n", milestone, labels)
 				fmt.Printf("\t%s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
 				fmt.Printf("%s\n", files)
 			}
