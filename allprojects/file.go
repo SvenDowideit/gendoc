@@ -90,6 +90,9 @@ func expandDefaults(defaults, entry Project) *Project {
 	var project Project
 	project = entry
 
+	if project.Version == "" {
+		project.Version = defaults.Version
+	}
 	if project.Name == "" {
 		project.Name = defaults.Name
 	}

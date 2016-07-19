@@ -21,6 +21,7 @@ type Project struct {
 	Path     *string
 	Target   string
 	Ignores  []string
+	Version  string
 }
 
 func PrintVerboseCommand(cmd *exec.Cmd) {

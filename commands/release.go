@@ -1,9 +1,12 @@
 package commands
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 	"strconv"
+	"text/template"
+	"time"
 
 	allprojects "github.com/SvenDowideit/gendoc/allprojects"
 
@@ -37,6 +40,7 @@ var Release = cli.Command{
                 }
                 fmt.Printf("publish-set: %s\n", setName)
                 fmt.Printf("comparing allproject-yml ref's to %s\n", compareToBranch)
+
 		if context.NArg() > 0 {
 			name := context.Args()[0]
 			project := projects.GetProjectByName(name)
@@ -51,6 +55,31 @@ var Release = cli.Command{
                 return nil
             },
         },
+        {
+            Name:  "tag",
+            Usage: "Check, or create product release tags matching this all-projects.yml.",
+            Flags: []cli.Flag{
+            },
+            Action: func(context *cli.Context) error {
+                setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
+                if err != nil {
+                    return err
+                }
+                fmt.Printf("publish-set: %s\n", setName)
+
+		if context.NArg() > 0 {
+			name := context.Args()[0]
+			project := projects.GetProjectByName(name)
+			tagProduct(project)
+			return nil
+		}
+
+                for _, p := range *projects {
+			tagProduct(p)
+                }
+		return nil
+            },
+	},
         {
             Name:  "push",
             Usage: "Push docs release tags&branches to all the repos.",
@@ -84,11 +113,48 @@ var Release = cli.Command{
     },
 }
 
+// tagProduct will check for the exitence of a product tag in that project's repo
+// and will check that it matches the commit listed in the all-projects file
+// OR will make that tag
+// the tag's date will be either today, or ... (can I get it from the docs-html repo?)
+func tagProduct(p allprojects.Project) {
+	fmt.Printf("## Tag for  %s in %s\n", p.Name, p.RepoName)
+	tmpl := template.New("tag")
+	tmpl, _ = tmpl.Parse("docs{{with .Version}}-{{.}}{{end}}-{{.Date}}")
+
+	// Get committer date for commit
+	out, err := allprojects.GitResultsIn(p.RepoName, "show", "--format=%cD", p.Ref)
+	if err != nil {
+		fmt.Printf("Failed to get date of %s (%s)\n", p.Ref, err)
+		return
+	}
+	o := strings.SplitN(out, "\n", 2)
+	out = o[0]
+	logrus.Debugf("got %s\n", out)
+	date, err := time.Parse("Mon, 2 Jan 2006 15:04:05 -0700", strings.TrimSpace(out))
+	if err != nil {
+		fmt.Printf("Failed to Parse %s (%s)\n", out, err)
+		return
+	}
+
+	type info struct {
+		Date    string
+		Version string
+	}
+	i := info{
+		Date:    date.Format("2006-01-02"),
+		Version: p.Version,
+	}
+	
+	var doc bytes.Buffer
+	_ = tmpl.Execute(&doc, i)
+	tag := doc.String()
+	fmt.Printf("- %s => %s\n", p.Ref, tag)
+}
 
 // I think I can't just use 
 // git log --merges --oneline 93cc2675c8f97e1a30b3bf2dbc287f0295ffc4fa..upstream/master --parents
 // becuase that presumes we have a linear history
-
 func findDocsPRsNeedingMerge(p allprojects.Project) {
 			fmt.Printf("## Changes for  %s in %s\n", p.Name, p.RepoName)
                 	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", p.Ref, compareToBranch)
