@@ -11,6 +11,8 @@ import (
 	"github.com/Sirupsen/logrus"
 )
 
+var compareToBranch = "upstream/master"
+
 var Release = cli.Command{
 	Name:  "release",
 	Usage: "Prepare and ship a docs release.",
@@ -21,6 +23,12 @@ var Release = cli.Command{
             Name:  "prepare",
             Usage: "Prepare docs release tags and branches.",
             Flags: []cli.Flag{
+		cli.StringFlag{
+			Name:        "branch",
+			Usage:       "Compare all-projects.yml ref's to this branch",
+			Value:       "upstream/master",
+			Destination: &compareToBranch,
+		},
             },
             Action: func(context *cli.Context) error {
                 setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
@@ -28,6 +36,7 @@ var Release = cli.Command{
                     return err
                 }
                 fmt.Printf("publish-set: %s\n", setName)
+                fmt.Printf("comparing allproject-yml ref's to %s\n", compareToBranch)
 		if context.NArg() > 0 {
 			name := context.Args()[0]
 			project := projects.GetProjectByName(name)
@@ -81,8 +90,8 @@ var Release = cli.Command{
 // becuase that presumes we have a linear history
 
 func findDocsPRsNeedingMerge(p allprojects.Project) {
-			fmt.Printf("-- %s in %s\n", p.Name, p.RepoName)
-                	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", p.Ref, "upstream/master")
+			fmt.Printf("## Changes for  %s in %s\n", p.Name, p.RepoName)
+                	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", p.Ref, compareToBranch)
 			if err != nil {
 				fmt.Printf("ERROR %s\n", err)
 				return
@@ -97,7 +106,7 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				}
 				// Find out if there were doc changes..
 				// git diff-tree --no-commit-id --name-only -r <sha> <docs-dir>
-                		files, err := allprojects.GitResultsIn(p.RepoName, "diff-tree", "--no-commit-id", "--name-only", "-r", oneline[1], *p.Path)
+                		files, _, err := allprojects.GitScannerIn(p.RepoName, "diff-tree", "--no-commit-id", "--name-only", "-r", oneline[1], *p.Path)
 				if err != nil {
 					fmt.Printf("ERROR diff-tree %s\n", err)
 					//continue
@@ -107,14 +116,18 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				// git log --ancestry-path --merges --oneline --reverse c9bf41955c53cf1780e043db2d8887c2cac62429..upstream/master
 				// OR per http://stackoverflow.com/questions/8475448/find-merge-commit-which-include-a-specific-commit
 				// git rev-list $1..master --ancestry-path | grep -f <(git rev-list $1..master --first-parent) | tail -1
-                		ancestor, _, err := allprojects.GitScannerIn(p.RepoName, "log", "--ancestry-path", "--merges", "--oneline", "--reverse", oneline[1]+"..upstream/master")
+                		ancestor, _, err := allprojects.GitScannerIn(p.RepoName, "log", "--ancestry-path", "--merges", "--oneline", "--reverse", oneline[1]+".."+compareToBranch)
 				if err != nil {
 					fmt.Printf("ERROR find merge commit  %s\n", err)
 					//continue
 				}
 				// 1e176b5 Merge pull request #3592 from stakodiak/fix-privilege-typo
 				if !ancestor.Scan() {
-					fmt.Printf("ERROR scan (%s) %s\n", line, ancestor.Err())
+					errStr := ""
+					if ancestor.Err() != nil {
+						errStr = ancestor.Err().Error()
+					}
+					fmt.Printf("NO merge PR found for (%s) %s\n", line, errStr)
 					continue
 				}
 				text := ancestor.Text()
@@ -124,7 +137,7 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 						continue
 					}
 					text := ancestor.Text()
-					fmt.Printf("-- scan err %s\n", text)
+					fmt.Printf("-- scan ERROR %s\n", text)
 					continue
 				}
 				logrus.Debugf("test: %s\n", text)
@@ -137,7 +150,7 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 					mergePR, _ = strconv.Atoi(strings.TrimLeft(a[4], "#"))
 					mergeBranch = a[6]
 				}
-				if files == "" {
+				if !files.Scan() {
 					// TODO: maybe only do the find merge PR if debug?
 					labels, milestone, _ := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
 					logrus.Debugf("%d (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
@@ -147,10 +160,15 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				}
 				
 				labels, milestone, err := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
-				fmt.Printf("%d (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
-				fmt.Printf("\t %s %s\n", milestone, labels)
-				fmt.Printf("\t%s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
-				fmt.Printf("%s\n", files)
+				fmt.Printf("### PR %d (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
+				if milestone != "" || labels != "" {
+					fmt.Printf("- %s %s\n", milestone, labels)
+				}
+				fmt.Printf("- %s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
+				fmt.Printf("  - %s\n", files.Text())
+				for files.Scan() {
+					fmt.Printf("  - %s\n", files.Text())
+				}
 			}
 			if err := out.Err(); err != nil {
 			    fmt.Printf("ERROR: %s\n", err)
