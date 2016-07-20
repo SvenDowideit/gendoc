@@ -14,7 +14,9 @@ import (
 	"github.com/Sirupsen/logrus"
 )
 
-var compareToBranch = "upstream/master"
+var remoteName = "upstream"
+var compareToBranch = remoteName+"/master"
+var pushFlag bool
 
 var Release = cli.Command{
 	Name:  "release",
@@ -59,6 +61,17 @@ var Release = cli.Command{
             Name:  "tag",
             Usage: "Check, or create product release tags matching this all-projects.yml.",
             Flags: []cli.Flag{
+		cli.BoolFlag{
+			Name:        "push",
+			Usage:       "Push tags that we didn't create this run",
+			Destination: &pushFlag,
+		},
+		cli.StringFlag{
+			Name:        "remote",
+			Usage:       "test or push tags to specified remote",
+			Value:       "upstream",
+			Destination: &remoteName,
+		},
             },
             Action: func(context *cli.Context) error {
                 setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
@@ -71,12 +84,12 @@ var Release = cli.Command{
 			name := context.Args()[0]
 			project := projects.GetProjectByName(name)
 			tagProduct(project)
-			return nil
+		} else {
+	                for _, p := range *projects {
+				tagProduct(p)
+                	}
 		}
 
-                for _, p := range *projects {
-			tagProduct(p)
-                }
 		return nil
             },
 	},
@@ -125,13 +138,14 @@ func tagProduct(p allprojects.Project) {
 	// Get committer date for commit
 	out, err := allprojects.GitResultsIn(p.RepoName, "show", "--format=%cD", p.Ref)
 	if err != nil {
-		fmt.Printf("Failed to get date of %s (%s)\n", p.Ref, err)
+		fmt.Printf("ERROR: failed to get date of %s (%s)\n", p.Ref, err)
+		fmt.Printf("You may need to fetch the upstream of this repo\n")
 		return
 	}
 	o := strings.SplitN(out, "\n", 2)
-	out = o[0]
+	comitterDate := strings.TrimSpace(o[0])
 	logrus.Debugf("got %s\n", out)
-	date, err := time.Parse("Mon, 2 Jan 2006 15:04:05 -0700", strings.TrimSpace(out))
+	date, err := time.Parse("Mon, 2 Jan 2006 15:04:05 -0700", comitterDate)
 	if err != nil {
 		fmt.Printf("Failed to Parse %s (%s)\n", out, err)
 		return
@@ -149,7 +163,65 @@ func tagProduct(p allprojects.Project) {
 	var doc bytes.Buffer
 	_ = tmpl.Execute(&doc, i)
 	tag := doc.String()
-	fmt.Printf("- %s => %s\n", p.Ref, tag)
+
+	// TODO: test to see if the tag is already there, and  see that the tag matches what we would have made..
+	// and tell the user otherwise.
+	out, err = allprojects.GitResultsIn(p.RepoName, "log", "--pretty=format:%H\t%s", "-1", tag)
+	if err == nil && out != "" {
+		localTag := strings.Split(out, "\t")
+		localTag[0] = strings.TrimSpace(localTag[0])
+		localTag[1] = strings.TrimSpace(localTag[1])
+		if localTag[0] == p.Ref {
+			logrus.Debugf("tag already exists locally (%s)\n", tag)
+		} else {
+			fmt.Printf("tag already exists locally (%s = %s) but differs from all-projects (%s)\n", tag, localTag[0], p.Ref)
+		}
+		// "tagname^{}" is the commit SHA the tag is pointing to
+		out, err = allprojects.GitResultsIn(p.RepoName, "ls-remote", remoteName, tag+"^{}")
+		if err == nil && out != "" {
+			remoteTag := strings.Split(out, "\t")
+			remoteTag[0] = strings.TrimSpace(remoteTag[0])
+			remoteTag[1] = strings.TrimSpace(remoteTag[1])
+			if remoteTag[0] == p.Ref {
+				fmt.Printf("OK: found %s on remote %s (%s)\n", tag, remoteName, p.Ref)
+			} else {
+				fmt.Printf("ERROR: tag already exists on remote (%s = %s) but differs from all-projects (%s)\n", remoteTag[1], remoteTag[0], p.Ref)
+				fmt.Printf("TODO: check feet for holes\n")
+			}
+		} else {
+			if pushFlag {
+				fmt.Printf("tag exists locally, pushing to remote remote\n")
+				err = allprojects.GitIn(p.RepoName, "push", remoteName, tag)
+				if err != nil {
+					fmt.Printf("Failed to push tag %s (%s)\n", tag, err)
+				} else {
+					fmt.Printf("OK: found %s on remote %s (%s)\n", tag, remoteName, p.Ref)
+				}
+			} else {
+				fmt.Printf("ERROR: %s exists locally, but not in remote\n", tag)
+				fmt.Printf("TODO: add `--push` to the commandline to push to remote\n")
+			}
+		}
+		return
+	}
+
+	// make an annotated tag
+	// TODO: set the tag's date
+	out, err = allprojects.GitEnvResultsIn(
+			[]string{"GIT_COMMITTER_DATE="+comitterDate},
+			p.RepoName, "tag", "-a", "-m", "generated tag from history", tag,
+			p.Ref,
+		)
+	if err != nil {
+		fmt.Printf("Failed to make local tag %s (%s)\n", tag, err)
+		return
+	}
+	err = allprojects.GitIn(p.RepoName, "push", remoteName, tag)
+	if err != nil {
+		fmt.Printf("Failed to push tag to %s (%s)\n", remoteName, err)
+		return
+	}
+	fmt.Printf("OK: created %s on remote %s (%s)\n", tag, remoteName, p.Ref)
 }
 
 // I think I can't just use 

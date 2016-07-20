@@ -59,6 +59,18 @@ func GitResultsIn(dir string, args ...string) (string, error) {
 	return string(out), err
 }
 
+func GitEnvResultsIn(env []string, dir string, args ...string) (string, error) {
+        cmd := exec.Command("git", args...)
+        cmd.Dir = dir
+	e := os.Environ()
+	e = append(e, env...)
+	cmd.Env = e
+        PrintVerboseCommand(cmd)
+
+        out, err := cmd.Output()
+	return string(out), err
+}
+
 func GitScannerIn(dir string, args ...string) (*bufio.Scanner, *bufio.Scanner, error) {
         cmd := exec.Command("git", args...)
         cmd.Dir = dir
