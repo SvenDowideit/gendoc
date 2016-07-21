@@ -22,6 +22,7 @@ This will install `gendoc` into `/usr/local/bin/`, and then download `hugo` and 
 ## initialize your workspace with
 
 ```
+$ cd ~/<dir you clone your git repos to>
 $ gendoc clone
 ```
 
