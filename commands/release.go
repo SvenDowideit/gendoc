@@ -127,7 +127,7 @@ var Release = cli.Command{
 }
 
 func getCommitDate(repo, ref string) (strDate string, date time.Time, err error) {
-	out, err := allprojects.GitResultsIn(repo, "log", "-1", "--format=%cD", ref)
+	out, err := allprojects.GitResultsIn(repo, "log", "-1", "--format=%cD", ref, "--")
 	if err != nil {
 		return "", date, fmt.Errorf("ERROR: failed to get date of %s (%s)\nYou may need to run gendoc checkout --fetch", ref, err)
 	}
@@ -235,7 +235,7 @@ func tagProduct(p allprojects.Project) {
 // becuase that presumes we have a linear history
 func findDocsPRsNeedingMerge(p allprojects.Project) {
 			fmt.Printf("## %s in %s at %s\n", p.Name, p.RepoName, p.Ref)
-                	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", p.Ref, compareToBranch)
+                	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", "HEAD", compareToBranch)
 			if err != nil {
 				fmt.Printf("ERROR %s\n", err)
 				return
