@@ -106,7 +106,7 @@ func VendorSource(setName string, projects *allprojects.ProjectList) error {
         fmt.Printf("copy %s TO %s\n", from, to)
         err := CopyDir(from, to)
         if !doitFlag && err != nil {
-		fmt.Println("add the --doit flag to render when repos are missing")
+		fmt.Println("HINT: add the --doit flag to render when repos are missing")
             return err
         }
         // TODO: write build.json file

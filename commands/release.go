@@ -126,6 +126,21 @@ var Release = cli.Command{
     },
 }
 
+func getCommitDate(repo, ref string) (strDate string, date time.Time, err error) {
+	out, err := allprojects.GitResultsIn(repo, "log", "-1", "--format=%cD", ref)
+	if err != nil {
+		return "", date, fmt.Errorf("ERROR: failed to get date of %s (%s)\nYou may need to run gendoc checkout --fetch", ref, err)
+	}
+	o := strings.SplitN(out, "\n", 2)
+	strDate = strings.TrimSpace(o[0])
+	logrus.Debugf("got %s\n", out)
+	date, err = time.Parse("Mon, 2 Jan 2006 15:04:05 -0700", strDate)
+	if err != nil {
+		return "", date, fmt.Errorf("Failed to Parse %s (%s)\n", out, err)
+	}
+	return strDate, date, nil
+}
+
 // tagProduct will check for the exitence of a product tag in that project's repo
 // and will check that it matches the commit listed in the all-projects file
 // OR will make that tag
@@ -136,18 +151,9 @@ func tagProduct(p allprojects.Project) {
 	tmpl, _ = tmpl.Parse("docs{{with .Version}}-{{.}}{{end}}-{{.Date}}")
 
 	// Get committer date for commit
-	out, err := allprojects.GitResultsIn(p.RepoName, "show", "--format=%cD", p.Ref)
+	committerDate, date, err := getCommitDate(p.RepoName, p.Ref)
 	if err != nil {
-		fmt.Printf("ERROR: failed to get date of %s (%s)\n", p.Ref, err)
-		fmt.Printf("You may need to fetch the upstream of this repo\n")
-		return
-	}
-	o := strings.SplitN(out, "\n", 2)
-	comitterDate := strings.TrimSpace(o[0])
-	logrus.Debugf("got %s\n", out)
-	date, err := time.Parse("Mon, 2 Jan 2006 15:04:05 -0700", comitterDate)
-	if err != nil {
-		fmt.Printf("Failed to Parse %s (%s)\n", out, err)
+		fmt.Printf("ERROR: (%s)\n", err)
 		return
 	}
 
@@ -166,7 +172,7 @@ func tagProduct(p allprojects.Project) {
 
 	// TODO: test to see if the tag is already there, and  see that the tag matches what we would have made..
 	// and tell the user otherwise.
-	out, err = allprojects.GitResultsIn(p.RepoName, "log", "--pretty=format:%H\t%s", "-1", tag)
+	out, err := allprojects.GitResultsIn(p.RepoName, "log", "--pretty=format:%H\t%s", "-1", tag)
 	if err == nil && out != "" {
 		localTag := strings.Split(out, "\t")
 		localTag[0] = strings.TrimSpace(localTag[0])
@@ -208,7 +214,7 @@ func tagProduct(p allprojects.Project) {
 	// make an annotated tag
 	// TODO: set the tag's date
 	out, err = allprojects.GitEnvResultsIn(
-			[]string{"GIT_COMMITTER_DATE="+comitterDate},
+			[]string{"GIT_COMMITTER_DATE="+committerDate},
 			p.RepoName, "tag", "-a", "-m", "generated tag from history", tag,
 			p.Ref,
 		)
@@ -228,7 +234,7 @@ func tagProduct(p allprojects.Project) {
 // git log --merges --oneline 93cc2675c8f97e1a30b3bf2dbc287f0295ffc4fa..upstream/master --parents
 // becuase that presumes we have a linear history
 func findDocsPRsNeedingMerge(p allprojects.Project) {
-			fmt.Printf("## Changes for  %s in %s\n", p.Name, p.RepoName)
+			fmt.Printf("## %s in %s\n", p.Name, p.RepoName)
                 	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", p.Ref, compareToBranch)
 			if err != nil {
 				fmt.Printf("ERROR %s\n", err)
@@ -290,20 +296,21 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				}
 				if !files.Scan() {
 					// TODO: maybe only do the find merge PR if debug?
-					labels, milestone, _ := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
-					logrus.Debugf("%d (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
-					logrus.Debugf("\t %s: %s\n", milestone, labels)
+					logrus.Debugf("%d (merge commit: %s ) from %s\n", mergePR, mergeSHA, mergeBranch)
+					// labels, milestone, _ := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
+					// logrus.Debugf("\t %s: %s\n", milestone, labels)
 					logrus.Debugf("\tNO %s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
 					continue
 				}
 				
 				labels, milestone, err := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
-				fmt.Printf("### PR %d (%s) from %s\n", mergePR, mergeSHA, mergeBranch)
+				_, mergeDate, _ := getCommitDate(p.RepoName, mergeSHA)
+				fmt.Printf("- PR %d (%s) %s from %s\n", mergePR, mergeSHA, mergeDate.UTC().Format(time.Stamp), mergeBranch)
 				if milestone != "" || labels != "" {
 					fmt.Printf("- %s %s\n", milestone, labels)
 				}
-				fmt.Printf("- %s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
-				fmt.Printf("  - %s\n", files.Text())
+				fmt.Printf("  - %s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
+				fmt.Printf("    - %s\n", files.Text())
 				for files.Scan() {
 					fmt.Printf("  - %s\n", files.Text())
 				}
