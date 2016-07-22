@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"time"
 
-	allprojects "github.com/SvenDowideit/gendoc/allprojects"
+	"github.com/SvenDowideit/gendoc/allprojects"
 
 	"github.com/codegangsta/cli"
 	"github.com/Sirupsen/logrus"
@@ -234,7 +234,7 @@ func tagProduct(p allprojects.Project) {
 // git log --merges --oneline 93cc2675c8f97e1a30b3bf2dbc287f0295ffc4fa..upstream/master --parents
 // becuase that presumes we have a linear history
 func findDocsPRsNeedingMerge(p allprojects.Project) {
-			fmt.Printf("## %s in %s\n", p.Name, p.RepoName)
+			fmt.Printf("## %s in %s at %s\n", p.Name, p.RepoName, p.Ref)
                 	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", p.Ref, compareToBranch)
 			if err != nil {
 				fmt.Printf("ERROR %s\n", err)

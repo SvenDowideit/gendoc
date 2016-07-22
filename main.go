@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/SvenDowideit/gendoc/allprojects"
 	"github.com/SvenDowideit/gendoc/commands"
 
 	"github.com/Sirupsen/logrus"
@@ -43,6 +44,7 @@ func main() {
 			Name:   "ghtoken",
 			Usage:  "GITHUB_TOKEN for git and GitHub API",
 			EnvVar: "GITHUB_TOKEN",
+			Destination: &allprojects.GithubToken,
 		},
 	}
 	app.Commands = []cli.Command{

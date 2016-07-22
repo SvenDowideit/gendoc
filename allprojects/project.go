@@ -3,14 +3,18 @@ package allprojects
 import (
 	"bytes"
 	"bufio"
+	"net/http"
 	"os"
 	"os/exec"
 	"strings"
 	"text/template"
 
+	"golang.org/x/oauth2"
 	"github.com/Sirupsen/logrus"
 	"github.com/google/go-github/github"
 )
+
+var GithubToken string
 
 type Project struct {
 	Name     string
@@ -104,8 +108,16 @@ func (p Project) GetGitRepo() (string, error) {
 
 
 func GetPRInfo(org, repo string, pr int) (lables, milstone string, err error) {
+	var tc *http.Client
+	if GithubToken != "" {
+		logrus.Debugf("using GitHub API token")
+		ts := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: GithubToken},
+		)
+		tc = oauth2.NewClient(oauth2.NoContext, ts)
+	}
 	// TODO:use token env for oauth
-	client := github.NewClient(nil)
+	client := github.NewClient(tc)
 	issue, _, err := client.Issues.Get(org, repo, pr)
 	if err != nil {
 		return "", "", err
