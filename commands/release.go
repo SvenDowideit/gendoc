@@ -62,6 +62,11 @@ var Release = cli.Command{
             Usage: "Check, or create product release tags matching this all-projects.yml.",
             Flags: []cli.Flag{
 		cli.BoolFlag{
+			Name:        "doit",
+			Usage:       "Actualy create and push the tag - without it we only get to see what could have been",
+			Destination: &doitFlag,
+		},
+		cli.BoolFlag{
 			Name:        "push",
 			Usage:       "Push tags that we didn't create this run",
 			Destination: &pushFlag,
@@ -169,6 +174,10 @@ func tagProduct(p allprojects.Project) {
 	var doc bytes.Buffer
 	_ = tmpl.Execute(&doc, i)
 	tag := doc.String()
+	if !doitFlag {
+		fmt.Printf("proposed Tag == %s    (add --doit to the command to create and push)\n", tag)
+		return
+	}
 
 	// TODO: test to see if the tag is already there, and  see that the tag matches what we would have made..
 	// and tell the user otherwise.
@@ -304,6 +313,8 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				}
 				
 				labels, milestone, err := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
+				// TODO: compare milestone to all-projects version and if its for a future version, don't list
+				// I presume there's a vMajor.Minor.Patch-hell parser out there
 				_, mergeDate, _ := getCommitDate(p.RepoName, mergeSHA)
 				fmt.Printf("- PR %d (%s) %s from %s\n", mergePR, mergeSHA, mergeDate.UTC().Format(time.Stamp), mergeBranch)
 				if milestone != "" || labels != "" {
