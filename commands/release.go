@@ -17,7 +17,7 @@ import (
 
 var remoteName = "upstream"
 var compareToBranch = remoteName+"/master"
-var pushFlag, showFilesFlag, showFutureMilestoneFlag bool
+var pushFlag, showFilesFlag, showFutureMilestoneFlag, cherryPickFlag bool
 
 var Release = cli.Command{
 	Name:  "release",
@@ -29,6 +29,11 @@ var Release = cli.Command{
             Name:  "prepare",
             Usage: "Prepare docs release tags and branches.",
             Flags: []cli.Flag{
+		cli.BoolFlag{
+			Name:        "cherry-pick",
+			Usage:       "Cherry-pick all PR's listed into whatever branch you currently have",
+			Destination: &cherryPickFlag,
+		},
 		cli.BoolFlag{
 			Name:        "show-future",
 			Usage:       "show PR's that are for a future milestone (compared to the all-project product version)",
@@ -52,7 +57,7 @@ var Release = cli.Command{
                     return err
                 }
                 fmt.Printf("publish-set: %s\n", setName)
-                fmt.Printf("comparing allproject-yml ref's to %s\n", compareToBranch)
+                fmt.Printf("comparing current checkout to %s\n", compareToBranch)
 
 		if context.NArg() > 0 {
 			name := context.Args()[0]
@@ -354,6 +359,17 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 					fmt.Printf("    - %s\n", files.Text())
 					for files.Scan() {
 						fmt.Printf("  - %s\n", files.Text())
+					}
+				}
+				if cherryPickFlag {
+					//err = allprojects.GitIn(p.RepoName, "cherry-pick", "-x", "-m1", mergeSHA)
+					// lets see what happens if we don't use the merge commit
+					err = allprojects.GitIn(p.RepoName, "cherry-pick", oneline[1])
+					if err != nil {
+						fmt.Printf("help needed to cherry-pick PR %d (%s) %s\n", mergePR, mergeSHA, err)
+						return // the user can restart the process after fixing things up
+					} else {
+						fmt.Printf("Cherry-picked PR %d (%s)\n", mergePR, mergeSHA)
 					}
 				}
 			}
