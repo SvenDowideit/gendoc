@@ -276,7 +276,8 @@ func tagProduct(p allprojects.Project) {
 // becuase that presumes we have a linear history
 func findDocsPRsNeedingMerge(p allprojects.Project) {
 			fmt.Printf("## %s, %s in %s at %s\n", p.Name, p.Version, p.RepoName, p.Ref)
-			pVersion, _ := semver.ParseTolerant(p.Version)
+			// We don't do semver properly, so remove any -rc, -alpha etc
+			pVersion, _ := semver.ParseTolerant(strings.SplitN(p.Version, "-", 2)[0])
                 	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", "HEAD", compareToBranch)
 			if err != nil {
 				fmt.Printf("ERROR %s\n", err)
@@ -347,16 +348,18 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				}
 				
 				labels, milestone, err := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
-				mVersion, err := semver.ParseTolerant(milestone)
-				if err != nil {
-					fmt.Printf("ERROR parsing Version(%s) in milestone of PR(%d) %s\n", milestone, mergePR, err)
-					//return
-				} else {
-					if !showFutureMilestoneFlag && mVersion.GT(pVersion) {
-						if !quietFlag {
-							fmt.Printf("Skipping %d due to %s\n", mergePR, milestone)
+				if pVersion.Major > 0 || pVersion.Minor > 0 || pVersion.Patch > 0 {
+					mVersion, err := semver.ParseTolerant(milestone)
+					if err != nil {
+						fmt.Printf("ERROR parsing Version(%s) in milestone of PR(%d) %s\n", milestone, mergePR, err)
+						//return
+					} else {
+						if !showFutureMilestoneFlag && mVersion.GT(pVersion) {
+							if !quietFlag {
+								fmt.Printf("Skipping %d due to %s\n", mergePR, milestone)
+							}
+							continue
 						}
-						continue
 					}
 				}
 				if trustLabelsFlag {
