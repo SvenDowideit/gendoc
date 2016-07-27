@@ -17,7 +17,7 @@ import (
 
 var remoteName = "upstream"
 var compareToBranch = remoteName+"/master"
-var pushFlag, showFilesFlag, showFutureMilestoneFlag, cherryPickFlag bool
+var pushFlag, showFilesFlag, showFutureMilestoneFlag, cherryPickFlag, trustLabelsFlag, quietFlag bool
 
 var Release = cli.Command{
 	Name:  "release",
@@ -30,6 +30,11 @@ var Release = cli.Command{
             Usage: "Prepare docs release tags and branches.",
             Flags: []cli.Flag{
 		cli.BoolFlag{
+			Name:        "quiet",
+			Usage:       "less info about skipped PR's",
+			Destination: &quietFlag,
+		},
+		cli.BoolFlag{
 			Name:        "cherry-pick",
 			Usage:       "Cherry-pick all PR's listed into whatever branch you currently have",
 			Destination: &cherryPickFlag,
@@ -39,7 +44,12 @@ var Release = cli.Command{
 			Usage:       "show PR's that are for a future milestone (compared to the all-project product version)",
 			Destination: &showFutureMilestoneFlag,
 		},
-		cli.BoolTFlag{
+		cli.BoolFlag{
+			Name:        "trust-labels",
+			Usage:       "trust that the PR's labeled with 'cherry-picked' have been, so dopn't show them",
+			Destination: &trustLabelsFlag,
+		},
+		cli.BoolFlag{
 			Name:        "files",
 			Usage:       "Show the files that changes in each commit",
 			Destination: &showFilesFlag,
@@ -343,7 +353,18 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 					//return
 				} else {
 					if !showFutureMilestoneFlag && mVersion.GT(pVersion) {
-						fmt.Printf("Skipping %d due to %s\n", mergePR, milestone)
+						if !quietFlag {
+							fmt.Printf("Skipping %d due to %s\n", mergePR, milestone)
+						}
+						continue
+					}
+				}
+				if trustLabelsFlag {
+					// if the labels contain process/cherry-picked or process/docs-cherry-picked, skip
+					if strings.Contains(labels, "cherry-picked") {
+						if !quietFlag {
+							fmt.Printf("Skipping %d due to cherry-picked state: %s\n", mergePR, labels)
+						}
 						continue
 					}
 				}
