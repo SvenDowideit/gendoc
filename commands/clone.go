@@ -32,7 +32,10 @@ var Clone = cli.Command{
 		if os.IsNotExist(err) {
 			// clone allProjectsRepo
 			// TODO: what if we want londoncalling/docs.docker.com-testing ?
-			project := projects.GetProjectByName(allprojects.AllProjectsRepo)
+			project, err := projects.GetProjectByName(allprojects.AllProjectsRepo)
+			if err != nil {
+				return err
+			}
 			err = CloneRepo(project)
 			if err != nil {
 				return err
@@ -47,11 +50,17 @@ var Clone = cli.Command{
 
 		if cloneVendoringFlag {
 			// get the book keeping repos
-			project := projects.GetProjectByName("docs-source")
+			project, err := projects.GetProjectByName("docs-source")
+			if err != nil {
+				return err
+			}
 			if err := CloneRepo(project); err != nil {
                                 return err
                         }
-			project = projects.GetProjectByName("docs-html")
+			project, err = projects.GetProjectByName("docs-html")
+			if err != nil {
+				return err
+			}
 			if err := CloneRepo(project); err != nil {
                                 return err
                         }
@@ -63,7 +72,10 @@ var Clone = cli.Command{
 
 		if context.NArg() > 0 {
 			name := context.Args()[0]
-			project := projects.GetProjectByName(name)
+			project, err := projects.GetProjectByName(name)
+			if err != nil {
+				return err
+			}
 			return CloneRepo(project)
 		}
 

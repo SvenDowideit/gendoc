@@ -45,7 +45,10 @@ var Release = cli.Command{
 
 		if context.NArg() > 0 {
 			name := context.Args()[0]
-			project := projects.GetProjectByName(name)
+			project, err := projects.GetProjectByName(name)
+			if err != nil {
+				return err
+			}
 			findDocsPRsNeedingMerge(project)
 			return nil
 		}
@@ -87,7 +90,10 @@ var Release = cli.Command{
 
 		if context.NArg() > 0 {
 			name := context.Args()[0]
-			project := projects.GetProjectByName(name)
+			project, err := projects.GetProjectByName(name)
+			if err != nil {
+				return err
+			}
 			tagProduct(project)
 		} else {
 	                for _, p := range *projects {
@@ -251,12 +257,13 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 			}
 			for out.Scan() {
 				line := out.Text()
-		 		// fmt.Printf("%s\n", out.Text())
+		 		//logrus.Debugf("%s\n", out.Text())
 				// + ffdef1abbd01c2479d02270d919aed9fa40a52e4 use tabwriter in favour of tablewriter
 				oneline := strings.SplitN(line, " ", 3)
 				if oneline[0] != "+" {
 					continue
 				}
+		 		//logrus.Debugf("joined: %s\n", strings.Join(oneline, ","))
 				// Find out if there were doc changes..
 				// git diff-tree --no-commit-id --name-only -r <sha> <docs-dir>
                 		files, _, err := allprojects.GitScannerIn(p.RepoName, "diff-tree", "--no-commit-id", "--name-only", "-r", oneline[1], *p.Path)

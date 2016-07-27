@@ -2,6 +2,7 @@ package allprojects
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"strings"
 	"text/template"
@@ -35,10 +36,6 @@ func Load(filename string) (string, *ProjectList, error) {
 
 	projects := make(ProjectList, 0)
 
-	// Can't do this here - the values are all wrong.
-	//docsDockerComproject := projects.GetProjectByName(AllProjectsRepo)
-	//projects = append(projects, *expandDefaults(document.Defaults, docsDockerComproject))
-
 	for _, p := range document.Projects {
 		projects = append(projects, *expandDefaults(document.Defaults, p))
 	}
@@ -63,18 +60,24 @@ func (projects *ProjectList) GetGitRepos() ([]string, error) {
 	return repos, nil
 }
 
-func (projects *ProjectList) GetProjectByName(name string) Project {
+func (projects *ProjectList) GetProjectByName(name string) (Project, error) {
 
 	// TODO: I presume this is naughty :)
 	if projects != nil {
+		// try publish name first
 		for _, p := range *projects {
 			if p.Name == name {
-				return p
+				return p, nil
+			}
+		}
+		for _, p := range *projects {
+			if p.RepoName == name {
+				return p, nil
 			}
 		}
 	}
 	// project not in all-projects.yml
-	return makeProject(name)
+	return makeProject(name), fmt.Errorf("Project %s not found", name)
 }
 func makeProject(name string) Project {
 	return Project{
