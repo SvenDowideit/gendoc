@@ -10,13 +10,14 @@ import (
 
 	"github.com/SvenDowideit/gendoc/allprojects"
 
+	"github.com/blang/semver"
 	"github.com/codegangsta/cli"
 	"github.com/Sirupsen/logrus"
 )
 
 var remoteName = "upstream"
 var compareToBranch = remoteName+"/master"
-var pushFlag bool
+var pushFlag, showFilesFlag, showFutureMilestoneFlag bool
 
 var Release = cli.Command{
 	Name:  "release",
@@ -28,6 +29,16 @@ var Release = cli.Command{
             Name:  "prepare",
             Usage: "Prepare docs release tags and branches.",
             Flags: []cli.Flag{
+		cli.BoolFlag{
+			Name:        "show-future",
+			Usage:       "show PR's that are for a future milestone (compared to the all-project product version)",
+			Destination: &showFutureMilestoneFlag,
+		},
+		cli.BoolTFlag{
+			Name:        "files",
+			Usage:       "Show the files that changes in each commit",
+			Destination: &showFilesFlag,
+		},
 		cli.StringFlag{
 			Name:        "branch",
 			Usage:       "Compare all-projects.yml ref's to this branch",
@@ -249,7 +260,8 @@ func tagProduct(p allprojects.Project) {
 // git log --merges --oneline 93cc2675c8f97e1a30b3bf2dbc287f0295ffc4fa..upstream/master --parents
 // becuase that presumes we have a linear history
 func findDocsPRsNeedingMerge(p allprojects.Project) {
-			fmt.Printf("## %s in %s at %s\n", p.Name, p.RepoName, p.Ref)
+			fmt.Printf("## %s, %s in %s at %s\n", p.Name, p.Version, p.RepoName, p.Ref)
+			pVersion, _ := semver.ParseTolerant(p.Version)
                 	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", "HEAD", compareToBranch)
 			if err != nil {
 				fmt.Printf("ERROR %s\n", err)
@@ -320,6 +332,16 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				}
 				
 				labels, milestone, err := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
+				mVersion, err := semver.ParseTolerant(milestone)
+				if err != nil {
+					fmt.Printf("ERROR parsing Version(%s) in milestone of PR(%d) %s\n", milestone, mergePR, err)
+					//return
+				} else {
+					if !showFutureMilestoneFlag && mVersion.GT(pVersion) {
+						fmt.Printf("Skipping %d due to %s\n", mergePR, milestone)
+						continue
+					}
+				}
 				// TODO: compare milestone to all-projects version and if its for a future version, don't list
 				// I presume there's a vMajor.Minor.Patch-hell parser out there
 				_, mergeDate, _ := getCommitDate(p.RepoName, mergeSHA)
@@ -328,9 +350,11 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 					fmt.Printf("- %s %s\n", milestone, labels)
 				}
 				fmt.Printf("  - %s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
-				fmt.Printf("    - %s\n", files.Text())
-				for files.Scan() {
-					fmt.Printf("  - %s\n", files.Text())
+				if showFilesFlag {
+					fmt.Printf("    - %s\n", files.Text())
+					for files.Scan() {
+						fmt.Printf("  - %s\n", files.Text())
+					}
 				}
 			}
 			if err := out.Err(); err != nil {
