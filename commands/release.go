@@ -30,6 +30,11 @@ var Release = cli.Command{
             Usage: "Prepare docs release tags and branches.",
             Flags: []cli.Flag{
 		cli.BoolFlag{
+			Name:        "doit",
+			Usage:       "list PR's without having a GITHUB_TOKEN",
+			Destination: &doitFlag,
+		},
+		cli.BoolFlag{
 			Name:        "quiet",
 			Usage:       "less info about skipped PR's",
 			Destination: &quietFlag,
@@ -62,6 +67,12 @@ var Release = cli.Command{
 		},
             },
             Action: func(context *cli.Context) error {
+		if allprojects.GithubToken == "" {
+			if !doitFlag {
+				return fmt.Errorf("You have not set the GITHUB_TOKEN env var (or used --ghtoken to set it)\nAdd `--doit` to run anyway - the output may be missing GitHub API specific information.\n")
+			}
+			fmt.Printf("WARNING: GitHub token not set, your output may be missing PR milestones and labels\n")
+		}
                 setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
                 if err != nil {
                     return err
