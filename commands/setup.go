@@ -149,15 +149,39 @@ func wget(from, to string) error {
 func install(from, to string) error {
 	fmt.Printf("Installing %s into %s\n", from, to)
 	
+	// on OSX, the file got a quarantine xattr, (-c) clearing all
+	// sorry - need to fix up the last 2 week's versions so we can upgrade :)
+	if runtime.GOOS == "darwin" {
+		cmd := exec.Command("sudo", "xattr", "-c", to)
+		//PrintVerboseCommand(cmd)
+		cmd.Stderr = os.Stderr
+		cmd.Stdout = os.Stdout
+		if err := cmd.Run(); err != nil {
+			return err
+		}
+	}
 	//TODO ah, windows.
 	// TODO check if its already there - or if that's where we're running from!
 	
-
         cmd := exec.Command("sudo", "cp", from, to)
 	//PrintVerboseCommand(cmd)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
-	return cmd.Run()
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	// on OSX, the file gets a quarantine xattr, (-c) clearing all
+	if runtime.GOOS == "darwin" {
+		cmd := exec.Command("sudo", "xattr", "-c", to)
+		//PrintVerboseCommand(cmd)
+		cmd.Stderr = os.Stderr
+		cmd.Stdout = os.Stdout
+		if err := cmd.Run(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func processTGZ(srcFile, filename string) error {
