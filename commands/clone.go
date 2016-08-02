@@ -13,11 +13,11 @@ var cloneSingle, cloneVendoringFlag bool
 
 var Clone = cli.Command{
 	Name:  "clone",
-	Usage: "clone repos from the "+allprojects.AllProjectsPath+" file",
+	Usage: "clone repos from the " + allprojects.AllProjectsPath + " file",
 	Flags: []cli.Flag{
 		cli.BoolFlag{
 			Name:        "single",
-			Usage:       "clone all repositories in "+allprojects.AllProjectsPath+" file",
+			Usage:       "clone all repositories in " + allprojects.AllProjectsPath + " file",
 			Destination: &cloneSingle,
 		},
 		cli.BoolFlag{
@@ -55,15 +55,15 @@ var Clone = cli.Command{
 				return err
 			}
 			if err := CloneRepo(project); err != nil {
-                                return err
-                        }
+				return err
+			}
 			project, err = projects.GetProjectByName("docs-html")
 			if err != nil {
 				return err
 			}
 			if err := CloneRepo(project); err != nil {
-                                return err
-                        }
+				return err
+			}
 		}
 
 		if !cloneSingle {
@@ -100,7 +100,7 @@ func CloneRepo(p allprojects.Project) error {
 
 		//err := allprojects.Git("clone", repo, "--branch", p.Ref, p.RepoName)
 		//if err != nil {
-			err = allprojects.Git("clone", "--origin", "upstream", repo, p.RepoName)
+		err = allprojects.Git("clone", "--origin", "upstream", repo, p.RepoName)
 		//}
 		return err
 	} else {

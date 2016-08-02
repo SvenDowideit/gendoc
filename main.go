@@ -41,9 +41,9 @@ func main() {
 			Usage: "enable debug output in the logs",
 		},
 		cli.StringFlag{
-			Name:   "ghtoken",
-			Usage:  "GITHUB_TOKEN for git and GitHub API",
-			EnvVar: "GITHUB_TOKEN",
+			Name:        "ghtoken",
+			Usage:       "GITHUB_TOKEN for git and GitHub API",
+			EnvVar:      "GITHUB_TOKEN",
 			Destination: &allprojects.GithubToken,
 		},
 	}

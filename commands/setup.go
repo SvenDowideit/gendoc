@@ -5,9 +5,9 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"os/exec"
-	"net/http"
 	"runtime"
 	"strings"
 	"time"
@@ -67,7 +67,7 @@ var Install = cli.Command{
 						gendocFile += ".exec"
 					}
 					gendocFileToInstall := "gendoc-latest"
-					if err := wget("https://github.com/SvenDowideit/gendoc/releases/download/" + latestVersion + "/" + gendocFile, gendocFileToInstall); err != nil {
+					if err := wget("https://github.com/SvenDowideit/gendoc/releases/download/"+latestVersion+"/"+gendocFile, gendocFileToInstall); err != nil {
 						return err
 					}
 				}
@@ -108,9 +108,9 @@ var Install = cli.Command{
 		if goos == "darwin" {
 			goos = "osx"
 		}
-		hugoarchive := "hugo_0.16_"+goos+"-"+arch+"."+ext
+		hugoarchive := "hugo_0.16_" + goos + "-" + arch + "." + ext
 		if _, err := os.Stat(hugoarchive); os.IsNotExist(err) {
-			if err := wget("https://github.com/spf13/hugo/releases/download/v0.16/" + hugoarchive, hugoarchive); err != nil {
+			if err := wget("https://github.com/spf13/hugo/releases/download/v0.16/"+hugoarchive, hugoarchive); err != nil {
 				return err
 			}
 		}
@@ -139,7 +139,7 @@ func wget(from, to string) error {
 	defer resp.Body.Close()
 	out, err := os.Create(to)
 	if err != nil {
-		return err 
+		return err
 	}
 	defer out.Close()
 	io.Copy(out, resp.Body)
@@ -148,7 +148,7 @@ func wget(from, to string) error {
 
 func install(from, to string) error {
 	fmt.Printf("Installing %s into %s\n", from, to)
-	
+
 	// on OSX, the file got a quarantine xattr, (-c) clearing all
 	// sorry - need to fix up the last 2 week's versions so we can upgrade :)
 	if runtime.GOOS == "darwin" {
@@ -162,8 +162,8 @@ func install(from, to string) error {
 	}
 	//TODO ah, windows.
 	// TODO check if its already there - or if that's where we're running from!
-	
-        cmd := exec.Command("sudo", "cp", from, to)
+
+	cmd := exec.Command("sudo", "cp", from, to)
 	//PrintVerboseCommand(cmd)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
@@ -220,7 +220,7 @@ func processTGZ(srcFile, filename string) error {
 			if filename == name {
 				out, err := os.Create(name)
 				if err != nil {
-					return err 
+					return err
 				}
 				defer out.Close()
 				io.Copy(out, tarReader)
