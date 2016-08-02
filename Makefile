@@ -50,3 +50,9 @@ release: docker
 		github-release upload --user SvenDowideit --repo gendoc --tag $(RELEASE_DATE) \
 			--name gendoc.exe \
 			--file gendoc.exe
+
+fmt:
+	docker run --rm -it -v $(shell pwd):/data -w /data golang go fmt
+	docker run --rm -it -v $(shell pwd):/data -w /data/commands golang go fmt
+	docker run --rm -it -v $(shell pwd):/data -w /data/allprojects golang go fmt
+	docker run --rm -it -v $(shell pwd):/data -w /data/render golang go fmt

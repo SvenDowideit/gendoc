@@ -37,6 +37,7 @@ var Checkout = cli.Command{
 			}
 		} else {
 			fmt.Printf("Using the docs.docker.com/all-projects.yml as is.\n")
+
 		}
 
 		//TODO need to fetch&reset docs.docekr.com, docs-html and docs-src
@@ -47,6 +48,12 @@ var Checkout = cli.Command{
 				fmt.Printf("Please run `clone` command first.\n")
 			}
 			return err
+		}
+		if fetchFlag {
+			err := allprojects.GitIn(allprojects.AllProjectsPath, "fetch", "upstream")
+			if err != nil {
+				return err
+			}
 		}
 		fmt.Printf("publish-set: %s\n", setName)
 
@@ -62,12 +69,9 @@ var Checkout = cli.Command{
 //TODO: bail out if there are local commits, or isdirty
 func checkout(repoPath, ref string) error {
 	if fetchFlag {
-		if _, err := allprojects.GitResultsIn(repoPath, "show-ref", "--hash", "upstream/"+ref); err == nil {
-			// its not a SHA, so we should fetch
-			err = allprojects.GitIn(repoPath, "fetch", "upstream", ref+":remotes/upstream/"+ref)
-			if err != nil {
-				return err
-			}
+		err := allprojects.GitIn(repoPath, "fetch", "upstream")
+		if err != nil {
+			return err
 		}
 	}
 
