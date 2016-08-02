@@ -17,7 +17,7 @@ import (
 
 var remoteName = "upstream"
 var compareToBranch = remoteName+"/master"
-var pushFlag, showFilesFlag, showFutureMilestoneFlag, cherryPickFlag, trustLabelsFlag, quietFlag bool
+var pushFlag, showFilesFlag, showFutureMilestoneFlag, cherryPickFlag, showLabeledFlag, quietFlag bool
 
 var Release = cli.Command{
 	Name:  "release",
@@ -50,9 +50,9 @@ var Release = cli.Command{
 			Destination: &showFutureMilestoneFlag,
 		},
 		cli.BoolFlag{
-			Name:        "trust-labels",
-			Usage:       "trust that the PR's labeled with 'cherry-picked' have been, so dopn't show them",
-			Destination: &trustLabelsFlag,
+			Name:        "show-labeled",
+			Usage:       "show PR's labeled with 'cherry-picked'",
+			Destination: &showLabeledFlag,
 		},
 		cli.BoolFlag{
 			Name:        "files",
@@ -373,7 +373,7 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 						}
 					}
 				}
-				if trustLabelsFlag {
+				if !showLabeledFlag {
 					// if the labels contain process/cherry-picked or process/docs-cherry-picked, skip
 					if strings.Contains(labels, "cherry-picked") {
 						if !quietFlag {
