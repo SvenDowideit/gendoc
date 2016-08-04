@@ -29,7 +29,7 @@ type Project struct {
 }
 
 func PrintVerboseCommand(cmd *exec.Cmd) {
-	logrus.Debugf("executing %q ...\n", strings.Join(cmd.Args, " "))
+	logrus.Debugf("executing %q in %s\n", strings.Join(cmd.Args, " "), cmd.Dir)
 }
 
 // Execute git commands and output to

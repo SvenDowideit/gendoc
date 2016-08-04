@@ -50,7 +50,7 @@ var Checkout = cli.Command{
 			return err
 		}
 		if fetchFlag {
-			err := allprojects.GitIn(allprojects.AllProjectsPath, "fetch", "upstream")
+			err := allprojects.GitIn(allprojects.AllProjectsRepo, "fetch", "upstream")
 			if err != nil {
 				return err
 			}
