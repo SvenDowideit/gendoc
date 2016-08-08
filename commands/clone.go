@@ -32,13 +32,13 @@ var Clone = cli.Command{
 		if os.IsNotExist(err) {
 			// clone allProjectsRepo
 			// TODO: what if we want londoncalling/docs.docker.com-testing ?
-			project, err := projects.GetProjectByName(allprojects.AllProjectsRepo)
+			var project allprojects.Project
+			project, err = projects.GetProjectByName(allprojects.AllProjectsRepo)
 			if err != nil {
-				return err
-			}
-			err = CloneRepo(project)
-			if err != nil {
-				return err
+				err = CloneRepo(project)
+				if err != nil {
+					return err
+				}
 			}
 			// try again.
 			setName, projects, err = allprojects.Load(allprojects.AllProjectsPath)
