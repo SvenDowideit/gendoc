@@ -141,20 +141,6 @@ var Release = cli.Command{
 			},
 		},
 		{
-			Name:  "push",
-			Usage: "Push docs release tags&branches to all the repos.",
-			Flags: []cli.Flag{},
-			Action: func(context *cli.Context) error {
-				setName, _, err := allprojects.Load(allprojects.AllProjectsPath)
-				if err != nil {
-					return err
-				}
-				fmt.Printf("publish-set: %s\n", setName)
-
-				return fmt.Errorf("i've got nothin")
-			},
-		},
-		{
 			Name:  "release",
 			Usage: "Publish docs.",
 			Flags: []cli.Flag{},
