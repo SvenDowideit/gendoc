@@ -12,7 +12,7 @@ import (
 //TODO add this to clone..
 var Remote = cli.Command{
 	Name:  "remote",
-	Usage: "Add a git remote",
+	Usage: "Add a git remote - 2 arguments, name to give remote (origin), and organisation/Username on GitHub",
 	Flags: []cli.Flag{},
 	Action: func(context *cli.Context) error {
 		if context.NArg() != 2 {
