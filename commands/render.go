@@ -14,7 +14,7 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-var vendorFlag, serveFlag, doitFlag bool
+var vendorFlag, diskFlag, doitFlag bool
 var portFlag int
 
 var Render = cli.Command{
@@ -26,10 +26,10 @@ var Render = cli.Command{
 			Usage:       "vendor changes into docs-source (disable to ignore new changes)",
 			Destination: &vendorFlag,
 		},
-		cli.BoolTFlag{
-			Name:        "serve",
-			Usage:       "serve HTML using hugo on port 8000 (use --port <num> to change it)",
-			Destination: &serveFlag,
+		cli.BoolFlag{
+			Name:        "disk",
+			Usage:       "Render html to the `docs-html/vMAJOR.MINOR/` dir - no webserver",
+			Destination: &diskFlag,
 		},
 		cli.IntFlag{
 			Name:        "port",
@@ -65,16 +65,18 @@ var Render = cli.Command{
 		// TODO --watch won't work - need to also watch the repo dirs and fetch in background
 		// TODO what about the --baseUrl
 		opts := []string{
-			"--renderToDisk",
 			"--destination", htmlDir,
 			"--cleanDestinationDir",
 		}
 		var cmd *exec.Cmd
-		if serveFlag {
+		if diskFlag {
+			// TODO: find a way to tell hugo not to insert the live-reload html
+		} else {
 			hugoCmd := []string{"serve"}
 
 			opts = append(hugoCmd, opts...)
 			opts = append(opts,
+				"--renderToDisk",
 				"--port", fmt.Sprintf("%d", portFlag),
 				"--bind", "0.0.0.0",
 				"--watch")
