@@ -49,18 +49,13 @@ var Clone = cli.Command{
 		fmt.Printf("publish-set: %s\n", setName)
 
 		if cloneVendoringFlag {
-			// get the book keeping repos
-			project, err := projects.GetProjectByName("docs-source")
-			if err != nil {
-				return err
-			}
+			// get the book keeping repos (ignore the error, its not in the all-projects)
+			project, _ := projects.GetProjectByName("docs-source")
 			if err := CloneRepo(project); err != nil {
 				return err
 			}
-			project, err = projects.GetProjectByName("docs-html")
-			if err != nil {
-				return err
-			}
+			// get the results repo (ignore the error, its not in the all-projects)
+			project, _ = projects.GetProjectByName("docs-html")
 			if err := CloneRepo(project); err != nil {
 				return err
 			}
