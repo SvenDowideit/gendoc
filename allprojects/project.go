@@ -108,7 +108,6 @@ func (p Project) GetGitRepo() (string, error) {
 func GetPRInfo(org, repo string, pr int) (lables, milstone string, err error) {
 	var tc *http.Client
 	if GithubToken != "" {
-		logrus.Debugf("using GitHub API token")
 		ts := oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: GithubToken},
 		)

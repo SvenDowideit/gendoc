@@ -385,8 +385,21 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				continue
 			}
 		}
-		// TODO: compare milestone to all-projects version and if its for a future version, don't list
-		// I presume there's a vMajor.Minor.Patch-hell parser out there
+
+		// Last attempt to match - see if there is a cherry-pick -x -m1 commit in the destination repo that was ammended manually
+		// get a list of commits from HEAD, see if there's a "Merge pull request #25405 from thaJeztah/fix-api-markdown" like commit
+		// if so - its already been picked, we can skip.
+		cherryPickSHA, err := findCherryPickCommit(p.RepoName, fmt.Sprintf("%d", mergePR))
+		if err == nil {
+			if noisyFlag {
+				fmt.Printf("Skipping %d due to cherry-picked commit: %s (presumably an ammended cherry-pick compared to %s)\n", mergePR, cherryPickSHA, mergeSHA)
+			}
+			continue
+		}
+
+
+		////////////////
+		// OK - so we've decided to show these PR's
 		_, mergeDate, _ := getCommitDate(p.RepoName, mergeSHA)
 		fmt.Printf("- PR %d (%s) %s from %s\n", mergePR, mergeSHA, mergeDate.UTC().Format(time.Stamp), mergeBranch)
 		if milestone == "" {
@@ -395,6 +408,8 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 		if milestone != "" || labels != "" {
 			fmt.Printf("- %s %s\n", milestone, labels)
 		}
+
+
 		fmt.Printf("  - %s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
 		if showFilesFlag {
 			fmt.Printf("    - %s\n", files.Text())
@@ -415,4 +430,29 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 	if err := out.Err(); err != nil {
 		fmt.Printf("ERROR: %s\n", err)
 	}
+}
+
+// findCherryPickCommit given a PR number, iterate through the commits to see if there is a matching cherry-pick commit
+func findCherryPickCommit(repo string, pr string) (commitSHA string, err error) {
+	logrus.Debugf("findCherryPickCommit(%s, %s)", repo, pr)
+	log, _, err := allprojects.GitScannerIn(repo, "log", "--oneline", "HEAD")
+	if err != nil {
+		fmt.Printf("ERROR %s\n", err)
+		return "", err
+	}
+	for log.Scan() {
+		if log.Err() != nil {
+			return "", log.Err()
+		}
+		text := log.Text()
+		// TODO: cache this as a hash of PR -> sha
+		details := strings.SplitN(text, " ", 2)
+		expectedCommitPrefix := fmt.Sprintf("Merge pull request #%s ", pr)
+		if strings.HasPrefix(details[1], expectedCommitPrefix) {
+			// TODO: can be more careful, and check for "(cherry picked from commit 66671d4ec29d7ccbd991399b8b98705e57b6a3eb)"
+			// but really, if there is a merge commit for a PR in the local branch to match any PR in master, we should be good to go
+			return details[0], nil
+		}
+	}
+	return "", fmt.Errorf("no merge commit found for PR %s", pr)
 }
