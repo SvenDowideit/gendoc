@@ -382,9 +382,7 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 			}
 		}
 		if cherryPickFlag {
-			//err = allprojects.GitIn(p.RepoName, "cherry-pick", "-x", "-m1", mergeSHA)
-			// lets see what happens if we don't use the merge commit
-			err = allprojects.GitIn(p.RepoName, "cherry-pick", oneline[1])
+			err = allprojects.GitIn(p.RepoName, "cherry-pick", "-x", "-m1", mergeSHA)
 			if err != nil {
 				fmt.Printf("help needed to cherry-pick PR %d (%s) %s\n", mergePR, mergeSHA, err)
 				return // the user can restart the process after fixing things up
