@@ -269,7 +269,7 @@ func tagProduct(p allprojects.Project) {
 // git log --merges --oneline 93cc2675c8f97e1a30b3bf2dbc287f0295ffc4fa..upstream/master --parents
 // becuase that presumes we have a linear history
 func findDocsPRsNeedingMerge(p allprojects.Project) {
-	fmt.Printf("## %s, %s in %s at %s\n", p.Name, p.Version, p.RepoName, p.Ref)
+	fmt.Printf("\n## %s, %s in %s at %s\n", p.Name, p.Version, p.RepoName, p.Ref)
 	// We don't do semver properly, so remove any -rc, -alpha etc
 	pVersion, _ := semver.ParseTolerant(strings.SplitN(p.Version, "-", 2)[0])
 	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", "HEAD", compareToBranch)
