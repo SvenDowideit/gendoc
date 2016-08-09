@@ -17,7 +17,7 @@ import (
 
 var remoteName = "upstream"
 var compareToBranch = remoteName + "/master"
-var pushFlag, showFilesFlag, showFutureMilestoneFlag, cherryPickFlag, showLabeledFlag, quietFlag bool
+var pushFlag, showFilesFlag, showFutureMilestoneFlag, cherryPickFlag, showLabeledFlag, noisyFlag bool
 
 var Release = cli.Command{
 	Name:  "release",
@@ -34,9 +34,9 @@ var Release = cli.Command{
 					Destination: &doitFlag,
 				},
 				cli.BoolFlag{
-					Name:        "quiet",
-					Usage:       "less info about skipped PR's",
-					Destination: &quietFlag,
+					Name:        "noisy",
+					Usage:       "tell me about all skipped PR's",
+					Destination: &noisyFlag,
 				},
 				cli.BoolFlag{
 					Name:        "cherry-pick",
@@ -349,7 +349,7 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				//return
 			} else {
 				if !showFutureMilestoneFlag && mVersion.GT(pVersion) {
-					if !quietFlag {
+					if noisyFlag {
 						fmt.Printf("Skipping %d due to %s\n", mergePR, milestone)
 					}
 					continue
@@ -361,7 +361,7 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 		if !showLabeledFlag {
 			// if the labels contain process/cherry-picked or process/docs-cherry-picked, skip
 			if strings.Contains(labels, "cherry-picked") {
-				if !quietFlag {
+				if noisyFlag {
 					fmt.Printf("Skipping %d due to cherry-picked state: %s\n", mergePR, labels)
 				}
 				continue
