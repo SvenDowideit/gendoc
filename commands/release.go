@@ -355,6 +355,8 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 					continue
 				}
 			}
+		} else {
+			fmt.Printf("Warning: no version field in all-projects.yml for %s\n", p.Name)
 		}
 		if !showLabeledFlag {
 			// if the labels contain process/cherry-picked or process/docs-cherry-picked, skip
