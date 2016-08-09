@@ -265,13 +265,32 @@ func tagProduct(p allprojects.Project) {
 	fmt.Printf("OK: created %s on remote %s (%s)\n", tag, remoteName, p.Ref)
 }
 
+func parseVersion(version string) (semver.Version, error) {
+	// We don't do semver properly, so remove any -rc, -alpha etc
+	// Some projects use non-version prefixes - so we need to remove those
+	version = strings.TrimPrefix(version, "Notary ")
+	version = strings.TrimPrefix(version, "Registry/")
+	version = strings.SplitN(version, "-", 2)[0]
+	pVersion, err := semver.ParseTolerant(version)
+	if err != nil {
+		logrus.Debugf("versionParse(%s)\n", version)
+	}
+	return pVersion, err
+}
+
 // I think I can't just use
 // git log --merges --oneline 93cc2675c8f97e1a30b3bf2dbc287f0295ffc4fa..upstream/master --parents
 // becuase that presumes we have a linear history
 func findDocsPRsNeedingMerge(p allprojects.Project) {
 	fmt.Printf("\n## %s, %s in %s at %s\n", p.Name, p.Version, p.RepoName, p.Ref)
-	// We don't do semver properly, so remove any -rc, -alpha etc
-	pVersion, _ := semver.ParseTolerant(strings.SplitN(p.Version, "-", 2)[0])
+	pVersion, err := parseVersion(p.Version)
+	if err != nil {
+		if p.Version == "" {
+			fmt.Printf("Warning: no version field in all-projects.yml for %s\n", p.Name)
+		} else {
+			logrus.Debugf("ERROR parsing %s, (%s) %s\n", pVersion, p.Name, err)
+		}
+	}
 	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", "HEAD", compareToBranch)
 	if err != nil {
 		fmt.Printf("ERROR %s\n", err)
@@ -343,10 +362,11 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 
 		labels, milestone, err := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
 		if pVersion.Major > 0 || pVersion.Minor > 0 || pVersion.Patch > 0 {
-			mVersion, err := semver.ParseTolerant(milestone)
+			mVersion, err := parseVersion(milestone)
 			if err != nil {
-				fmt.Printf("ERROR parsing Version(%s) in milestone of PR(%d) %s\n", milestone, mergePR, err)
-				//return
+				if milestone != "" {
+					fmt.Printf("ERROR parsing Version(%s) in milestone of PR(%d) %s\n", milestone, mergePR, err)
+				}
 			} else {
 				if !showFutureMilestoneFlag && mVersion.GT(pVersion) {
 					if noisyFlag {
@@ -355,8 +375,6 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 					continue
 				}
 			}
-		} else {
-			fmt.Printf("Warning: no version field in all-projects.yml for %s\n", p.Name)
 		}
 		if !showLabeledFlag {
 			// if the labels contain process/cherry-picked or process/docs-cherry-picked, skip
@@ -371,6 +389,9 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 		// I presume there's a vMajor.Minor.Patch-hell parser out there
 		_, mergeDate, _ := getCommitDate(p.RepoName, mergeSHA)
 		fmt.Printf("- PR %d (%s) %s from %s\n", mergePR, mergeSHA, mergeDate.UTC().Format(time.Stamp), mergeBranch)
+		if milestone == "" {
+			fmt.Printf("- Warning: no version milestone set for PR(%d)\n", mergePR)
+		}
 		if milestone != "" || labels != "" {
 			fmt.Printf("- %s %s\n", milestone, labels)
 		}
