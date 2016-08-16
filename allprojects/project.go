@@ -74,21 +74,21 @@ func GitEnvResultsIn(env []string, dir string, args ...string) (string, error) {
 	return string(out), err
 }
 
-func GitScannerIn(dir string, args ...string) (*bufio.Scanner, *bufio.Scanner, error) {
+func GitScannerIn(dir string, args ...string) (*bufio.Scanner, *bufio.Scanner, error, *exec.Cmd) {
 	cmd := exec.Command("git", args...)
 	cmd.Dir = dir
 	PrintVerboseCommand(cmd)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, err, nil
 	}
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, err, nil
 	}
 
-	return bufio.NewScanner(stdout), bufio.NewScanner(stderr), cmd.Start()
+	return bufio.NewScanner(stdout), bufio.NewScanner(stderr), nil, cmd
 }
 
 func (p Project) GetGitRepo() (string, error) {

@@ -291,11 +291,17 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 			logrus.Debugf("ERROR parsing %s, (%s) %s\n", pVersion, p.Name, err)
 		}
 	}
-	out, _, err := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", "HEAD", compareToBranch)
+	out, _, err, cmd := allprojects.GitScannerIn(p.RepoName, "cherry", "-v", "HEAD", compareToBranch)
 	if err != nil {
 		fmt.Printf("ERROR %s\n", err)
 		return
 	}
+	err = cmd.Start()
+	if err != nil {
+		fmt.Printf("ERROR %s\n", err)
+		return
+	}
+	defer cmd.Wait()
 	for out.Scan() {
 		line := out.Text()
 		//logrus.Debugf("%s\n", out.Text())
@@ -305,19 +311,18 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 			continue
 		}
 		//logrus.Debugf("joined: %s\n", strings.Join(oneline, ","))
-		// Find out if there were doc changes..
-		// git diff-tree --no-commit-id --name-only -r <sha> <docs-dir>
-		files, _, err := allprojects.GitScannerIn(p.RepoName, "diff-tree", "--no-commit-id", "--name-only", "-r", oneline[1], *p.Path)
-		if err != nil {
-			fmt.Printf("ERROR diff-tree %s\n", err)
-			//continue
-		}
+
 		// Find the merge commit for it
 		// merge commit with PR# is first line of
 		// git log --ancestry-path --merges --oneline --reverse c9bf41955c53cf1780e043db2d8887c2cac62429..upstream/master
 		// OR per http://stackoverflow.com/questions/8475448/find-merge-commit-which-include-a-specific-commit
 		// git rev-list $1..master --ancestry-path | grep -f <(git rev-list $1..master --first-parent) | tail -1
-		ancestor, _, err := allprojects.GitScannerIn(p.RepoName, "log", "--ancestry-path", "--merges", "--oneline", "--reverse", oneline[1]+".."+compareToBranch)
+		ancestor, _, err, ancestorCmd := allprojects.GitScannerIn(p.RepoName, "log", "--ancestry-path", "--merges", "--oneline", "--reverse", oneline[1]+".."+compareToBranch)
+		if err != nil {
+			fmt.Printf("ERROR find merge commit  %s\n", err)
+			//continue
+		}
+		err = ancestorCmd.Start()
 		if err != nil {
 			fmt.Printf("ERROR find merge commit  %s\n", err)
 			//continue
@@ -329,18 +334,23 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				errStr = ancestor.Err().Error()
 			}
 			fmt.Printf("NO merge PR found for (%s) %s\n", line, errStr)
+			ancestorCmd.Wait()
 			continue
 		}
 		text := ancestor.Text()
 		if text == "" {
 			if ancestor.Scan() {
 				fmt.Printf("ERROR scan2 (%s) %s\n", line, ancestor.Err())
+				ancestorCmd.Wait()
 				continue
 			}
 			text := ancestor.Text()
 			fmt.Printf("-- scan ERROR %s\n", text)
+			ancestorCmd.Wait()
 			continue
 		}
+		ancestorCmd.Wait()
+
 		logrus.Debugf("test: %s\n", text)
 		a := strings.Split(text, " ")
 		mergeSHA := a[0]
@@ -351,12 +361,26 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 			mergePR, _ = strconv.Atoi(strings.TrimLeft(a[4], "#"))
 			mergeBranch = a[6]
 		}
+
+		// Find out if there were doc changes..
+		// git diff-tree --no-commit-id --name-only -r <sha> <docs-dir>
+		files, _, err, filesCmd := allprojects.GitScannerIn(p.RepoName, "diff-tree", "--no-commit-id", "--name-only", "-r", oneline[1], *p.Path)
+		if err != nil {
+			fmt.Printf("ERROR diff-tree %s\n", err)
+			//continue
+		}
+		err = filesCmd.Start()
+		if err != nil {
+			fmt.Printf("ERROR diff-tree %s\n", err)
+			//continue
+		}
 		if !files.Scan() {
 			// TODO: maybe only do the find merge PR if debug?
 			logrus.Debugf("%d (merge commit: %s ) from %s\n", mergePR, mergeSHA, mergeBranch)
 			// labels, milestone, _ := allprojects.GetPRInfo(p.Org, p.RepoName, mergePR)
 			// logrus.Debugf("\t %s: %s\n", milestone, labels)
 			logrus.Debugf("\tNO %s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
+			filesCmd.Wait()
 			continue
 		}
 
@@ -417,6 +441,7 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				fmt.Printf("  - %s\n", files.Text())
 			}
 		}
+		filesCmd.Wait()
 		if cherryPickFlag {
 			err = allprojects.GitIn(p.RepoName, "cherry-pick", "-x", "-m1", mergeSHA)
 			if err != nil {
@@ -435,11 +460,17 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 // findCherryPickCommit given a PR number, iterate through the commits to see if there is a matching cherry-pick commit
 func findCherryPickCommit(repo string, pr string) (commitSHA string, err error) {
 	logrus.Debugf("findCherryPickCommit(%s, %s)", repo, pr)
-	log, _, err := allprojects.GitScannerIn(repo, "log", "--oneline", "HEAD")
+	log, _, err, cmd := allprojects.GitScannerIn(repo, "log", "--oneline", "HEAD")
 	if err != nil {
 		fmt.Printf("ERROR %s\n", err)
 		return "", err
 	}
+	err = cmd.Start()
+	if err != nil {
+		fmt.Printf("ERROR %s\n", err)
+		return "", err
+	}
+	defer cmd.Wait()
 	for log.Scan() {
 		if log.Err() != nil {
 			return "", log.Err()
