@@ -42,7 +42,7 @@ var Checkout = cli.Command{
 
 		}
 
-		//TODO need to fetch&reset docs.docekr.com, docs-html and docs-src
+		//TODO need to fetch&reset docs.docker.com, docs-html and docs-src
 
 		setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
 		if err != nil {

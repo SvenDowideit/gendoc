@@ -21,6 +21,7 @@ type AllProjects struct {
 	Projects   ProjectList `yaml:"projects"`
 }
 
+// Load the all-projects.yml file into an AllProjects structure
 func Load(filename string) (string, *ProjectList, error) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -43,8 +44,9 @@ func Load(filename string) (string, *ProjectList, error) {
 	return document.PublishSet, &projects, nil
 }
 
+// GetGitRepos returns a list of git repositories in a ProjectList
 func (projects *ProjectList) GetGitRepos() ([]string, error) {
-	repos := make([]string, 0)
+	var repos []string
 	ghTemplate, err := template.New("repo").Parse("git@github.com:{{.Org}}/{{.RepoName}}")
 	var s bytes.Buffer
 	if err != nil {
@@ -60,9 +62,8 @@ func (projects *ProjectList) GetGitRepos() ([]string, error) {
 	return repos, nil
 }
 
+// GetProjectByName will return the named Project, or make a default one with that name
 func (projects *ProjectList) GetProjectByName(name string) (Project, error) {
-
-	// TODO: I presume this is naughty :)
 	if projects != nil {
 		// try publish name first
 		for _, p := range *projects {

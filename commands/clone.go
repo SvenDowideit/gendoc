@@ -25,7 +25,6 @@ var Clone = cli.Command{
 			Usage:       "clone docker/docs-html and docker/docs-src too (very large)",
 			Destination: &cloneVendoringFlag,
 		},
-		//TODO: add an shallow clone flag
 	},
 	Action: func(context *cli.Context) error {
 		setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
@@ -35,7 +34,7 @@ var Clone = cli.Command{
 			var project allprojects.Project
 			project, err = projects.GetProjectByName(allprojects.AllProjectsRepo)
 			if err != nil {
-				err = CloneRepo(project)
+				err = cloneRepo(project)
 				if err != nil {
 					return err
 				}
@@ -51,12 +50,12 @@ var Clone = cli.Command{
 		if cloneVendoringFlag {
 			// get the book keeping repos (ignore the error, its not in the all-projects)
 			project, _ := projects.GetProjectByName("docs-source")
-			if err := CloneRepo(project); err != nil {
+			if err := cloneRepo(project); err != nil {
 				return err
 			}
 			// get the results repo (ignore the error, its not in the all-projects)
 			project, _ = projects.GetProjectByName("docs-html")
-			if err := CloneRepo(project); err != nil {
+			if err := cloneRepo(project); err != nil {
 				return err
 			}
 		}
@@ -71,7 +70,7 @@ var Clone = cli.Command{
 			if err != nil {
 				return err
 			}
-			return CloneRepo(project)
+			return cloneRepo(project)
 		}
 
 		return fmt.Errorf("No repository (or --all) specified.")
@@ -80,13 +79,13 @@ var Clone = cli.Command{
 
 func cloneAll(projects *allprojects.ProjectList) error {
 	for _, p := range *projects {
-		CloneRepo(p)
+		cloneRepo(p)
 	}
 
 	return nil
 }
 
-func CloneRepo(p allprojects.Project) error {
+func cloneRepo(p allprojects.Project) error {
 	fmt.Printf("-- %s\n", p.Name)
 	//TODO if it exists, make sure there's a valid remote
 	if _, err := os.Stat(p.RepoName); os.IsNotExist(err) {

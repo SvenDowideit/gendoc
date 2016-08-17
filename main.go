@@ -11,8 +11,11 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-// Set from the go build commandline
-var Version, CommitHash string
+// Version is set from the go build commandline
+var Version string
+
+// CommitHash is set from the go build commandline
+var CommitHash string
 
 type Exit struct {
 	Code int

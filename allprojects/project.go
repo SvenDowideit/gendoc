@@ -74,6 +74,7 @@ func GitEnvResultsIn(env []string, dir string, args ...string) (string, error) {
 	return string(out), err
 }
 
+// GitScannerIn allows the user to parse stdout and stderr - you need to call cmd.Start() and cmd.Wait()
 func GitScannerIn(dir string, args ...string) (*bufio.Scanner, *bufio.Scanner, error, *exec.Cmd) {
 	cmd := exec.Command("git", args...)
 	cmd.Dir = dir

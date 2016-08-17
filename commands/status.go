@@ -12,6 +12,7 @@ import (
 
 var logFlag, diffFlag bool
 
+// Status command
 var Status = cli.Command{
 	Name:  "status",
 	Usage: "status versions from " + allprojects.AllProjectsPath + " file",
