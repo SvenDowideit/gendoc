@@ -82,40 +82,10 @@ func checkout(repoPath, ref string) error {
 	}
 
 	// exit happy if the sha of HEAD == the SHA that the ref points to (not the sha of the tag)
-	headSHA, err := allprojects.GitResultsIn(repoPath, "log", "-1", "--format=%H", "HEAD")
-	if err != nil {
-		// if we can't get the SHA of HEAD, we're dead
-		return err
-	}
-	headSHA = strings.TrimSpace(headSHA)
-	logrus.Debugf("compare (%s) to (%s)\n", headSHA, ref)
-	if headSHA == ref {
-		// the all-projects ref is a SHA
-		fmt.Printf("Already at correct ref: all-projects has %s, checkout is %s\n", ref, headSHA)
+	msg, err := hasCheckedOutRef(repoPath, ref)
+	if err == nil {
+		fmt.Printf("Same as all-projects.yml: %s\n", msg)
 		return nil
-	}
-	// is it an upstream branch?
-	if refSHA, err := allprojects.GitResultsIn(repoPath, "log", "-1", "--format=%H", "upstream/"+ref); err == nil {
-		refSHA = strings.TrimSpace(refSHA)
-		logrus.Debugf("compare (%s) to (%s)\n", headSHA, refSHA)
-		// if we got that ok, we don't need a checkout / fetch
-		if headSHA == refSHA {
-			fmt.Printf("Already at correct ref: all-projects has %s, checkout is %s\n", ref, headSHA)
-			return nil
-		}
-	}
-	// is it a tag?
-	if tagSHA, err := allprojects.GitResultsIn(repoPath, "show-ref", "--hash", "refs/tags/"+ref); err == nil {
-		tagSHA = strings.TrimSpace(tagSHA)
-		if refSHA, err := allprojects.GitResultsIn(repoPath, "log", "-1", "--format=%H", tagSHA); err == nil {
-			refSHA = strings.TrimSpace(refSHA)
-			logrus.Debugf("compare (%s) to (%s)\n", headSHA, refSHA)
-			// if we got that ok, we don't need a checkout / fetch
-			if headSHA == refSHA {
-				fmt.Printf("Already at correct ref: all-projects has %s, checkout is %s\n", ref, headSHA)
-				return nil
-			}
-		}
 	}
 
 	err = allprojects.GitIn(repoPath, "checkout", ref)
@@ -151,4 +121,43 @@ func checkout(repoPath, ref string) error {
 		}
 	}
 	return err
+}
+
+func getSHA(repoPath, ref string) (sha string, err error) {
+	sha, err = allprojects.GitResultsIn(repoPath, "log", "-1", "--format=%H", ref)
+	return strings.TrimSpace(sha), err
+}
+
+func hasCheckedOutRef(repoPath, ref string) (string, error) {
+	// exit happy if the sha of HEAD == the SHA that the ref points to (not the sha of the tag)
+	headSHA, err := getSHA(repoPath, "HEAD")
+	if err != nil {
+		// if we can't get the SHA of HEAD, we're dead
+		return "", err
+	}
+	logrus.Debugf("compare (%s) to (%s)\n", headSHA, ref)
+	if headSHA == ref {
+		// the all-projects ref is a SHA
+		return fmt.Sprintf("your checkout %s is at %s", headSHA, ref), nil
+	}
+	// is ref an upstream branch?
+	if refSHA, err := getSHA(repoPath, "upstream/"+ref); err == nil {
+		logrus.Debugf("compare (%s) to (%s)\n", headSHA, refSHA)
+		// if we got that ok, we don't need a checkout / fetch
+		if headSHA == refSHA {
+			return fmt.Sprintf("your checkout %s is at %s", headSHA, "upstream/"+ref), nil
+		}
+	}
+	// is ref a tag?
+	if tagSHA, err := allprojects.GitResultsIn(repoPath, "show-ref", "--hash", "refs/tags/"+ref); err == nil {
+		tagSHA = strings.TrimSpace(tagSHA)
+		if refSHA, err := getSHA(repoPath, tagSHA); err == nil {
+			logrus.Debugf("compare (%s) to (%s)\n", headSHA, refSHA)
+			// if we got that ok, we don't need a checkout / fetch
+			if headSHA == refSHA {
+				return fmt.Sprintf("your checkout %s is at %s", headSHA, "refs/tags/"+ref), nil
+			}
+		}
+	}
+	return "", fmt.Errorf("Error: repository not at %s", ref)
 }
