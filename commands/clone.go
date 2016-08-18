@@ -25,6 +25,12 @@ var Clone = cli.Command{
 			Usage:       "clone docker/docs-html and docker/docs-src too (very large)",
 			Destination: &cloneVendoringFlag,
 		},
+		cli.StringFlag{
+			// TODO: consider making this flexible (full git url, org+repo, just org)
+			Name:        "origin",
+			Usage:       "Set the git origin user/org (for eg 'SvenDowideit')",
+			Destination: &originOrgFlag,
+		},
 	},
 	Action: func(context *cli.Context) error {
 		setName, projects, err := allprojects.Load(allprojects.AllProjectsPath)
@@ -34,7 +40,7 @@ var Clone = cli.Command{
 			var project allprojects.Project
 			project, err = projects.GetProjectByName(allprojects.AllProjectsRepo)
 			if err != nil {
-				err = cloneRepo(project)
+				err = project.CloneRepo(originOrgFlag)
 				if err != nil {
 					return err
 				}
@@ -50,12 +56,12 @@ var Clone = cli.Command{
 		if cloneVendoringFlag {
 			// get the book keeping repos (ignore the error, its not in the all-projects)
 			project, _ := projects.GetProjectByName("docs-source")
-			if err := cloneRepo(project); err != nil {
+			if err := project.CloneRepo(originOrgFlag); err != nil {
 				return err
 			}
 			// get the results repo (ignore the error, its not in the all-projects)
 			project, _ = projects.GetProjectByName("docs-html")
-			if err := cloneRepo(project); err != nil {
+			if err := project.CloneRepo(originOrgFlag); err != nil {
 				return err
 			}
 		}
@@ -70,7 +76,7 @@ var Clone = cli.Command{
 			if err != nil {
 				return err
 			}
-			return cloneRepo(project)
+			return project.CloneRepo(originOrgFlag)
 		}
 
 		return fmt.Errorf("No repository (or --all) specified.")
@@ -79,26 +85,8 @@ var Clone = cli.Command{
 
 func cloneAll(projects *allprojects.ProjectList) error {
 	for _, p := range *projects {
-		cloneRepo(p)
+		p.CloneRepo(originOrgFlag)
 	}
 
-	return nil
-}
-
-func cloneRepo(p allprojects.Project) error {
-	fmt.Printf("-- %s\n", p.Name)
-	//TODO if it exists, make sure there's a valid remote
-	if _, err := os.Stat(p.RepoName); os.IsNotExist(err) {
-		repo, _ := p.GetGitRepo()
-		fmt.Printf("Cloning from %s\n", repo)
-
-		//err := allprojects.Git("clone", repo, "--branch", p.Ref, p.RepoName)
-		//if err != nil {
-		err = allprojects.Git("clone", "--origin", "upstream", repo, p.RepoName)
-		//}
-		return err
-	} else {
-		fmt.Printf("Dir already exists\n")
-	}
 	return nil
 }

@@ -19,7 +19,7 @@ var portFlag int
 
 var Render = cli.Command{
 	Name:  "render",
-	Usage: "render html of docs checked out.",
+	Usage: "render html using the the source files currently available on disk.",
 	Flags: []cli.Flag{
 		cli.BoolTFlag{
 			Name:        "vendor",
@@ -59,10 +59,9 @@ var Render = cli.Command{
 			}
 		}
 
-		//TODO: confirm that we have the right publish set fetched.
 		htmlDir := filepath.Join("../../docs-html/", setName)
 
-		// TODO --watch won't work - need to also watch the repo dirs and fetch in background
+		// --watch won't work - need to also watch the repo dirs and fetch in background
 		// TODO what about the --baseUrl
 		opts := []string{
 			"--destination", htmlDir,
@@ -84,8 +83,6 @@ var Render = cli.Command{
 		cmd = exec.Command("hugo", opts...)
 
 		cmd.Dir = filepath.Join("docs-source", setName)
-
-		//PrintVerboseCommand(cmd)
 		cmd.Stderr = os.Stderr
 		cmd.Stdout = os.Stdout
 
@@ -94,9 +91,8 @@ var Render = cli.Command{
 }
 
 func VendorSource(setName string, projects *allprojects.ProjectList) error {
-	// TODO add a watch at the end.
 	for _, p := range *projects {
-		if p.RepoName == "docs.docker.com" {
+		if p.RepoName == allprojects.AllProjectsRepo {
 			continue
 		}
 		//TODO exclude?
@@ -114,7 +110,7 @@ func VendorSource(setName string, projects *allprojects.ProjectList) error {
 	return nil
 }
 
-// Copies file source to destination dest.
+// CopyFile copies file source to destination dest.
 func CopyFile(source string, dest string) (err error) {
 	//fmt.Printf("CopyFile %s TO %s\n", source, dest)
 

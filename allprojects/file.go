@@ -78,9 +78,9 @@ func (projects *ProjectList) GetProjectByName(name string) (Project, error) {
 		}
 	}
 	// project not in all-projects.yml
-	return makeProject(name), fmt.Errorf("Project %s not found", name)
+	return GetProjectByName(name), fmt.Errorf("Project %s not found", name)
 }
-func makeProject(name string) Project {
+func GetProjectByName(name string) Project {
 	return Project{
 		Org:      "docker",
 		Name:     name,

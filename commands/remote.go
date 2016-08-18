@@ -35,14 +35,8 @@ var Remote = cli.Command{
 		for _, p := range *projects {
 			// TODO: don't ignore errors.
 			fmt.Printf("-- %s\n", p.RepoName)
-			addRemote(p, name, org)
+			p.AddRemote(name, org)
 		}
 		return nil
 	},
-}
-
-func addRemote(p allprojects.Project, name, org string) error {
-	p.Org = org
-	repo, _ := p.GetGitRepo()
-	return allprojects.GitIn(p.RepoName, "remote", "add", name, repo)
 }
