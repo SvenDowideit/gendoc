@@ -14,10 +14,25 @@ then open a terminal and run the following (example for OS X):
 ```
 $ cd Downloads
 $ chmod 755 gendoc-osx
+$ mkdir /usr/local/bin/gendoc
 $ ./gendoc-osx install
 ```
 
 This will install `gendoc` into `/usr/local/bin/`, and then download `hugo` and install it too.
+
+## Add a gendoc alias
+
+So you don't have to enter the whole path for gendoc, add this line to your Mac's `~/.bash_profile` file.
+
+```
+alias gendoc=/usr/local/bin/gendoc/gendoc-osx
+```
+
+Then, reload your bash environment.
+
+```
+source ~/.bash_profile
+```
 
 ## initialize your workspace with
 
