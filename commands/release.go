@@ -172,6 +172,25 @@ func getCommitDate(repo, ref string) (strDate string, date time.Time, err error)
 	return strDate, date, nil
 }
 
+//TODO: code from checkout
+func getSHA(repoPath, ref string) string {
+	// TODO: is it an SHA, return it (fast path)
+	// is it an upstream branch?
+	if refSHA, err := allprojects.GitResultsIn(repoPath, "log", "-1", "--format=%H", "upstream/"+ref); err == nil {
+		refSHA = strings.TrimSpace(refSHA)
+		return refSHA
+	}
+	// is it a tag?
+	if tagSHA, err := allprojects.GitResultsIn(repoPath, "show-ref", "--hash", "refs/tags/"+ref); err == nil {
+		tagSHA = strings.TrimSpace(tagSHA)
+		if refSHA, err := allprojects.GitResultsIn(repoPath, "log", "-1", "--format=%H", tagSHA); err == nil {
+			refSHA = strings.TrimSpace(refSHA)
+			return refSHA
+		}
+	}
+	return ref
+}
+
 // tagProduct will check for the exitence of a product tag in that project's repo
 // and will check that it matches the commit listed in the all-projects file
 // OR will make that tag
@@ -197,25 +216,24 @@ func tagProduct(p allprojects.Project) {
 		Version: p.Version,
 	}
 
+	pRefSHA := getSHA(p.RepoName, p.Ref)
+
 	var doc bytes.Buffer
 	_ = tmpl.Execute(&doc, i)
 	tag := doc.String()
-	if !doitFlag {
-		fmt.Printf("proposed Tag == %s    (add --doit to the command to create and push)\n", tag)
-		return
-	}
 
-	// TODO: test to see if the tag is already there, and  see that the tag matches what we would have made..
+	// test to see if the tag is already there, and  see that the tag matches what we would have made..
 	// and tell the user otherwise.
+	// TODO: this code is very similar to what is in `release prepare`
 	out, err := allprojects.GitResultsIn(p.RepoName, "log", "--pretty=format:%H\t%s", "-1", tag)
 	if err == nil && out != "" {
 		localTag := strings.Split(out, "\t")
 		localTag[0] = strings.TrimSpace(localTag[0])
 		localTag[1] = strings.TrimSpace(localTag[1])
-		if localTag[0] == p.Ref {
+		if localTag[0] == pRefSHA {
 			logrus.Debugf("tag already exists locally (%s)\n", tag)
 		} else {
-			fmt.Printf("tag already exists locally (%s = %s) but differs from all-projects (%s)\n", tag, localTag[0], p.Ref)
+			fmt.Printf("tag already exists locally (%s = %s) but differs from all-projects (%s == %s)\n", tag, localTag[0], p.Ref, pRefSHA)
 		}
 		// "tagname^{}" is the commit SHA the tag is pointing to
 		out, err = allprojects.GitResultsIn(p.RepoName, "ls-remote", remoteName, tag+"^{}")
@@ -223,10 +241,10 @@ func tagProduct(p allprojects.Project) {
 			remoteTag := strings.Split(out, "\t")
 			remoteTag[0] = strings.TrimSpace(remoteTag[0])
 			remoteTag[1] = strings.TrimSpace(remoteTag[1])
-			if remoteTag[0] == p.Ref {
-				fmt.Printf("OK: found %s on remote %s (%s)\n", tag, remoteName, p.Ref)
+			if remoteTag[0] == pRefSHA {
+				fmt.Printf("- tag %s matches\n", p.Ref)
 			} else {
-				fmt.Printf("ERROR: tag already exists on remote (%s = %s) but differs from all-projects (%s)\n", remoteTag[1], remoteTag[0], p.Ref)
+				fmt.Printf("ERROR: tag already exists on remote (%s = %s) but differs from all-projects (%s = %s)\n", remoteTag[1], remoteTag[0], p.Ref, pRefSHA)
 				fmt.Printf("TODO: check feet for holes\n")
 			}
 		} else {
@@ -246,6 +264,11 @@ func tagProduct(p allprojects.Project) {
 		return
 	}
 
+	if !doitFlag {
+		fmt.Printf("- Proposed Tag == %s to %s   (add --doit to the command to create and push)\n", tag, p.Ref)
+		// TODO test to see if that's the HEAD of the checkout, and do more warning
+		return
+	}
 	// make an annotated tag
 	// TODO: set the tag's date
 	out, err = allprojects.GitEnvResultsIn(
@@ -408,6 +431,12 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 				}
 				continue
 			}
+			if strings.Contains(labels, "process/cherry-pick") {
+				if noisyFlag {
+					fmt.Printf("Skipping %d due to code cherry-pick label: %s\n", mergePR, labels)
+				}
+				continue
+			}
 		}
 
 		// Last attempt to match - see if there is a cherry-pick -x -m1 commit in the destination repo that was ammended manually
@@ -443,7 +472,7 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 		}
 		filesCmd.Wait()
 		if cherryPickFlag {
-			err = allprojects.GitIn(p.RepoName, "cherry-pick", "-x", "-m1", mergeSHA)
+			err = allprojects.GitIn(p.RepoName, "cherry-pick", "-s", "-x", "-m1", mergeSHA)
 			if err != nil {
 				fmt.Printf("help needed to cherry-pick PR %d (%s) %s\n", mergePR, mergeSHA, err)
 				return // the user can restart the process after fixing things up
