@@ -152,7 +152,22 @@ func install(from, to string) error {
 	// on OSX, the file got a quarantine xattr, (-c) clearing all
 	// sorry - need to fix up the last 2 week's versions so we can upgrade :)
 	if runtime.GOOS == "darwin" {
-		cmd := exec.Command("sudo", "xattr", "-c", to)
+		if _, err := os.Stat(to); !os.IsNotExist(err) {
+			cmd := exec.Command("sudo", "xattr", "-c", to)
+			//PrintVerboseCommand(cmd)
+			cmd.Stderr = os.Stderr
+			cmd.Stdout = os.Stdout
+			if err := cmd.Run(); err != nil {
+				return err
+			}
+		}
+	}
+	//TODO ah, windows.
+	// TODO check if its already there - or if that's where we're running from!
+
+	// on OSX, the file gets a quarantine xattr, (-c) clearing all
+	if runtime.GOOS == "darwin" {
+		cmd := exec.Command("sudo", "xattr", "-c", from)
 		//PrintVerboseCommand(cmd)
 		cmd.Stderr = os.Stderr
 		cmd.Stdout = os.Stdout
@@ -160,8 +175,6 @@ func install(from, to string) error {
 			return err
 		}
 	}
-	//TODO ah, windows.
-	// TODO check if its already there - or if that's where we're running from!
 
 	cmd := exec.Command("sudo", "cp", from, to)
 	//PrintVerboseCommand(cmd)
@@ -171,16 +184,6 @@ func install(from, to string) error {
 		return err
 	}
 
-	// on OSX, the file gets a quarantine xattr, (-c) clearing all
-	if runtime.GOOS == "darwin" {
-		cmd := exec.Command("sudo", "xattr", "-c", to)
-		//PrintVerboseCommand(cmd)
-		cmd.Stderr = os.Stderr
-		cmd.Stdout = os.Stdout
-		if err := cmd.Run(); err != nil {
-			return err
-		}
-	}
 	return nil
 }
 
