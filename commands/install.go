@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 )
 
@@ -41,6 +42,7 @@ var Install = cli.Command{
 			gendocTo = gendocTo + ".exe"
 		}
 
+		logrus.Debugf("os.Arg[0]: %s ~~ gendocTo %s\n", gendocFileToInstall, gendocTo)
 		if updateFlag || os.Args[0] == gendocTo {
 			// If the user is running setup from an already installed gendoc, assume update
 			// TODO: if main.Version == today, maybe don't bother?
