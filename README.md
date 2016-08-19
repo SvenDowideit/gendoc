@@ -1,3 +1,4 @@
+Using /tmp/example795102549 to run commands
 Using /tmp/example338576613 to run commands
 
 # Docker documentation tooling
@@ -36,16 +37,17 @@ USAGE:
    gendoc [global options] command [command options] [arguments...]
    
 VERSION:
-   2016-08-10
+   2016-08-19
    
 COMMANDS:
      version   return the version
      clone     clone repos from the ./docs.docker.com/all-projects.yml file
      checkout  checkout versions from ./docs.docker.com/all-projects.yml file
      install   Install gendoc and its pre-req's into your PATH
+     readme    Parse the README file and update any inline command examples
      release   Prepare and ship a docs release.
      remote    Add a git remote - 2 arguments, name to give remote (origin), and organisation/Username on GitHub
-     render    render html of docs checked out.
+     render    render html using the the source files currently available on disk.
      status    status versions from ./docs.docker.com/all-projects.yml file
      help, h   Shows a list of commands or help for one command
 
@@ -65,8 +67,8 @@ In whatever directory you have all your git clones (eg `~/repos/`)
 ```
 $ ls -la
 total 24
-drwx------ 2 ubuntu ubuntu  4096 Aug 19 04:56 .
-drwxrwxrwt 6 root   root   20480 Aug 19 04:56 ..
+drwx------ 2 ubuntu ubuntu  4096 Aug 19 05:06 .
+drwxrwxrwt 6 root   root   20480 Aug 19 05:06 ..
 
 $ gendoc clone
 -- docs.docker.com
@@ -115,26 +117,26 @@ Cloning from git@github.com:docker/opensource
 
 $ ls -al
 total 96
-drwx------ 20 ubuntu ubuntu  4096 Aug 19 04:57 .
-drwxrwxrwt  6 root   root   20480 Aug 19 04:56 ..
-drwxrwxr-x  6 ubuntu ubuntu  4096 Aug 19 04:57 cloud-docs
-drwxrwxr-x 11 ubuntu ubuntu  4096 Aug 19 04:57 compose
-drwxrwxr-x 28 ubuntu ubuntu  4096 Aug 19 04:57 cs-docker
-drwxrwxr-x 35 ubuntu ubuntu  4096 Aug 19 04:57 dhe-deploy
-drwxrwxr-x 20 ubuntu ubuntu  4096 Aug 19 04:57 distribution
-drwxrwxr-x 37 ubuntu ubuntu  4096 Aug 19 04:56 docker
-drwxrwxr-x  7 ubuntu ubuntu  4096 Aug 19 04:56 docs-base
-drwxrwxr-x  5 ubuntu ubuntu  4096 Aug 19 04:56 docs.docker.com
-drwxrwxr-x 14 ubuntu ubuntu  4096 Aug 19 04:57 hub2-demo
-drwxrwxr-x 14 ubuntu ubuntu  4096 Aug 19 04:57 kitematic
-drwxrwxr-x 17 ubuntu ubuntu  4096 Aug 19 04:57 machine
-drwxrwxr-x  9 ubuntu ubuntu  4096 Aug 19 04:57 mercury-ui
-drwxrwxr-x 23 ubuntu ubuntu  4096 Aug 19 04:57 notary
-drwxrwxr-x  6 ubuntu ubuntu  4096 Aug 19 04:57 opensource
-drwxrwxr-x 28 ubuntu ubuntu  4096 Aug 19 04:57 orca
-drwxrwxr-x 11 ubuntu ubuntu  4096 Aug 19 04:56 pinata
-drwxrwxr-x 17 ubuntu ubuntu  4096 Aug 19 04:57 swarm
-drwxrwxr-x  8 ubuntu ubuntu  4096 Aug 19 04:57 toolbox
+drwx------ 20 ubuntu ubuntu  4096 Aug 19 05:07 .
+drwxrwxrwt  6 root   root   20480 Aug 19 05:06 ..
+drwxrwxr-x  6 ubuntu ubuntu  4096 Aug 19 05:07 cloud-docs
+drwxrwxr-x 11 ubuntu ubuntu  4096 Aug 19 05:07 compose
+drwxrwxr-x 28 ubuntu ubuntu  4096 Aug 19 05:07 cs-docker
+drwxrwxr-x 35 ubuntu ubuntu  4096 Aug 19 05:07 dhe-deploy
+drwxrwxr-x 20 ubuntu ubuntu  4096 Aug 19 05:07 distribution
+drwxrwxr-x 37 ubuntu ubuntu  4096 Aug 19 05:06 docker
+drwxrwxr-x  7 ubuntu ubuntu  4096 Aug 19 05:06 docs-base
+drwxrwxr-x  5 ubuntu ubuntu  4096 Aug 19 05:06 docs.docker.com
+drwxrwxr-x 14 ubuntu ubuntu  4096 Aug 19 05:07 hub2-demo
+drwxrwxr-x 14 ubuntu ubuntu  4096 Aug 19 05:07 kitematic
+drwxrwxr-x 17 ubuntu ubuntu  4096 Aug 19 05:07 machine
+drwxrwxr-x  9 ubuntu ubuntu  4096 Aug 19 05:07 mercury-ui
+drwxrwxr-x 23 ubuntu ubuntu  4096 Aug 19 05:07 notary
+drwxrwxr-x  6 ubuntu ubuntu  4096 Aug 19 05:07 opensource
+drwxrwxr-x 28 ubuntu ubuntu  4096 Aug 19 05:07 orca
+drwxrwxr-x 11 ubuntu ubuntu  4096 Aug 19 05:06 pinata
+drwxrwxr-x 17 ubuntu ubuntu  4096 Aug 19 05:07 swarm
+drwxrwxr-x  8 ubuntu ubuntu  4096 Aug 19 05:07 toolbox
 
 ```
 
@@ -148,48 +150,48 @@ will clone any missing repositories mentioned in the currently checked out
 ```
 $ gendoc checkout master
 Checking out docs.docker.com master.
-Already at correct ref: all-projects has master, checkout is 84b2b9e323326614d60374bf628b058f83ab667f
+Same as all-projects.yml: your checkout 84b2b9e323326614d60374bf628b058f83ab667f is at upstream/master
 publish-set: v1.13-dev
 -- docs-base
-Already at correct ref: all-projects has master, checkout is 7adec600461e7456366df201af4060878dca215b
+Same as all-projects.yml: your checkout 7adec600461e7456366df201af4060878dca215b is at upstream/master
 -- docker
-Already at correct ref: all-projects has master, checkout is 09e1de2080fd3b0bafb38adbd4b8c12ee949794d
+Same as all-projects.yml: your checkout 09e1de2080fd3b0bafb38adbd4b8c12ee949794d is at upstream/master
 -- pinata
-Already at correct ref: all-projects has master, checkout is 8c11c14b46880079351e6f6503119e2ee6ef76ac
+Same as all-projects.yml: your checkout 8c11c14b46880079351e6f6503119e2ee6ef76ac is at upstream/master
 -- cs-docker
-Already at correct ref: all-projects has master, checkout is 71a04c87ee4654756f870a7c095ce725220da171
+Same as all-projects.yml: your checkout 71a04c87ee4654756f870a7c095ce725220da171 is at upstream/master
 -- dhe-deploy
-Already at correct ref: all-projects has master, checkout is eb01555b9264d2a481fc87c6933909e7d713bf34
+Same as all-projects.yml: your checkout eb01555b9264d2a481fc87c6933909e7d713bf34 is at upstream/master
 -- dhe-deploy
-Already at correct ref: all-projects has master, checkout is eb01555b9264d2a481fc87c6933909e7d713bf34
+Same as all-projects.yml: your checkout eb01555b9264d2a481fc87c6933909e7d713bf34 is at upstream/master
 -- orca
-Already at correct ref: all-projects has master, checkout is bfb25097639d359363e17e5370bfc5c9e41e8231
+Same as all-projects.yml: your checkout bfb25097639d359363e17e5370bfc5c9e41e8231 is at upstream/master
 -- distribution
-Already at correct ref: all-projects has master, checkout is 010e063270be37cfa8547ccfb9717e5d874c88a8
+Same as all-projects.yml: your checkout 010e063270be37cfa8547ccfb9717e5d874c88a8 is at upstream/master
 -- kitematic
-Already at correct ref: all-projects has master, checkout is 9143fe940657d843ea5ebc52caf1c5f0b043f2da
+Same as all-projects.yml: your checkout 9143fe940657d843ea5ebc52caf1c5f0b043f2da is at upstream/master
 -- compose
-Already at correct ref: all-projects has master, checkout is acfe100686fd95d524ff102c0b5fccff0bc79d8c
+Same as all-projects.yml: your checkout acfe100686fd95d524ff102c0b5fccff0bc79d8c is at upstream/master
 -- swarm
-Already at correct ref: all-projects has master, checkout is 27968edd8a160f66c96c8545ad35e3a3eeb8766a
+Same as all-projects.yml: your checkout 27968edd8a160f66c96c8545ad35e3a3eeb8766a is at upstream/master
 -- machine
-Already at correct ref: all-projects has master, checkout is 578cb4dc34169efef6752df0863d2fc22a8fcf3a
+Same as all-projects.yml: your checkout 578cb4dc34169efef6752df0863d2fc22a8fcf3a is at upstream/master
 -- notary
-Already at correct ref: all-projects has master, checkout is ca2008c88619d7197501139070c1aaf2f9281446
+Same as all-projects.yml: your checkout ca2008c88619d7197501139070c1aaf2f9281446 is at upstream/master
 -- toolbox
-Already at correct ref: all-projects has master, checkout is db24b2166089b2bf67841b995015e626bb7a409f
+Same as all-projects.yml: your checkout db24b2166089b2bf67841b995015e626bb7a409f is at upstream/master
 -- hub2-demo
-Already at correct ref: all-projects has master, checkout is 35b35b9a0270c368c588fd1b0bee27d6edc22254
+Same as all-projects.yml: your checkout 35b35b9a0270c368c588fd1b0bee27d6edc22254 is at upstream/master
 -- cloud-docs
-Already at correct ref: all-projects has master, checkout is 1b9a757a92d83c875284bb2f90fde97f14277be6
+Same as all-projects.yml: your checkout 1b9a757a92d83c875284bb2f90fde97f14277be6 is at upstream/master
 -- cloud-docs
-Already at correct ref: all-projects has master, checkout is 1b9a757a92d83c875284bb2f90fde97f14277be6
+Same as all-projects.yml: your checkout 1b9a757a92d83c875284bb2f90fde97f14277be6 is at upstream/master
 -- cloud-docs
-Already at correct ref: all-projects has master, checkout is 1b9a757a92d83c875284bb2f90fde97f14277be6
+Same as all-projects.yml: your checkout 1b9a757a92d83c875284bb2f90fde97f14277be6 is at upstream/master
 -- mercury-ui
-Already at correct ref: all-projects has master, checkout is 68d3072991cfdc904a9c35515705b8551ee71317
+Same as all-projects.yml: your checkout 68d3072991cfdc904a9c35515705b8551ee71317 is at upstream/master
 -- opensource
-Already at correct ref: all-projects has master, checkout is 9736bd57db38561847648a612867d0f0f9978836
+Same as all-projects.yml: your checkout 9736bd57db38561847648a612867d0f0f9978836 is at upstream/master
 
 ```
 
@@ -211,10 +213,10 @@ publish-set: v1.12
 -- docker
 -- pinata
 -- cs-docker
-Already at correct ref: all-projects has 71a04c87ee4654756f870a7c095ce725220da171, checkout is 71a04c87ee4654756f870a7c095ce725220da171
+Same as all-projects.yml: your checkout 71a04c87ee4654756f870a7c095ce725220da171 is at 71a04c87ee4654756f870a7c095ce725220da171
 -- dhe-deploy
 -- dhe-deploy
-Already at correct ref: all-projects has docs-v2.0.3-2016-08-11, checkout is 139a5d128584da25eee4b730c35497d8c0840515
+Same as all-projects.yml: your checkout 139a5d128584da25eee4b730c35497d8c0840515 is at refs/tags/docs-v2.0.3-2016-08-11
 -- orca
 -- distribution
 -- compose
@@ -226,9 +228,9 @@ Already at correct ref: all-projects has docs-v2.0.3-2016-08-11, checkout is 139
 -- hub2-demo
 -- cloud-docs
 -- cloud-docs
-Already at correct ref: all-projects has docs-2016-08-17, checkout is 33e56428398878f76d083914dbde44a02f7b1fdb
+Same as all-projects.yml: your checkout 33e56428398878f76d083914dbde44a02f7b1fdb is at refs/tags/docs-2016-08-17
 -- cloud-docs
-Already at correct ref: all-projects has docs-2016-08-17, checkout is 33e56428398878f76d083914dbde44a02f7b1fdb
+Same as all-projects.yml: your checkout 33e56428398878f76d083914dbde44a02f7b1fdb is at refs/tags/docs-2016-08-17
 -- mercury-ui
 -- opensource
 
@@ -254,302 +256,302 @@ copy cloud-docs/apidocs/layouts TO docs-source/v1.12/layouts/cloud-api-docs
 copy cloud-docs/apidocs TO docs-source/v1.12/content/apidocs
 copy mercury-ui/docs TO docs-source/v1.12/content/docker-store
 copy opensource/docs TO docs-source/v1.12/content/opensource
-INFO: 2016/08/19 04:58:00 hugo.go:463: Using config file: /tmp/example338576613/docs-source/v1.12/config.toml
-WARN: 2016/08/19 04:58:00 hugo.go:557: Unable to find Static Directory: /tmp/example338576613/docs-source/v1.12/static/
-INFO: 2016/08/19 04:58:00 hugo.go:566: /tmp/example338576613/docs-source/v1.12/themes/docker-2016/static is the only static directory available to sync from
-INFO: 2016/08/19 04:58:00 hugo.go:607: removing all files from destination that don't exist in static dirs
-INFO: 2016/08/19 04:58:00 hugo.go:609: syncing static files to /tmp/example338576613/docs-html/v1.12/
+INFO: 2016/08/19 05:07:53 hugo.go:463: Using config file: /tmp/example795102549/docs-source/v1.12/config.toml
+WARN: 2016/08/19 05:07:53 hugo.go:557: Unable to find Static Directory: /tmp/example795102549/docs-source/v1.12/static/
+INFO: 2016/08/19 05:07:53 hugo.go:566: /tmp/example795102549/docs-source/v1.12/themes/docker-2016/static is the only static directory available to sync from
+INFO: 2016/08/19 05:07:53 hugo.go:607: removing all files from destination that don't exist in static dirs
+INFO: 2016/08/19 05:07:53 hugo.go:609: syncing static files to /tmp/example795102549/docs-html/v1.12/
 Started building site
-INFO: 2016/08/19 04:58:01 site.go:1251: found taxonomies: map[string]string{"tag":"tags", "category":"categories"}
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/started/" translated to "mac/started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/containers/" translated to "engine/userguide/containers/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/extend/authorization/" translated to "engine/extend/authorization/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/deploy-to-cloud/" translated to "docker-cloud/feature-reference/deploy-to-cloud/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/deploy-to-cloud/" translated to "docker-cloud/tutorials/deploy-to-cloud/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/reference/logging/awslogs/" translated to "engine/reference/logging/awslogs/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/accounts/" translated to "docker-trusted-registry/accounts/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/manage/monitor-manage-users/" translated to "ucp/manage/monitor-manage-users/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/user-management/manage-users/" translated to "ucp/user-management/manage-users/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/automated-build/" translated to "docker-cloud/feature-reference/automated-build/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/automated-testing/" translated to "docker-cloud/feature-reference/automated-testing/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/auto-destroy/" translated to "docker-cloud/feature-reference/auto-destroy/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/autorestart/" translated to "docker-cloud/feature-reference/autorestart/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/auto-redeploy/" translated to "docker-cloud/feature-reference/auto-redeploy/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/host_integration/" translated to "engine/articles/host_integration/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/dockerfile_best-practices/" translated to "engine/articles/dockerfile_best-practices/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/intermediate/optimize-dockerfiles/" translated to "docker-cloud/getting-started/intermediate/optimize-dockerfiles/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/optimize-dockerfiles/" translated to "docker-cloud/tutorials/optimize-dockerfiles/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/misc/breaking/" translated to "engine/misc/breaking/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/step_four/" translated to "mac/step_four/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/step_four/" translated to "windows/step_four/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/linux/step_four/" translated to "linux/step_four/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/containers/dockerimages/" translated to "engine/userguide/containers/dockerimages/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/dockerimages/" translated to "engine/userguide/dockerimages/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/" translated to "docker-trusted-registry/cs-engine/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/cse-release-notes/" translated to "docker-trusted-registry/cse-release-notes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/release-notes/release-notes/" translated to "docker-trusted-registry/cs-engine/release-notes/release-notes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/cloud/cloud/" translated to "engine/installation/cloud/cloud/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/compose/yml" translated to "compose/yml/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/reference/logging/overview/" translated to "engine/reference/logging/overview/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/configuring/" translated to "engine/articles/configuring/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/admin/configuring/" translated to "engine/admin/configuring/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/deployment-strategies/" translated to "docker-cloud/feature-reference/deployment-strategies/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/systemd/" translated to "engine/articles/systemd/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/step_five/" translated to "mac/step_five/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/step_five/" translated to "windows/step_five/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/linux/step_five/" translated to "linux/step_five/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/baseimages/" translated to "engine/articles/baseimages/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/intermediate/load-balance-hello-world/" translated to "docker-cloud/getting-started/intermediate/load-balance-hello-world/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/load-balance-hello-world/" translated to "docker-cloud/tutorials/load-balance-hello-world/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/12_data_management_with_volumes/" translated to "docker-cloud/getting-started/python/12_data_management_with_volumes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/6_define_environment_variables/" translated to "docker-cloud/getting-started/python/6_define_environment_variables/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/6_define_environment_variables/" translated to "docker-cloud/getting-started/golang/6_define_environment_variables/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/soft-garbage/" translated to "docker-trusted-registry/soft-garbage/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/repos-and-images/delete-images/" translated to "docker-trusted-registry/repos-and-images/delete-images/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/deploy-application/" translated to "ucp/deploy-application/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/" translated to "docker-cloud/getting-started/python/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/" translated to "docker-cloud/getting-started/golang/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/swarm/swarm_at_scale/03-create-cluster/" translated to "swarm/swarm_at_scale/03-create-cluster/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/swarm/swarm_at_scale/02-deploy-infra/" translated to "swarm/swarm_at_scale/02-deploy-infra/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/5_deploy_the_app_as_a_service/" translated to "docker-cloud/getting-started/python/5_deploy_the_app_as_a_service/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/5_deploy_the_app_as_a_service/" translated to "docker-cloud/getting-started/golang/5_deploy_the_app_as_a_service/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/swarm/swarm_at_scale/04-deploy-app/" translated to "swarm/swarm_at_scale/04-deploy-app/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/your_first_node/" translated to "docker-cloud/getting-started/beginner/your_first_node/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/deploy_first_node/" translated to "docker-cloud/getting-started/beginner/deploy_first_node/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/your_first_service/" translated to "docker-cloud/getting-started/beginner/your_first_service/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/deploy_first_service/" translated to "docker-cloud/getting-started/beginner/deploy_first_service/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/deploy-tags/" translated to "docker-cloud/feature-reference/deploy-tags/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/misc/deprecated/" translated to "engine/misc/deprecated/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/slack-integration/" translated to "docker-cloud/tutorials/slack-integration/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/misc/" translated to "engine/misc/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/introduction/understanding-docker/" translated to "introduction/understanding-docker/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/basics/" translated to "engine/userguide/basics/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/quickstart.md" translated to "engine/quickstart.md/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/api/swarm-api/" translated to "api/swarm-api/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/swarm/api/" translated to "swarm/api/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-hub-enterprise/" translated to "docker-hub-enterprise/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/overview/" translated to "docker-trusted-registry/overview/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/networking/dockernetworks/" translated to "engine/userguide/networking/dockernetworks/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mackit/docker-toolbox/" translated to "mackit/docker-toolbox/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/security/" translated to "engine/articles/security/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/evaluation-install/" translated to "ucp/evaluation-install/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/misc/faq/" translated to "engine/misc/faq/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mackit/faqs/" translated to "mackit/faqs/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mackit/osxfs/" translated to "mackit/osxfs/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/step_three/" translated to "mac/step_three/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/step_three/" translated to "windows/step_three/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/linux/step_three/" translated to "linux/step_three/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/reference/logging/fluentd/" translated to "engine/reference/logging/fluentd/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/started/" translated to "mac/started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/started/" translated to "windows/started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/linux/started/" translated to "linux/started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/getting-started/" translated to "getting-started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mackit/" translated to "mackit/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mackit/getting-started/" translated to "mackit/getting-started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/" translated to "mac/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/started/" translated to "mac/started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-for-mac/started/" translated to "docker-for-mac/started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/winkit/getting-started/" translated to "winkit/getting-started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/winkit/" translated to "winkit/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/" translated to "windows/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/started/" translated to "windows/started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-for-windows/started/" translated to "docker-for-windows/started/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/containers/dockerizing/" translated to "engine/userguide/containers/dockerizing/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/dockerizing/" translated to "engine/userguide/dockerizing/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/swarm/how-swarm-mode-works/" translated to "engine/swarm/how-swarm-mode-works/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/install/engine-ami-launch/" translated to "docker-trusted-registry/install/engine-ami-launch/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/install/install-csengine/" translated to "docker-trusted-registry/install/install-csengine/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/install/" translated to "docker-trusted-registry/cs-engine/install/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/install/dtr-ami-byol-launch/" translated to "docker-trusted-registry/install/dtr-ami-byol-launch/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/install/dtr-ami-bds-launch/" translated to "docker-trusted-registry/install/dtr-ami-bds-launch/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/install/dtr-vhd-azure/" translated to "docker-trusted-registry/install/dtr-vhd-azure/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/install/install-dtr/" translated to "docker-trusted-registry/install/install-dtr/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/step_one/" translated to "mac/step_one/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/step_one/" translated to "windows/step_one/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/linux/step_one/" translated to "linux/step_one/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/production-install/" translated to "ucp/production-install/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/archlinux/" translated to "engine/installation/archlinux/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/cruxlinux/" translated to "engine/installation/cruxlinux/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/centos/" translated to "engine/installation/centos/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/debian/" translated to "engine/installation/debian/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/fedora/" translated to "engine/installation/fedora/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/frugalware/" translated to "engine/installation/frugalware/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/gentoolinux/" translated to "engine/installation/gentoolinux/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/oracle/" translated to "engine/installation/oracle/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/rhel/" translated to "engine/installation/rhel/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/ubuntulinux/" translated to "engine/installation/ubuntulinux/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/SUSE/" translated to "engine/installation/SUSE/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/dtr-integration/" translated to "ucp/dtr-integration/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/intro_cloud/" translated to "docker-cloud/getting-started/beginner/intro_cloud/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/1_introduction/" translated to "docker-cloud/getting-started/python/1_introduction/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/1_introduction/" translated to "docker-cloud/getting-started/golang/1_introduction/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/reference/logging/journald/" translated to "engine/reference/logging/journald/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/faq/docker-errors-faq/" translated to "docker-cloud/faq/docker-errors-faq/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/swarm/swarm_at_scale/about/" translated to "swarm/swarm_at_scale/about/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/last_page/" translated to "mac/last_page/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/last_page/" translated to "windows/last_page/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/linux/last_page/" translated to "linux/last_page/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mackit/multi-arch/" translated to "mackit/multi-arch/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/license/" translated to "docker-trusted-registry/license/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/compose/env" translated to "compose/env/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/link-aws/" translated to "docker-cloud/getting-started/beginner/link-aws/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/link-aws/" translated to "docker-cloud/getting-started/link-aws/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/link-do/" translated to "docker-cloud/getting-started/beginner/link-do/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/link-do/" translated to "docker-cloud/getting-started/link-do/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/link-azure/" translated to "docker-cloud/getting-started/beginner/link-azure/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/link-azure/" translated to "docker-cloud/getting-started/link-azure/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/link-packet/" translated to "docker-cloud/getting-started/beginner/link-packet/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/link-packet/" translated to "docker-cloud/getting-started/link-packet/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/link-softlayer/" translated to "docker-cloud/getting-started/beginner/link-softlayer/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/link-softlayer/" translated to "docker-cloud/getting-started/link-softlayer/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/link-source/" translated to "docker-cloud/tutorials/link-source/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/use-hosted/" translated to "docker-cloud/getting-started/use-hosted/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/ambassador_pattern_linking/" translated to "engine/articles/ambassador_pattern_linking/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/9_load-balance_the_service/" translated to "docker-cloud/getting-started/python/9_load-balance_the_service/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/9_load-balance_the_service/" translated to "docker-cloud/getting-started/golang/9_load-balance_the_service/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/reference/logging/log_tags/" translated to "engine/reference/logging/log_tags/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/reference/logging/" translated to "engine/reference/logging/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mackit/troubleshoot/" translated to "mackit/troubleshoot/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/troubleshoot/" translated to "windows/troubleshoot/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/containers/dockervolumes/" translated to "engine/userguide/containers/dockervolumes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/dockervolumes/" translated to "engine/userguide/dockervolumes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/stacks/" translated to "docker-cloud/feature-reference/stacks/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/monitor-troubleshoot/monitor/" translated to "docker-trusted-registry/monitor-troubleshoot/monitor/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/manage/" translated to "ucp/manage/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/manage/monitor-ucp/" translated to "ucp/manage/monitor-ucp/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/containers/networkigncontainers/" translated to "engine/userguide/containers/networkigncontainers/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/networkigncontainers/" translated to "engine/userguide/networkigncontainers/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mackit/networking/" translated to "mackit/networking/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/amazon/" translated to "engine/installation/amazon/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/google/" translated to "engine/installation/google/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/softlayer/" translated to "engine/installation/softlayer/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/azure/" translated to "engine/installation/azure/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/rackspace/" translated to "engine/installation/rackspace/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/installation/joyent/" translated to "engine/installation/joyent/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-hub/overview/" translated to "docker-hub/overview/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/compose/reference/docker-compose/" translated to "compose/reference/docker-compose/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/plan-production-install/" translated to "ucp/plan-production-install/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/dsc/" translated to "engine/articles/dsc/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/3_prepare_the_app/" translated to "docker-cloud/getting-started/python/3_prepare_the_app/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/3_prepare_the_app/" translated to "docker-cloud/getting-started/golang/3_prepare_the_app/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/cse-prior-release-notes/" translated to "docker-trusted-registry/cse-prior-release-notes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/release-notes/prior-release-notes/" translated to "docker-trusted-registry/cs-engine/release-notes/prior-release-notes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/prior-release-notes/" translated to "docker-trusted-registry/prior-release-notes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/https/" translated to "engine/articles/https/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/10_provision_a_data_backend_for_your_service/" translated to "docker-cloud/getting-started/python/10_provision_a_data_backend_for_your_service/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/10_provision_a_data_backend_for_your_service/" translated to "docker-cloud/getting-started/golang/10_provision_a_data_backend_for_your_service/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/ports/" translated to "docker-cloud/feature-reference/ports/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/quick-start/" translated to "docker-trusted-registry/quick-start/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/repos-and-images/create-repo/" translated to "docker-trusted-registry/repos-and-images/create-repo/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/userguide/" translated to "docker-trusted-registry/userguide/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/repos-and-images/push-and-pull-images/" translated to "docker-trusted-registry/repos-and-images/push-and-pull-images/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/intermediate/pushing-images-to-dockercloud/" translated to "docker-cloud/getting-started/intermediate/pushing-images-to-dockercloud/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/pushing-images-to-dockercloud/" translated to "docker-cloud/tutorials/pushing-images-to-dockercloud/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/4_push_to_cloud_registry/" translated to "docker-cloud/getting-started/python/4_push_to_cloud_registry/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/4_push_to_cloud_registry/" translated to "docker-cloud/getting-started/golang/4_push_to_cloud_registry/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/contributing/contributing" translated to "contributing/contributing/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/service-redeploy/" translated to "docker-cloud/feature-reference/service-redeploy/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/registry/overview/" translated to "registry/overview/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mackit/release-notes/" translated to "mackit/release-notes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/winkit/release-notes/" translated to "winkit/release-notes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/release-notes/" translated to "docker-trusted-registry/cs-engine/release-notes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/registry_mirror/" translated to "engine/articles/registry_mirror/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/containers/usingdocker/" translated to "engine/userguide/containers/usingdocker/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/run_metrics" translated to "engine/articles/run_metrics/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/intermediate/ssh-into-a-node/" translated to "docker-cloud/getting-started/intermediate/ssh-into-a-node/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/ssh-into-a-node/" translated to "docker-cloud/tutorials/ssh-into-a-node/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/faq/how-ssh-nodes/" translated to "docker-cloud/faq/how-ssh-nodes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/7_scale_the_service/" translated to "docker-cloud/getting-started/python/7_scale_the_service/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/7_scale_the_service/" translated to "docker-cloud/getting-started/golang/7_scale_the_service/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/service-scaling/" translated to "docker-cloud/feature-reference/service-scaling/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/api-roles/" translated to "docker-cloud/feature-reference/api-roles/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/service-links/" translated to "docker-cloud/feature-reference/service-links/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/networking/" translated to "ucp/networking/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/high-availability/high-availability/" translated to "docker-trusted-registry/high-availability/high-availability/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/understand_ha/" translated to "ucp/understand_ha/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/2_set_up/" translated to "docker-cloud/getting-started/python/2_set_up/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/2_set_up/" translated to "docker-cloud/getting-started/golang/2_set_up/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/reference/logging/splunk/" translated to "engine/reference/logging/splunk/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/stack-yaml-reference/" translated to "docker-cloud/feature-reference/stack-yaml-reference/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/11_service_stacks/" translated to "docker-cloud/getting-started/python/11_service_stacks/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/registry/storagedrivers/" translated to "registry/storagedrivers/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/containers/dockerrepos/" translated to "engine/userguide/containers/dockerrepos/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/userguide/dockerrepos/" translated to "engine/userguide/dockerrepos/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/swarm/manager-administration-guide/" translated to "engine/swarm/manager-administration-guide/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/step_six/" translated to "mac/step_six/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/step_six/" translated to "windows/step_six/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/linux/step_six/" translated to "linux/step_six/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/intermediate/installing-cli/" translated to "docker-cloud/getting-started/intermediate/installing-cli/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/installing-cli/" translated to "docker-cloud/getting-started/installing-cli/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/installing-cli/" translated to "docker-cloud/tutorials/installing-cli/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/adminguide/" translated to "docker-trusted-registry/adminguide/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/kv_store/" translated to "ucp/kv_store/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/swarm/swarm_at_scale/05-troubleshoot/" translated to "swarm/swarm_at_scale/05-troubleshoot/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/release-notes/release-notes/" translated to "docker-trusted-registry/release-notes/release-notes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/mac/step_two/" translated to "mac/step_two/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/windows/step_two/" translated to "windows/step_two/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/linux/step_two/" translated to "linux/step_two/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/upgrade/" translated to "docker-trusted-registry/cs-engine/upgrade/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/docker-upgrade/" translated to "docker-cloud/feature-reference/docker-upgrade/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/docker-upgrade/" translated to "docker-cloud/tutorials/docker-upgrade/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/ucp/upgrade-ucp/" translated to "ucp/upgrade-ucp/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/install/upgrade/" translated to "docker-trusted-registry/install/upgrade/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-trusted-registry/install/upgrade/upgrade-minor/" translated to "docker-trusted-registry/install/upgrade/upgrade-minor/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/byoh/" translated to "docker-cloud/feature-reference/byoh/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/byoh/" translated to "docker-cloud/tutorials/byoh/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/use-byon/" translated to "docker-cloud/getting-started/use-byon/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/triggers/" translated to "docker-cloud/feature-reference/triggers/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/chef/" translated to "engine/articles/chef/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/faq/cloud-on-packet.net-faq/" translated to "docker-cloud/faq/cloud-on-packet.net-faq/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/faq/cloud-on-aws-faq/" translated to "docker-cloud/faq/cloud-on-aws-faq/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/puppet/" translated to "engine/articles/puppet/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/using_supervisord/" translated to "engine/articles/using_supervisord/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/articles/certificates/" translated to "engine/articles/certificates/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/8_view_logs/" translated to "docker-cloud/getting-started/python/8_view_logs/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/8_view_logs/" translated to "docker-cloud/getting-started/golang/8_view_logs/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/tutorials/download-volume-data/" translated to "docker-cloud/tutorials/download-volume-data/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/volumes/" translated to "docker-cloud/feature-reference/volumes/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/reference/commandline/daemon/" translated to "engine/reference/commandline/daemon/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/reference/commandline/node_tasks/" translated to "engine/reference/commandline/node_tasks/index.html"
-INFO: 2016/08/19 04:58:01 htmlredirect.go:115: Alias "/engine/reference/commandline/service_tasks/" translated to "engine/reference/commandline/service_tasks/index.html"
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section apidocs: [section/apidocs.html _default/section.html _default/list.html indexes/apidocs.html _default/indexes.html theme/section/apidocs.html theme/_default/section.html theme/_default/list.html theme/indexes/apidocs.html theme/_default/indexes.html theme/section/apidocs.html theme/_default/section.html theme/_default/list.html theme/indexes/apidocs.html theme/_default/indexes.html theme/theme/section/apidocs.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/apidocs.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "apidocs" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section swarm: [section/swarm.html _default/section.html _default/list.html indexes/swarm.html _default/indexes.html theme/section/swarm.html theme/_default/section.html theme/_default/list.html theme/indexes/swarm.html theme/_default/indexes.html theme/section/swarm.html theme/_default/section.html theme/_default/list.html theme/indexes/swarm.html theme/_default/indexes.html theme/theme/section/swarm.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/swarm.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "swarm" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section docker-trusted-registry: [section/docker-trusted-registry.html _default/section.html _default/list.html indexes/docker-trusted-registry.html _default/indexes.html theme/section/docker-trusted-registry.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-trusted-registry.html theme/_default/indexes.html theme/section/docker-trusted-registry.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-trusted-registry.html theme/_default/indexes.html theme/theme/section/docker-trusted-registry.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-trusted-registry.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "docker-trusted-registry" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section docker-hub: [section/docker-hub.html _default/section.html _default/list.html indexes/docker-hub.html _default/indexes.html theme/section/docker-hub.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-hub.html theme/_default/indexes.html theme/section/docker-hub.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-hub.html theme/_default/indexes.html theme/theme/section/docker-hub.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-hub.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "docker-hub" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section cs-engine: [section/cs-engine.html _default/section.html _default/list.html indexes/cs-engine.html _default/indexes.html theme/section/cs-engine.html theme/_default/section.html theme/_default/list.html theme/indexes/cs-engine.html theme/_default/indexes.html theme/section/cs-engine.html theme/_default/section.html theme/_default/list.html theme/indexes/cs-engine.html theme/_default/indexes.html theme/theme/section/cs-engine.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/cs-engine.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "cs-engine" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section : [section/.html _default/section.html _default/list.html indexes/.html _default/indexes.html theme/section/.html theme/_default/section.html theme/_default/list.html theme/indexes/.html theme/_default/indexes.html theme/section/.html theme/_default/section.html theme/_default/list.html theme/indexes/.html theme/_default/indexes.html theme/theme/section/.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section toolbox: [section/toolbox.html _default/section.html _default/list.html indexes/toolbox.html _default/indexes.html theme/section/toolbox.html theme/_default/section.html theme/_default/list.html theme/indexes/toolbox.html theme/_default/indexes.html theme/section/toolbox.html theme/_default/section.html theme/_default/list.html theme/indexes/toolbox.html theme/_default/indexes.html theme/theme/section/toolbox.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/toolbox.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "toolbox" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section opensource: [section/opensource.html _default/section.html _default/list.html indexes/opensource.html _default/indexes.html theme/section/opensource.html theme/_default/section.html theme/_default/list.html theme/indexes/opensource.html theme/_default/indexes.html theme/section/opensource.html theme/_default/section.html theme/_default/list.html theme/indexes/opensource.html theme/_default/indexes.html theme/theme/section/opensource.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/opensource.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "opensource" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section engine: [section/engine.html _default/section.html _default/list.html indexes/engine.html _default/indexes.html theme/section/engine.html theme/_default/section.html theme/_default/list.html theme/indexes/engine.html theme/_default/indexes.html theme/section/engine.html theme/_default/section.html theme/_default/list.html theme/indexes/engine.html theme/_default/indexes.html theme/theme/section/engine.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/engine.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "engine" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section docker-for-windows: [section/docker-for-windows.html _default/section.html _default/list.html indexes/docker-for-windows.html _default/indexes.html theme/section/docker-for-windows.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-for-windows.html theme/_default/indexes.html theme/section/docker-for-windows.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-for-windows.html theme/_default/indexes.html theme/theme/section/docker-for-windows.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-for-windows.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "docker-for-windows" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section machine: [section/machine.html _default/section.html _default/list.html indexes/machine.html _default/indexes.html theme/section/machine.html theme/_default/section.html theme/_default/list.html theme/indexes/machine.html theme/_default/indexes.html theme/section/machine.html theme/_default/section.html theme/_default/list.html theme/indexes/machine.html theme/_default/indexes.html theme/theme/section/machine.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/machine.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "machine" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section notary: [section/notary.html _default/section.html _default/list.html indexes/notary.html _default/indexes.html theme/section/notary.html theme/_default/section.html theme/_default/list.html theme/indexes/notary.html theme/_default/indexes.html theme/section/notary.html theme/_default/section.html theme/_default/list.html theme/indexes/notary.html theme/_default/indexes.html theme/theme/section/notary.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/notary.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "notary" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section docker-store: [section/docker-store.html _default/section.html _default/list.html indexes/docker-store.html _default/indexes.html theme/section/docker-store.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-store.html theme/_default/indexes.html theme/section/docker-store.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-store.html theme/_default/indexes.html theme/theme/section/docker-store.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-store.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "docker-store" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section docker-for-mac: [section/docker-for-mac.html _default/section.html _default/list.html indexes/docker-for-mac.html _default/indexes.html theme/section/docker-for-mac.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-for-mac.html theme/_default/indexes.html theme/section/docker-for-mac.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-for-mac.html theme/_default/indexes.html theme/theme/section/docker-for-mac.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-for-mac.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "docker-for-mac" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section ucp: [section/ucp.html _default/section.html _default/list.html indexes/ucp.html _default/indexes.html theme/section/ucp.html theme/_default/section.html theme/_default/list.html theme/indexes/ucp.html theme/_default/indexes.html theme/section/ucp.html theme/_default/section.html theme/_default/list.html theme/indexes/ucp.html theme/_default/indexes.html theme/theme/section/ucp.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/ucp.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "ucp" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section docker-cloud: [section/docker-cloud.html _default/section.html _default/list.html indexes/docker-cloud.html _default/indexes.html theme/section/docker-cloud.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-cloud.html theme/_default/indexes.html theme/section/docker-cloud.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-cloud.html theme/_default/indexes.html theme/theme/section/docker-cloud.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-cloud.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "docker-cloud" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section registry: [section/registry.html _default/section.html _default/list.html indexes/registry.html _default/indexes.html theme/section/registry.html theme/_default/section.html theme/_default/list.html theme/indexes/registry.html theme/_default/indexes.html theme/section/registry.html theme/_default/section.html theme/_default/list.html theme/indexes/registry.html theme/_default/indexes.html theme/theme/section/registry.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/registry.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "registry" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section compose: [section/compose.html _default/section.html _default/list.html indexes/compose.html _default/indexes.html theme/section/compose.html theme/_default/section.html theme/_default/list.html theme/indexes/compose.html theme/_default/indexes.html theme/section/compose.html theme/_default/section.html theme/_default/list.html theme/indexes/compose.html theme/_default/indexes.html theme/theme/section/compose.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/compose.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "compose" is rendered empty
-WARN: 2016/08/19 04:58:01 site.go:2014: Unable to locate layout for section kitematic: [section/kitematic.html _default/section.html _default/list.html indexes/kitematic.html _default/indexes.html theme/section/kitematic.html theme/_default/section.html theme/_default/list.html theme/indexes/kitematic.html theme/_default/indexes.html theme/section/kitematic.html theme/_default/section.html theme/_default/list.html theme/indexes/kitematic.html theme/_default/indexes.html theme/theme/section/kitematic.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/kitematic.html theme/theme/_default/indexes.html]
-WARN: 2016/08/19 04:58:01 site.go:1990: "kitematic" is rendered empty
+INFO: 2016/08/19 05:07:54 site.go:1251: found taxonomies: map[string]string{"tag":"tags", "category":"categories"}
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/started/" translated to "mac/started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/containers/" translated to "engine/userguide/containers/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/extend/authorization/" translated to "engine/extend/authorization/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/deploy-to-cloud/" translated to "docker-cloud/feature-reference/deploy-to-cloud/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/deploy-to-cloud/" translated to "docker-cloud/tutorials/deploy-to-cloud/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/reference/logging/awslogs/" translated to "engine/reference/logging/awslogs/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/accounts/" translated to "docker-trusted-registry/accounts/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/manage/monitor-manage-users/" translated to "ucp/manage/monitor-manage-users/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/user-management/manage-users/" translated to "ucp/user-management/manage-users/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/automated-build/" translated to "docker-cloud/feature-reference/automated-build/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/automated-testing/" translated to "docker-cloud/feature-reference/automated-testing/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/auto-destroy/" translated to "docker-cloud/feature-reference/auto-destroy/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/autorestart/" translated to "docker-cloud/feature-reference/autorestart/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/auto-redeploy/" translated to "docker-cloud/feature-reference/auto-redeploy/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/host_integration/" translated to "engine/articles/host_integration/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/dockerfile_best-practices/" translated to "engine/articles/dockerfile_best-practices/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/intermediate/optimize-dockerfiles/" translated to "docker-cloud/getting-started/intermediate/optimize-dockerfiles/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/optimize-dockerfiles/" translated to "docker-cloud/tutorials/optimize-dockerfiles/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/misc/breaking/" translated to "engine/misc/breaking/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/step_four/" translated to "mac/step_four/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/step_four/" translated to "windows/step_four/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/linux/step_four/" translated to "linux/step_four/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/containers/dockerimages/" translated to "engine/userguide/containers/dockerimages/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/dockerimages/" translated to "engine/userguide/dockerimages/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/" translated to "docker-trusted-registry/cs-engine/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/cse-release-notes/" translated to "docker-trusted-registry/cse-release-notes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/release-notes/release-notes/" translated to "docker-trusted-registry/cs-engine/release-notes/release-notes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/cloud/cloud/" translated to "engine/installation/cloud/cloud/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/compose/yml" translated to "compose/yml/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/reference/logging/overview/" translated to "engine/reference/logging/overview/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/configuring/" translated to "engine/articles/configuring/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/admin/configuring/" translated to "engine/admin/configuring/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/deployment-strategies/" translated to "docker-cloud/feature-reference/deployment-strategies/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/systemd/" translated to "engine/articles/systemd/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/step_five/" translated to "mac/step_five/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/step_five/" translated to "windows/step_five/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/linux/step_five/" translated to "linux/step_five/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/baseimages/" translated to "engine/articles/baseimages/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/intermediate/load-balance-hello-world/" translated to "docker-cloud/getting-started/intermediate/load-balance-hello-world/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/load-balance-hello-world/" translated to "docker-cloud/tutorials/load-balance-hello-world/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/12_data_management_with_volumes/" translated to "docker-cloud/getting-started/python/12_data_management_with_volumes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/6_define_environment_variables/" translated to "docker-cloud/getting-started/python/6_define_environment_variables/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/6_define_environment_variables/" translated to "docker-cloud/getting-started/golang/6_define_environment_variables/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/soft-garbage/" translated to "docker-trusted-registry/soft-garbage/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/repos-and-images/delete-images/" translated to "docker-trusted-registry/repos-and-images/delete-images/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/deploy-application/" translated to "ucp/deploy-application/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/" translated to "docker-cloud/getting-started/python/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/" translated to "docker-cloud/getting-started/golang/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/swarm/swarm_at_scale/03-create-cluster/" translated to "swarm/swarm_at_scale/03-create-cluster/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/swarm/swarm_at_scale/02-deploy-infra/" translated to "swarm/swarm_at_scale/02-deploy-infra/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/5_deploy_the_app_as_a_service/" translated to "docker-cloud/getting-started/python/5_deploy_the_app_as_a_service/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/5_deploy_the_app_as_a_service/" translated to "docker-cloud/getting-started/golang/5_deploy_the_app_as_a_service/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/swarm/swarm_at_scale/04-deploy-app/" translated to "swarm/swarm_at_scale/04-deploy-app/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/your_first_node/" translated to "docker-cloud/getting-started/beginner/your_first_node/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/deploy_first_node/" translated to "docker-cloud/getting-started/beginner/deploy_first_node/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/your_first_service/" translated to "docker-cloud/getting-started/beginner/your_first_service/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/deploy_first_service/" translated to "docker-cloud/getting-started/beginner/deploy_first_service/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/deploy-tags/" translated to "docker-cloud/feature-reference/deploy-tags/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/misc/deprecated/" translated to "engine/misc/deprecated/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/slack-integration/" translated to "docker-cloud/tutorials/slack-integration/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/misc/" translated to "engine/misc/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/introduction/understanding-docker/" translated to "introduction/understanding-docker/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/basics/" translated to "engine/userguide/basics/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/quickstart.md" translated to "engine/quickstart.md/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/api/swarm-api/" translated to "api/swarm-api/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/swarm/api/" translated to "swarm/api/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-hub-enterprise/" translated to "docker-hub-enterprise/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/overview/" translated to "docker-trusted-registry/overview/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/networking/dockernetworks/" translated to "engine/userguide/networking/dockernetworks/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mackit/docker-toolbox/" translated to "mackit/docker-toolbox/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/security/" translated to "engine/articles/security/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/evaluation-install/" translated to "ucp/evaluation-install/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/misc/faq/" translated to "engine/misc/faq/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mackit/faqs/" translated to "mackit/faqs/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mackit/osxfs/" translated to "mackit/osxfs/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/step_three/" translated to "mac/step_three/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/step_three/" translated to "windows/step_three/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/linux/step_three/" translated to "linux/step_three/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/reference/logging/fluentd/" translated to "engine/reference/logging/fluentd/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/started/" translated to "mac/started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/started/" translated to "windows/started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/linux/started/" translated to "linux/started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/getting-started/" translated to "getting-started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mackit/" translated to "mackit/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mackit/getting-started/" translated to "mackit/getting-started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/" translated to "mac/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/started/" translated to "mac/started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-for-mac/started/" translated to "docker-for-mac/started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/winkit/getting-started/" translated to "winkit/getting-started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/winkit/" translated to "winkit/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/" translated to "windows/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/started/" translated to "windows/started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-for-windows/started/" translated to "docker-for-windows/started/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/containers/dockerizing/" translated to "engine/userguide/containers/dockerizing/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/dockerizing/" translated to "engine/userguide/dockerizing/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/swarm/how-swarm-mode-works/" translated to "engine/swarm/how-swarm-mode-works/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/install/engine-ami-launch/" translated to "docker-trusted-registry/install/engine-ami-launch/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/install/install-csengine/" translated to "docker-trusted-registry/install/install-csengine/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/install/" translated to "docker-trusted-registry/cs-engine/install/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/install/dtr-ami-byol-launch/" translated to "docker-trusted-registry/install/dtr-ami-byol-launch/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/install/dtr-ami-bds-launch/" translated to "docker-trusted-registry/install/dtr-ami-bds-launch/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/install/dtr-vhd-azure/" translated to "docker-trusted-registry/install/dtr-vhd-azure/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/install/install-dtr/" translated to "docker-trusted-registry/install/install-dtr/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/step_one/" translated to "mac/step_one/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/step_one/" translated to "windows/step_one/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/linux/step_one/" translated to "linux/step_one/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/production-install/" translated to "ucp/production-install/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/archlinux/" translated to "engine/installation/archlinux/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/cruxlinux/" translated to "engine/installation/cruxlinux/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/centos/" translated to "engine/installation/centos/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/debian/" translated to "engine/installation/debian/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/fedora/" translated to "engine/installation/fedora/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/frugalware/" translated to "engine/installation/frugalware/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/gentoolinux/" translated to "engine/installation/gentoolinux/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/oracle/" translated to "engine/installation/oracle/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/rhel/" translated to "engine/installation/rhel/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/ubuntulinux/" translated to "engine/installation/ubuntulinux/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/SUSE/" translated to "engine/installation/SUSE/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/dtr-integration/" translated to "ucp/dtr-integration/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/intro_cloud/" translated to "docker-cloud/getting-started/beginner/intro_cloud/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/1_introduction/" translated to "docker-cloud/getting-started/python/1_introduction/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/1_introduction/" translated to "docker-cloud/getting-started/golang/1_introduction/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/reference/logging/journald/" translated to "engine/reference/logging/journald/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/faq/docker-errors-faq/" translated to "docker-cloud/faq/docker-errors-faq/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/swarm/swarm_at_scale/about/" translated to "swarm/swarm_at_scale/about/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/last_page/" translated to "mac/last_page/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/last_page/" translated to "windows/last_page/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/linux/last_page/" translated to "linux/last_page/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mackit/multi-arch/" translated to "mackit/multi-arch/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/license/" translated to "docker-trusted-registry/license/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/compose/env" translated to "compose/env/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/link-aws/" translated to "docker-cloud/getting-started/beginner/link-aws/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/link-aws/" translated to "docker-cloud/getting-started/link-aws/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/link-do/" translated to "docker-cloud/getting-started/beginner/link-do/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/link-do/" translated to "docker-cloud/getting-started/link-do/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/link-azure/" translated to "docker-cloud/getting-started/beginner/link-azure/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/link-azure/" translated to "docker-cloud/getting-started/link-azure/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/link-packet/" translated to "docker-cloud/getting-started/beginner/link-packet/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/link-packet/" translated to "docker-cloud/getting-started/link-packet/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/beginner/link-softlayer/" translated to "docker-cloud/getting-started/beginner/link-softlayer/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/link-softlayer/" translated to "docker-cloud/getting-started/link-softlayer/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/link-source/" translated to "docker-cloud/tutorials/link-source/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/use-hosted/" translated to "docker-cloud/getting-started/use-hosted/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/ambassador_pattern_linking/" translated to "engine/articles/ambassador_pattern_linking/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/9_load-balance_the_service/" translated to "docker-cloud/getting-started/python/9_load-balance_the_service/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/9_load-balance_the_service/" translated to "docker-cloud/getting-started/golang/9_load-balance_the_service/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/reference/logging/log_tags/" translated to "engine/reference/logging/log_tags/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/reference/logging/" translated to "engine/reference/logging/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mackit/troubleshoot/" translated to "mackit/troubleshoot/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/troubleshoot/" translated to "windows/troubleshoot/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/containers/dockervolumes/" translated to "engine/userguide/containers/dockervolumes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/dockervolumes/" translated to "engine/userguide/dockervolumes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/stacks/" translated to "docker-cloud/feature-reference/stacks/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/monitor-troubleshoot/monitor/" translated to "docker-trusted-registry/monitor-troubleshoot/monitor/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/manage/" translated to "ucp/manage/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/manage/monitor-ucp/" translated to "ucp/manage/monitor-ucp/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/containers/networkigncontainers/" translated to "engine/userguide/containers/networkigncontainers/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/networkigncontainers/" translated to "engine/userguide/networkigncontainers/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mackit/networking/" translated to "mackit/networking/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/amazon/" translated to "engine/installation/amazon/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/google/" translated to "engine/installation/google/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/softlayer/" translated to "engine/installation/softlayer/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/azure/" translated to "engine/installation/azure/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/rackspace/" translated to "engine/installation/rackspace/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/installation/joyent/" translated to "engine/installation/joyent/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-hub/overview/" translated to "docker-hub/overview/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/compose/reference/docker-compose/" translated to "compose/reference/docker-compose/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/plan-production-install/" translated to "ucp/plan-production-install/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/dsc/" translated to "engine/articles/dsc/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/3_prepare_the_app/" translated to "docker-cloud/getting-started/python/3_prepare_the_app/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/3_prepare_the_app/" translated to "docker-cloud/getting-started/golang/3_prepare_the_app/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/cse-prior-release-notes/" translated to "docker-trusted-registry/cse-prior-release-notes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/release-notes/prior-release-notes/" translated to "docker-trusted-registry/cs-engine/release-notes/prior-release-notes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/prior-release-notes/" translated to "docker-trusted-registry/prior-release-notes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/https/" translated to "engine/articles/https/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/10_provision_a_data_backend_for_your_service/" translated to "docker-cloud/getting-started/python/10_provision_a_data_backend_for_your_service/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/10_provision_a_data_backend_for_your_service/" translated to "docker-cloud/getting-started/golang/10_provision_a_data_backend_for_your_service/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/ports/" translated to "docker-cloud/feature-reference/ports/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/quick-start/" translated to "docker-trusted-registry/quick-start/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/repos-and-images/create-repo/" translated to "docker-trusted-registry/repos-and-images/create-repo/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/userguide/" translated to "docker-trusted-registry/userguide/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/repos-and-images/push-and-pull-images/" translated to "docker-trusted-registry/repos-and-images/push-and-pull-images/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/intermediate/pushing-images-to-dockercloud/" translated to "docker-cloud/getting-started/intermediate/pushing-images-to-dockercloud/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/pushing-images-to-dockercloud/" translated to "docker-cloud/tutorials/pushing-images-to-dockercloud/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/4_push_to_cloud_registry/" translated to "docker-cloud/getting-started/python/4_push_to_cloud_registry/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/4_push_to_cloud_registry/" translated to "docker-cloud/getting-started/golang/4_push_to_cloud_registry/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/contributing/contributing" translated to "contributing/contributing/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/service-redeploy/" translated to "docker-cloud/feature-reference/service-redeploy/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/registry/overview/" translated to "registry/overview/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mackit/release-notes/" translated to "mackit/release-notes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/winkit/release-notes/" translated to "winkit/release-notes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/release-notes/" translated to "docker-trusted-registry/cs-engine/release-notes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/registry_mirror/" translated to "engine/articles/registry_mirror/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/containers/usingdocker/" translated to "engine/userguide/containers/usingdocker/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/run_metrics" translated to "engine/articles/run_metrics/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/intermediate/ssh-into-a-node/" translated to "docker-cloud/getting-started/intermediate/ssh-into-a-node/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/ssh-into-a-node/" translated to "docker-cloud/tutorials/ssh-into-a-node/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/faq/how-ssh-nodes/" translated to "docker-cloud/faq/how-ssh-nodes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/7_scale_the_service/" translated to "docker-cloud/getting-started/python/7_scale_the_service/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/7_scale_the_service/" translated to "docker-cloud/getting-started/golang/7_scale_the_service/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/service-scaling/" translated to "docker-cloud/feature-reference/service-scaling/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/api-roles/" translated to "docker-cloud/feature-reference/api-roles/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/service-links/" translated to "docker-cloud/feature-reference/service-links/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/networking/" translated to "ucp/networking/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/high-availability/high-availability/" translated to "docker-trusted-registry/high-availability/high-availability/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/understand_ha/" translated to "ucp/understand_ha/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/2_set_up/" translated to "docker-cloud/getting-started/python/2_set_up/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/2_set_up/" translated to "docker-cloud/getting-started/golang/2_set_up/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/reference/logging/splunk/" translated to "engine/reference/logging/splunk/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/stack-yaml-reference/" translated to "docker-cloud/feature-reference/stack-yaml-reference/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/11_service_stacks/" translated to "docker-cloud/getting-started/python/11_service_stacks/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/registry/storagedrivers/" translated to "registry/storagedrivers/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/containers/dockerrepos/" translated to "engine/userguide/containers/dockerrepos/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/userguide/dockerrepos/" translated to "engine/userguide/dockerrepos/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/swarm/manager-administration-guide/" translated to "engine/swarm/manager-administration-guide/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/step_six/" translated to "mac/step_six/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/step_six/" translated to "windows/step_six/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/linux/step_six/" translated to "linux/step_six/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/intermediate/installing-cli/" translated to "docker-cloud/getting-started/intermediate/installing-cli/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/installing-cli/" translated to "docker-cloud/getting-started/installing-cli/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/installing-cli/" translated to "docker-cloud/tutorials/installing-cli/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/adminguide/" translated to "docker-trusted-registry/adminguide/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/kv_store/" translated to "ucp/kv_store/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/swarm/swarm_at_scale/05-troubleshoot/" translated to "swarm/swarm_at_scale/05-troubleshoot/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/release-notes/release-notes/" translated to "docker-trusted-registry/release-notes/release-notes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/mac/step_two/" translated to "mac/step_two/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/windows/step_two/" translated to "windows/step_two/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/linux/step_two/" translated to "linux/step_two/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/cs-engine/upgrade/" translated to "docker-trusted-registry/cs-engine/upgrade/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/docker-upgrade/" translated to "docker-cloud/feature-reference/docker-upgrade/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/docker-upgrade/" translated to "docker-cloud/tutorials/docker-upgrade/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/ucp/upgrade-ucp/" translated to "ucp/upgrade-ucp/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/install/upgrade/" translated to "docker-trusted-registry/install/upgrade/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-trusted-registry/install/upgrade/upgrade-minor/" translated to "docker-trusted-registry/install/upgrade/upgrade-minor/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/byoh/" translated to "docker-cloud/feature-reference/byoh/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/byoh/" translated to "docker-cloud/tutorials/byoh/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/use-byon/" translated to "docker-cloud/getting-started/use-byon/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/triggers/" translated to "docker-cloud/feature-reference/triggers/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/chef/" translated to "engine/articles/chef/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/faq/cloud-on-packet.net-faq/" translated to "docker-cloud/faq/cloud-on-packet.net-faq/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/faq/cloud-on-aws-faq/" translated to "docker-cloud/faq/cloud-on-aws-faq/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/puppet/" translated to "engine/articles/puppet/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/using_supervisord/" translated to "engine/articles/using_supervisord/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/articles/certificates/" translated to "engine/articles/certificates/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/python/8_view_logs/" translated to "docker-cloud/getting-started/python/8_view_logs/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/getting-started/golang/8_view_logs/" translated to "docker-cloud/getting-started/golang/8_view_logs/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/tutorials/download-volume-data/" translated to "docker-cloud/tutorials/download-volume-data/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/docker-cloud/feature-reference/volumes/" translated to "docker-cloud/feature-reference/volumes/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/reference/commandline/daemon/" translated to "engine/reference/commandline/daemon/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/reference/commandline/node_tasks/" translated to "engine/reference/commandline/node_tasks/index.html"
+INFO: 2016/08/19 05:07:54 htmlredirect.go:115: Alias "/engine/reference/commandline/service_tasks/" translated to "engine/reference/commandline/service_tasks/index.html"
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section engine: [section/engine.html _default/section.html _default/list.html indexes/engine.html _default/indexes.html theme/section/engine.html theme/_default/section.html theme/_default/list.html theme/indexes/engine.html theme/_default/indexes.html theme/section/engine.html theme/_default/section.html theme/_default/list.html theme/indexes/engine.html theme/_default/indexes.html theme/theme/section/engine.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/engine.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "engine" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section apidocs: [section/apidocs.html _default/section.html _default/list.html indexes/apidocs.html _default/indexes.html theme/section/apidocs.html theme/_default/section.html theme/_default/list.html theme/indexes/apidocs.html theme/_default/indexes.html theme/section/apidocs.html theme/_default/section.html theme/_default/list.html theme/indexes/apidocs.html theme/_default/indexes.html theme/theme/section/apidocs.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/apidocs.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "apidocs" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section docker-cloud: [section/docker-cloud.html _default/section.html _default/list.html indexes/docker-cloud.html _default/indexes.html theme/section/docker-cloud.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-cloud.html theme/_default/indexes.html theme/section/docker-cloud.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-cloud.html theme/_default/indexes.html theme/theme/section/docker-cloud.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-cloud.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "docker-cloud" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section registry: [section/registry.html _default/section.html _default/list.html indexes/registry.html _default/indexes.html theme/section/registry.html theme/_default/section.html theme/_default/list.html theme/indexes/registry.html theme/_default/indexes.html theme/section/registry.html theme/_default/section.html theme/_default/list.html theme/indexes/registry.html theme/_default/indexes.html theme/theme/section/registry.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/registry.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "registry" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section compose: [section/compose.html _default/section.html _default/list.html indexes/compose.html _default/indexes.html theme/section/compose.html theme/_default/section.html theme/_default/list.html theme/indexes/compose.html theme/_default/indexes.html theme/section/compose.html theme/_default/section.html theme/_default/list.html theme/indexes/compose.html theme/_default/indexes.html theme/theme/section/compose.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/compose.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "compose" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section : [section/.html _default/section.html _default/list.html indexes/.html _default/indexes.html theme/section/.html theme/_default/section.html theme/_default/list.html theme/indexes/.html theme/_default/indexes.html theme/section/.html theme/_default/section.html theme/_default/list.html theme/indexes/.html theme/_default/indexes.html theme/theme/section/.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section swarm: [section/swarm.html _default/section.html _default/list.html indexes/swarm.html _default/indexes.html theme/section/swarm.html theme/_default/section.html theme/_default/list.html theme/indexes/swarm.html theme/_default/indexes.html theme/section/swarm.html theme/_default/section.html theme/_default/list.html theme/indexes/swarm.html theme/_default/indexes.html theme/theme/section/swarm.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/swarm.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "swarm" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section ucp: [section/ucp.html _default/section.html _default/list.html indexes/ucp.html _default/indexes.html theme/section/ucp.html theme/_default/section.html theme/_default/list.html theme/indexes/ucp.html theme/_default/indexes.html theme/section/ucp.html theme/_default/section.html theme/_default/list.html theme/indexes/ucp.html theme/_default/indexes.html theme/theme/section/ucp.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/ucp.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "ucp" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section kitematic: [section/kitematic.html _default/section.html _default/list.html indexes/kitematic.html _default/indexes.html theme/section/kitematic.html theme/_default/section.html theme/_default/list.html theme/indexes/kitematic.html theme/_default/indexes.html theme/section/kitematic.html theme/_default/section.html theme/_default/list.html theme/indexes/kitematic.html theme/_default/indexes.html theme/theme/section/kitematic.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/kitematic.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "kitematic" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section docker-store: [section/docker-store.html _default/section.html _default/list.html indexes/docker-store.html _default/indexes.html theme/section/docker-store.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-store.html theme/_default/indexes.html theme/section/docker-store.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-store.html theme/_default/indexes.html theme/theme/section/docker-store.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-store.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "docker-store" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section toolbox: [section/toolbox.html _default/section.html _default/list.html indexes/toolbox.html _default/indexes.html theme/section/toolbox.html theme/_default/section.html theme/_default/list.html theme/indexes/toolbox.html theme/_default/indexes.html theme/section/toolbox.html theme/_default/section.html theme/_default/list.html theme/indexes/toolbox.html theme/_default/indexes.html theme/theme/section/toolbox.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/toolbox.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "toolbox" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section docker-for-mac: [section/docker-for-mac.html _default/section.html _default/list.html indexes/docker-for-mac.html _default/indexes.html theme/section/docker-for-mac.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-for-mac.html theme/_default/indexes.html theme/section/docker-for-mac.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-for-mac.html theme/_default/indexes.html theme/theme/section/docker-for-mac.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-for-mac.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "docker-for-mac" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section docker-for-windows: [section/docker-for-windows.html _default/section.html _default/list.html indexes/docker-for-windows.html _default/indexes.html theme/section/docker-for-windows.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-for-windows.html theme/_default/indexes.html theme/section/docker-for-windows.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-for-windows.html theme/_default/indexes.html theme/theme/section/docker-for-windows.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-for-windows.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "docker-for-windows" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section opensource: [section/opensource.html _default/section.html _default/list.html indexes/opensource.html _default/indexes.html theme/section/opensource.html theme/_default/section.html theme/_default/list.html theme/indexes/opensource.html theme/_default/indexes.html theme/section/opensource.html theme/_default/section.html theme/_default/list.html theme/indexes/opensource.html theme/_default/indexes.html theme/theme/section/opensource.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/opensource.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "opensource" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section cs-engine: [section/cs-engine.html _default/section.html _default/list.html indexes/cs-engine.html _default/indexes.html theme/section/cs-engine.html theme/_default/section.html theme/_default/list.html theme/indexes/cs-engine.html theme/_default/indexes.html theme/section/cs-engine.html theme/_default/section.html theme/_default/list.html theme/indexes/cs-engine.html theme/_default/indexes.html theme/theme/section/cs-engine.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/cs-engine.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "cs-engine" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section notary: [section/notary.html _default/section.html _default/list.html indexes/notary.html _default/indexes.html theme/section/notary.html theme/_default/section.html theme/_default/list.html theme/indexes/notary.html theme/_default/indexes.html theme/section/notary.html theme/_default/section.html theme/_default/list.html theme/indexes/notary.html theme/_default/indexes.html theme/theme/section/notary.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/notary.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "notary" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section machine: [section/machine.html _default/section.html _default/list.html indexes/machine.html _default/indexes.html theme/section/machine.html theme/_default/section.html theme/_default/list.html theme/indexes/machine.html theme/_default/indexes.html theme/section/machine.html theme/_default/section.html theme/_default/list.html theme/indexes/machine.html theme/_default/indexes.html theme/theme/section/machine.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/machine.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "machine" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section docker-trusted-registry: [section/docker-trusted-registry.html _default/section.html _default/list.html indexes/docker-trusted-registry.html _default/indexes.html theme/section/docker-trusted-registry.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-trusted-registry.html theme/_default/indexes.html theme/section/docker-trusted-registry.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-trusted-registry.html theme/_default/indexes.html theme/theme/section/docker-trusted-registry.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-trusted-registry.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "docker-trusted-registry" is rendered empty
+WARN: 2016/08/19 05:07:54 site.go:2014: Unable to locate layout for section docker-hub: [section/docker-hub.html _default/section.html _default/list.html indexes/docker-hub.html _default/indexes.html theme/section/docker-hub.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-hub.html theme/_default/indexes.html theme/section/docker-hub.html theme/_default/section.html theme/_default/list.html theme/indexes/docker-hub.html theme/_default/indexes.html theme/theme/section/docker-hub.html theme/theme/_default/section.html theme/theme/_default/list.html theme/theme/indexes/docker-hub.html theme/theme/_default/indexes.html]
+WARN: 2016/08/19 05:07:54 site.go:1990: "docker-hub" is rendered empty
 0 of 29 drafts rendered
 0 future content
 708 pages created
@@ -557,7 +559,7 @@ WARN: 2016/08/19 04:58:01 site.go:1990: "kitematic" is rendered empty
 0 paginator pages created
 0 tags created
 0 categories created
-in 24707 ms
+in 24686 ms
 
 ```
 
@@ -572,168 +574,48 @@ sha is on - which may help you update the `all-projects.yml`
 ```
 $ gendoc status
 publish-set: v1.12
--- docs-base (in .)
-* (detached from docs-2016-08-12)
-  master
-docs-2016-08-12
-Checkout Sha (f87ad24084c52b7b959f9a1dd091ceedf88b45ea) NOT the same as ref: in all-projects docs-2016-08-12 (docs-2016-08-12)
-Checkout Sha (f87ad24084c52b7b959f9a1dd091ceedf88b45ea) NOT the same as tip of upstream/master (7adec600461e7456366df201af4060878dca215b)
-	Consider a `git reset --hard upstream/master`
--- docker (in docs/)
-* (detached from 23cf638)
-v1.12.1
-Checkout Sha (23cf638307f030cd8d48c9efc21feec18a6f88f8) NOT the same as tip of upstream/master (09e1de2080fd3b0bafb38adbd4b8c12ee949794d)
-	Consider a `git reset --hard upstream/master`
--- pinata (in docs/)
-* (detached from docs-v1.12.0-beta23-2016-08-16-update1)
-  master
-docs-v1.12.0-beta23-2016-08-16-update1
-Checkout Sha (c91d7602ed2ec5aa5b404d7f5b9696ab8fa0c58d) NOT the same as ref: in all-projects docs-v1.12.0-beta23-2016-08-16-update1 (docs-v1.12.0-beta23-2016-08-16-update1)
-Checkout Sha (c91d7602ed2ec5aa5b404d7f5b9696ab8fa0c58d) NOT the same as tip of upstream/master (8c11c14b46880079351e6f6503119e2ee6ef76ac)
-	Consider a `git reset --hard upstream/master`
--- cs-docker (in docs-cs)
-* master
--- dhe-deploy (in docs/)
-* (detached from docs-v2.0.3-2016-08-11)
-  master
-docs-v2.0.3-2016-08-11
-Checkout Sha (139a5d128584da25eee4b730c35497d8c0840515) NOT the same as ref: in all-projects docs-v2.0.3-2016-08-11 (docs-v2.0.3-2016-08-11)
-Checkout Sha (139a5d128584da25eee4b730c35497d8c0840515) NOT the same as tip of upstream/master (eb01555b9264d2a481fc87c6933909e7d713bf34)
-	Consider a `git reset --hard upstream/master`
--- dhe-deploy (in apidocgen/output)
-* (detached from docs-v2.0.3-2016-08-11)
-  master
-docs-v2.0.3-2016-08-11
-Checkout Sha (139a5d128584da25eee4b730c35497d8c0840515) NOT the same as ref: in all-projects docs-v2.0.3-2016-08-11 (docs-v2.0.3-2016-08-11)
-Checkout Sha (139a5d128584da25eee4b730c35497d8c0840515) NOT the same as tip of upstream/master (eb01555b9264d2a481fc87c6933909e7d713bf34)
-	Consider a `git reset --hard upstream/master`
--- orca (in docs/)
-* (detached from docs-v1.1.2-2016-08-03)
-  master
-docs-v1.1.2-2016-08-03
-release/v2.0.0-tp1
-Checkout Sha (77a849ad947ba9b6f2a96e752a2c9697660348fe) NOT the same as ref: in all-projects docs-v1.1.2-2016-08-03 (docs-v1.1.2-2016-08-03)
-Checkout Sha (77a849ad947ba9b6f2a96e752a2c9697660348fe) NOT the same as tip of upstream/master (bfb25097639d359363e17e5370bfc5c9e41e8231)
-	Consider a `git reset --hard upstream/master`
--- distribution (in docs/)
-* (detached from docs-v2.5.0-2016-07-28)
-docs-v2.5.0-2016-07-28
-v2.5.0
-Checkout Sha (a9b1322edf48b1fb9aee4e5ded7a4f4ac37c6830) NOT the same as ref: in all-projects docs-v2.5.0-2016-07-28 (docs-v2.5.0-2016-07-28)
-Checkout Sha (a9b1322edf48b1fb9aee4e5ded7a4f4ac37c6830) NOT the same as tip of upstream/master (010e063270be37cfa8547ccfb9717e5d874c88a8)
-	Consider a `git reset --hard upstream/master`
--- compose (in docs/)
-* (detached from docs-v1.8.0-2016-08-03)
-docs-v1.8.0-2016-08-03
-Checkout Sha (429320a4f8f4040b273fd4d1be9f1d0b1283dc23) NOT the same as ref: in all-projects docs-v1.8.0-2016-08-03 (docs-v1.8.0-2016-08-03)
-Checkout Sha (429320a4f8f4040b273fd4d1be9f1d0b1283dc23) NOT the same as tip of upstream/master (acfe100686fd95d524ff102c0b5fccff0bc79d8c)
-	Consider a `git reset --hard upstream/master`
--- swarm (in docs/)
-* (detached from docs-v1.2.4-2016-08-03)
-docs-v1.2.4-2016-08-03
-Checkout Sha (ac1b1b1a19f73b8e1899c63b549653d1fd71ff8c) NOT the same as ref: in all-projects docs-v1.2.4-2016-08-03 (docs-v1.2.4-2016-08-03)
-Checkout Sha (ac1b1b1a19f73b8e1899c63b549653d1fd71ff8c) NOT the same as tip of upstream/master (27968edd8a160f66c96c8545ad35e3a3eeb8766a)
-	Consider a `git reset --hard upstream/master`
--- machine (in docs/)
-* (detached from docs-v0.8.0-2016-07-28)
-  master
-docs-v0.8.0-2016-07-28
-Checkout Sha (e093b1589069c9b4ab90c5b14cc0da0cc66786d6) NOT the same as ref: in all-projects docs-v0.8.0-2016-07-28 (docs-v0.8.0-2016-07-28)
-Checkout Sha (e093b1589069c9b4ab90c5b14cc0da0cc66786d6) NOT the same as tip of upstream/master (578cb4dc34169efef6752df0863d2fc22a8fcf3a)
-	Consider a `git reset --hard upstream/master`
--- notary (in docs/)
-* (detached from docs-v0.3-2016-08-03)
-docs-v0.3-2016-08-03
-Checkout Sha (a6fda67663e158d0f0c1384599a2084724249577) NOT the same as ref: in all-projects docs-v0.3-2016-08-03 (docs-v0.3-2016-08-03)
-Checkout Sha (a6fda67663e158d0f0c1384599a2084724249577) NOT the same as tip of upstream/master (ca2008c88619d7197501139070c1aaf2f9281446)
-	Consider a `git reset --hard upstream/master`
--- toolbox (in docs/)
-* (detached from docs-v1.12.0-2016-07-28)
-  master
-docs-v1.12.0-2016-07-28
-v1.12.0
-v1.12.1
-Checkout Sha (ad9eac89e92e1e684955a7806e198cb68b935aef) NOT the same as ref: in all-projects docs-v1.12.0-2016-07-28 (docs-v1.12.0-2016-07-28)
-Checkout Sha (ad9eac89e92e1e684955a7806e198cb68b935aef) NOT the same as tip of upstream/master (db24b2166089b2bf67841b995015e626bb7a409f)
-	Consider a `git reset --hard upstream/master`
--- kitematic (in docs/)
-* (detached from v0.12.0)
-  master
-docs-v0.12.0-2016-07-27
-v0.12.0
-Checkout Sha (02c9f9607128802c904a454d6cc900b3e9ec4555) NOT the same as ref: in all-projects v0.12.0 (v0.12.0)
-Checkout Sha (02c9f9607128802c904a454d6cc900b3e9ec4555) NOT the same as tip of upstream/master (9143fe940657d843ea5ebc52caf1c5f0b043f2da)
-	Consider a `git reset --hard upstream/master`
--- hub2-demo (in docs/)
-* (detached from docs-2016-08-16)
-  master
-docs-2016-08-16
-Checkout Sha (263fd8d2c1f021481b2833255f9bfe0226b2e354) NOT the same as ref: in all-projects docs-2016-08-16 (docs-2016-08-16)
-Checkout Sha (263fd8d2c1f021481b2833255f9bfe0226b2e354) NOT the same as tip of upstream/master (35b35b9a0270c368c588fd1b0bee27d6edc22254)
-	Consider a `git reset --hard upstream/master`
--- cloud-docs (in docs/)
-* (detached from docs-2016-08-17)
-  master
-docs-2016-08-17
-Checkout Sha (33e56428398878f76d083914dbde44a02f7b1fdb) NOT the same as ref: in all-projects docs-2016-08-17 (docs-2016-08-17)
-Checkout Sha (33e56428398878f76d083914dbde44a02f7b1fdb) NOT the same as tip of upstream/master (1b9a757a92d83c875284bb2f90fde97f14277be6)
-	Consider a `git reset --hard upstream/master`
--- cloud-docs (in apidocs/layouts/)
-* (detached from docs-2016-08-17)
-  master
-docs-2016-08-17
-Checkout Sha (33e56428398878f76d083914dbde44a02f7b1fdb) NOT the same as ref: in all-projects docs-2016-08-17 (docs-2016-08-17)
-Checkout Sha (33e56428398878f76d083914dbde44a02f7b1fdb) NOT the same as tip of upstream/master (1b9a757a92d83c875284bb2f90fde97f14277be6)
-	Consider a `git reset --hard upstream/master`
--- cloud-docs (in apidocs/)
-* (detached from docs-2016-08-17)
-  master
-docs-2016-08-17
-Checkout Sha (33e56428398878f76d083914dbde44a02f7b1fdb) NOT the same as ref: in all-projects docs-2016-08-17 (docs-2016-08-17)
-Checkout Sha (33e56428398878f76d083914dbde44a02f7b1fdb) NOT the same as tip of upstream/master (1b9a757a92d83c875284bb2f90fde97f14277be6)
-	Consider a `git reset --hard upstream/master`
--- mercury-ui (in docs/)
-* (detached from docs-2016-06-20)
-  master
-docs-2016-06-20
-v51.0.0
-v52.0.0
-v53.0.0
-v54.0.0
-v55.0.0
-v56.0.0
-v57.0.0
-v58.0.0
-v59.0.0
-v60.0.0
-v61.0.0
-v62.0.0
-v63.0.0
-v64.0.0
-v65.0.0
-v66.0.0
-v67.0.0
-v68.0.0
-v69.0.0
-v70.0.0
-v71.0.0
-v72.0.0
-v73.0.0
-v74.0.0
-v75.0.0
-v76.0.0
-v77.0.0
-v78.0.0
-v79.0.0
-Checkout Sha (fdf50f7f057a6d24f0e95dcf68e15f3d05e873bd) NOT the same as ref: in all-projects docs-2016-06-20 (docs-2016-06-20)
-Checkout Sha (fdf50f7f057a6d24f0e95dcf68e15f3d05e873bd) NOT the same as tip of upstream/master (68d3072991cfdc904a9c35515705b8551ee71317)
-	Consider a `git reset --hard upstream/master`
--- opensource (in docs/)
-* (detached from docs-2016-08-03)
-docs-2016-08-03
-Checkout Sha (b9b87bed67f42891d3ee73993f85a9dcd1e5028d) NOT the same as ref: in all-projects docs-2016-08-03 (docs-2016-08-03)
-Checkout Sha (b9b87bed67f42891d3ee73993f85a9dcd1e5028d) NOT the same as tip of upstream/master (9736bd57db38561847648a612867d0f0f9978836)
-	Consider a `git reset --hard upstream/master`
+- your checkout f1f593918cca328a54844648acd05fff00144559 is at upstream/v1.12 (as per all-projects.yml)
+## docs-base (in .)
+- your checkout f87ad24084c52b7b959f9a1dd091ceedf88b45ea is at refs/tags/docs-2016-08-12 (as per all-projects.yml)
+## docker (in docs/)
+- your checkout 23cf638307f030cd8d48c9efc21feec18a6f88f8 is at 23cf638307f030cd8d48c9efc21feec18a6f88f8 (as per all-projects.yml)
+## pinata (in docs/)
+- your checkout c91d7602ed2ec5aa5b404d7f5b9696ab8fa0c58d is at refs/tags/docs-v1.12.0-beta23-2016-08-16-update1 (as per all-projects.yml)
+## cs-docker (in docs-cs)
+- your checkout 71a04c87ee4654756f870a7c095ce725220da171 is at 71a04c87ee4654756f870a7c095ce725220da171 (as per all-projects.yml)
+- your checkout 71a04c87ee4654756f870a7c095ce725220da171 is at upstream/master
+## dhe-deploy (in docs/)
+- your checkout 139a5d128584da25eee4b730c35497d8c0840515 is at refs/tags/docs-v2.0.3-2016-08-11 (as per all-projects.yml)
+## dhe-deploy (in apidocgen/output)
+- your checkout 139a5d128584da25eee4b730c35497d8c0840515 is at refs/tags/docs-v2.0.3-2016-08-11 (as per all-projects.yml)
+## orca (in docs/)
+- your checkout 77a849ad947ba9b6f2a96e752a2c9697660348fe is at refs/tags/docs-v1.1.2-2016-08-03 (as per all-projects.yml)
+## distribution (in docs/)
+- your checkout a9b1322edf48b1fb9aee4e5ded7a4f4ac37c6830 is at refs/tags/docs-v2.5.0-2016-07-28 (as per all-projects.yml)
+## compose (in docs/)
+- your checkout 429320a4f8f4040b273fd4d1be9f1d0b1283dc23 is at refs/tags/docs-v1.8.0-2016-08-03 (as per all-projects.yml)
+## swarm (in docs/)
+- your checkout ac1b1b1a19f73b8e1899c63b549653d1fd71ff8c is at refs/tags/docs-v1.2.4-2016-08-03 (as per all-projects.yml)
+## machine (in docs/)
+- your checkout e093b1589069c9b4ab90c5b14cc0da0cc66786d6 is at refs/tags/docs-v0.8.0-2016-07-28 (as per all-projects.yml)
+## notary (in docs/)
+- your checkout a6fda67663e158d0f0c1384599a2084724249577 is at refs/tags/docs-v0.3-2016-08-03 (as per all-projects.yml)
+## toolbox (in docs/)
+- your checkout ad9eac89e92e1e684955a7806e198cb68b935aef is at refs/tags/docs-v1.12.0-2016-07-28 (as per all-projects.yml)
+## kitematic (in docs/)
+- your checkout 02c9f9607128802c904a454d6cc900b3e9ec4555 is at refs/tags/v0.12.0 (as per all-projects.yml)
+## hub2-demo (in docs/)
+- your checkout 263fd8d2c1f021481b2833255f9bfe0226b2e354 is at refs/tags/docs-2016-08-16 (as per all-projects.yml)
+## cloud-docs (in docs/)
+- your checkout 33e56428398878f76d083914dbde44a02f7b1fdb is at refs/tags/docs-2016-08-17 (as per all-projects.yml)
+## cloud-docs (in apidocs/layouts/)
+- your checkout 33e56428398878f76d083914dbde44a02f7b1fdb is at refs/tags/docs-2016-08-17 (as per all-projects.yml)
+## cloud-docs (in apidocs/)
+- your checkout 33e56428398878f76d083914dbde44a02f7b1fdb is at refs/tags/docs-2016-08-17 (as per all-projects.yml)
+## mercury-ui (in docs/)
+- your checkout fdf50f7f057a6d24f0e95dcf68e15f3d05e873bd is at refs/tags/docs-2016-06-20 (as per all-projects.yml)
+## opensource (in docs/)
+- your checkout b9b87bed67f42891d3ee73993f85a9dcd1e5028d is at refs/tags/docs-2016-08-03 (as per all-projects.yml)
 
 ```
 
