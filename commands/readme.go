@@ -19,11 +19,13 @@ var Readme = cli.Command{
 	Usage: "Parse the README file and update any inline command examples",
 	Flags: []cli.Flag{},
 	Action: func(context *cli.Context) error {
-		globalTestDir, err := ioutil.TempDir("", "example")
+		var err error
+		globalTestDir, err = ioutil.TempDir("", "example")
 		if err != nil {
 			log.Fatal(err)
 		}
 
+		fmt.Printf("Using %s to run commands\n", globalTestDir)
 		defer os.RemoveAll(globalTestDir) // clean up
 
 		// read in the README.md
@@ -47,6 +49,7 @@ var Readme = cli.Command{
 						cmd := strings.TrimSpace(strings.TrimPrefix(line, "$"))
 						// run it and print stdout&stderr
 						// TODO check for trailing \
+						// and deal with &&
 						out, _ := runCmd(cmd)
 						fmt.Println(out)
 					}

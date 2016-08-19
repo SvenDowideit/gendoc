@@ -45,7 +45,8 @@ will clone any missing repositories mentioned in the currently checked out
 
 
 ```
-"$ gendoc checkout master && gendoc render
+$ gendoc checkout master
+#$ gendoc render
 ```
 
 ## render
@@ -54,23 +55,24 @@ will use the files in the `docs-source/<publish-set>` dir to generate files
 in the `docs-html/<publish-set>` dir
 
 
-to generate the v1.10 docs into `docs-source/v1.10` and `docs-html/v1.10/` 
+to generate the v1.12 docs into `docs-source/v1.12` and `docs-html/v1.12/` 
 dir, run a command set like
 
 ```
-$ gendoc checkout v1.10 && gendoc --serve=false render
+$ gendoc checkout v1.12 
+$ gendoc render --disk
 ```
 
 
-## status (very preliminary, and changing atm)
+## status
 
-tells you what you have checked out, and what its related to.
+Tells you what you have checked out, and what its related to.
 
 the `--log` flag will tell you what commits are on the branch that the current 
 sha is on - which may help you update the `all-projects.yml`
 
 ```
-$ gendoc  status --log
+$ gendoc status
 publish-set: v1.12
 -- docs-base
 * (detached from d5abfd4)
@@ -193,3 +195,12 @@ NO merge PR found for (+ fa56475fb204c14d3673d14365c62aba5a838207 Bump versions 
 NO merge PR found for (+ 88afb715410b474aaa0f44420c59248b9358b89e 62.0.0) 
 ## opensource in opensource at docs-2016-07-07
 ```
+
+## README example updates
+
+`gendoc` also is able to rewrite its README.md file using `gendoc readme`.
+This will read the README.md file, and look for any "```" code markers.
+Inside the code sections, it will run all lines starting with `$` and
+add whatever the output is.
+
+
