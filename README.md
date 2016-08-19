@@ -7,7 +7,8 @@ You need to have a working installation of `git`
 
 ## install
 
-Download the latest release for your platform from https://github.com/SvenDowideit/gendoc/releases
+Download the latest release for your platform from
+https://github.com/SvenDowideit/gendoc/releases
 
 then open a terminal and run the following (example for OS X):
 
@@ -17,45 +18,59 @@ $ chmod 755 gendoc-osx
 $ ./gendoc-osx install
 ```
 
-This will install `gendoc` into `/usr/local/bin/`, and then download `hugo` and install it too.
+This will install `gendoc` into `/usr/local/bin/`, and then download `hugo` 
+and install it there too.
+
+There's built in help
+
+```
+$ gendoc --help
+```
 
 ## initialize your workspace with
 
+In whatever directory you have all your git clones (eg `~/repos/`)
+
 ```
-$ cd ~/<dir you clone your git repos to>
+$ ls -la
 $ gendoc clone
+$ ls -al
 ```
 
 If there is no `docs.docker.com` repo found, will clone it, and then
-will clone any missing repositories mentioned in the currently checked out `docs.docker.com/all-projects.yaml`
+will clone any missing repositories mentioned in the currently checked out 
+`docs.docker.com/all-projects.yaml`
 
 ## to serve the master docs to a browser (port 8080)
 
 
 ```
-$ gendoc checkout master && gendoc render
+"$ gendoc checkout master && gendoc render
 ```
 
-to generate the v1.10 docs into `docs-source/v1.10` and `docs-html/v1.10/` dir, run a command set like
+## render
+
+will use the files in the `docs-source/<publish-set>` dir to generate files 
+in the `docs-html/<publish-set>` dir
+
+
+to generate the v1.10 docs into `docs-source/v1.10` and `docs-html/v1.10/` 
+dir, run a command set like
 
 ```
 $ gendoc checkout v1.10 && gendoc --serve=false render
 ```
 
 
-## render
-
-will use the files in the `docs-source/<publish-set>` dir to generate files in the `docs-html/<publish-set>`
-dir
-
 ## status (very preliminary, and changing atm)
 
 tells you what you have checked out, and what its related to.
 
-the `--log` flag will tell you what commits are on the branch that the current sha is on - which may help you update the `all-projects.yml`
+the `--log` flag will tell you what commits are on the branch that the current 
+sha is on - which may help you update the `all-projects.yml`
 
 ```
-sven@i7:~/src/gendoc-repos$ ../gendoc/gendoc  status --log
+$ gendoc  status --log
 publish-set: v1.12
 -- docs-base
 * (detached from d5abfd4)
@@ -78,17 +93,21 @@ Checkout Sha (487931902c1177352e4eceec1b5ef558a5ba24cc) NOT the same as tip of o
 
 ## prepare to publish updates
 
-There is a command you can run to list all PR's that have been merged to master that are not yet in your current versioned branch:
+There is a command you can run to list all PR's that have been merged to 
+master that are not yet in your current versioned branch:
 
-You can use the command to see the state of all product repos, or select one `gendoc release prepare compose`
+You can use the command to see the state of all product repos, or select 
+one `gendoc release prepare compose`
 
-The output will list the docs PR's to consider cherry-picking into a new tag, the files it changes and any milestone and labels.
+The output will list the docs PR's to consider cherry-picking into a new 
+tag, the files it changes and any milestone and labels.
 
-> NOTE: it uses your GITHUB_TOKEN either as an env var, or in the `--ghtoken` flag
+> NOTE: it uses your GITHUB_TOKEN either as an env var, or in the `--ghtoken` 
+flag
 
 ```
-sven@i7:~/src/gendoc-repos$ export GITHUB_TOKEN=93cc2675c8f97e1a30b3bf2dbc287f0295ffc4fa
-sven@i7:~/src/gendoc-repos$ ../gendoc/gendoc release prepare 
+$ export GITHUB_TOKEN=93cc2675c8f97e1a30b3bf2dbc287f0295ffc4fa
+$ gendoc release prepare 
 publish-set: v1.12
 comparing allproject-yml ref's to upstream/master
 ## docs-base in docs-base at docs-2016-07-14
@@ -173,5 +192,4 @@ NO merge PR found for (+ fa56475fb204c14d3673d14365c62aba5a838207 Bump versions 
 ## docker-store in mercury-ui at fdf50f7f057a6d24f0e95dcf68e15f3d05e873bd
 NO merge PR found for (+ 88afb715410b474aaa0f44420c59248b9358b89e 62.0.0) 
 ## opensource in opensource at docs-2016-07-07
-sven@i7:~/src/gendoc-repos$ 
 ```

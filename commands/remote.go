@@ -9,7 +9,6 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-//TODO add this to clone..
 var Remote = cli.Command{
 	Name:  "remote",
 	Usage: "Add a git remote - 2 arguments, name to give remote (origin), and organisation/Username on GitHub",
@@ -30,8 +29,6 @@ var Remote = cli.Command{
 		}
 		fmt.Printf("publish-set: %s\n", setName)
 
-		// TODO: confirm what is checked out is the ref from the all-projects
-		// TODO: confirm there are no changes - or list them
 		for _, p := range *projects {
 			// TODO: don't ignore errors.
 			fmt.Printf("-- %s\n", p.RepoName)

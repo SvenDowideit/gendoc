@@ -55,6 +55,7 @@ func main() {
 		commands.Clone,
 		commands.Checkout,
 		commands.Install,
+		commands.Readme,
 		commands.Release,
 		commands.Remote,
 		commands.Render,
