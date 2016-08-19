@@ -20,7 +20,8 @@ RUN go get github.com/Sirupsen/logrus \
     && go get github.com/google/go-github/github \
     && go get golang.org/x/oauth2 \
     && go get github.com/miekg/mmark \
-    && go get github.com/blang/semver
+    && go get github.com/blang/semver \
+    && go get github.com/kardianos/osext
 
 ADD . /go/src/github.com/SvenDowideit/gendoc
 RUN go get -d -v

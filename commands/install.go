@@ -14,6 +14,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/kardianos/osext"
 )
 
 var binPath string
@@ -36,7 +37,7 @@ var Install = cli.Command{
 		},
 	},
 	Action: func(context *cli.Context) error {
-		gendocFileToInstall := os.Args[0]
+		gendocFileToInstall, _ := osext.Executable()
 		gendocTo := binPath + "gendoc"
 		if runtime.GOOS == "windows" {
 			gendocTo = gendocTo + ".exe"
