@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/SvenDowideit/gendoc/allprojects"
+	"github.com/docker/gendoc/allprojects"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/blang/semver"
@@ -450,7 +450,6 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 			continue
 		}
 
-
 		////////////////
 		// OK - so we've decided to show these PR's
 		_, mergeDate, _ := getCommitDate(p.RepoName, mergeSHA)
@@ -461,7 +460,6 @@ func findDocsPRsNeedingMerge(p allprojects.Project) {
 		if milestone != "" || labels != "" {
 			fmt.Printf("- %s %s\n", milestone, labels)
 		}
-
 
 		fmt.Printf("  - %s changes in %s %s\n", *p.Path, oneline[1], oneline[2])
 		if showFilesFlag {

@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/SvenDowideit/gendoc/allprojects"
+	"github.com/docker/gendoc/allprojects"
+
 	"github.com/codegangsta/cli"
 )
 

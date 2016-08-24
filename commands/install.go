@@ -48,7 +48,7 @@ var Install = cli.Command{
 			// If the user is running setup from an already installed gendoc, assume update
 			// TODO: if main.Version == today, maybe don't bother?
 			fmt.Printf("Checking for newer version of gendoc.\n")
-			resp, err := http.Get("https://github.com/SvenDowideit/gendoc/releases/latest")
+			resp, err := http.Get("https://github.com/docker/gendoc/releases/latest")
 			if err != nil {
 				fmt.Printf("Error checking for latest version \n%s\n", err)
 			} else {
@@ -70,7 +70,7 @@ var Install = cli.Command{
 						gendocFile += ".exec"
 					}
 					gendocFileToInstall := "gendoc-latest"
-					if err := wget("https://github.com/SvenDowideit/gendoc/releases/download/"+latestVersion+"/"+gendocFile, gendocFileToInstall); err != nil {
+					if err := wget("https://github.com/docker/gendoc/releases/download/"+latestVersion+"/"+gendocFile, gendocFileToInstall); err != nil {
 						return err
 					}
 				}

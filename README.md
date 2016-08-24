@@ -9,8 +9,7 @@ You need to have a working installation of `git`
 
 ## install
 
-Download the latest release for your platform from
-https://github.com/SvenDowideit/gendoc/releases
+Download the latest release for your platform from https://github.com/docker/gendoc/releases
 
 then open a terminal and run the following (example for OS X):
 
@@ -574,49 +573,23 @@ sha is on - which may help you update the `all-projects.yml`
 ```
 $ gendoc status
 publish-set: v1.12
-- your checkout f1f593918cca328a54844648acd05fff00144559 is at upstream/v1.12 (as per all-projects.yml)
-## docs-base (in .)
-- your checkout f87ad24084c52b7b959f9a1dd091ceedf88b45ea is at refs/tags/docs-2016-08-12 (as per all-projects.yml)
-## docker (in docs/)
-- your checkout 23cf638307f030cd8d48c9efc21feec18a6f88f8 is at 23cf638307f030cd8d48c9efc21feec18a6f88f8 (as per all-projects.yml)
-## pinata (in docs/)
-- your checkout c91d7602ed2ec5aa5b404d7f5b9696ab8fa0c58d is at refs/tags/docs-v1.12.0-beta23-2016-08-16-update1 (as per all-projects.yml)
-## cs-docker (in docs-cs)
-- your checkout 71a04c87ee4654756f870a7c095ce725220da171 is at 71a04c87ee4654756f870a7c095ce725220da171 (as per all-projects.yml)
-- your checkout 71a04c87ee4654756f870a7c095ce725220da171 is at upstream/master
-## dhe-deploy (in docs/)
-- your checkout 139a5d128584da25eee4b730c35497d8c0840515 is at refs/tags/docs-v2.0.3-2016-08-11 (as per all-projects.yml)
-## dhe-deploy (in apidocgen/output)
-- your checkout 139a5d128584da25eee4b730c35497d8c0840515 is at refs/tags/docs-v2.0.3-2016-08-11 (as per all-projects.yml)
-## orca (in docs/)
-- your checkout 77a849ad947ba9b6f2a96e752a2c9697660348fe is at refs/tags/docs-v1.1.2-2016-08-03 (as per all-projects.yml)
-## distribution (in docs/)
-- your checkout a9b1322edf48b1fb9aee4e5ded7a4f4ac37c6830 is at refs/tags/docs-v2.5.0-2016-07-28 (as per all-projects.yml)
-## compose (in docs/)
-- your checkout 429320a4f8f4040b273fd4d1be9f1d0b1283dc23 is at refs/tags/docs-v1.8.0-2016-08-03 (as per all-projects.yml)
-## swarm (in docs/)
-- your checkout ac1b1b1a19f73b8e1899c63b549653d1fd71ff8c is at refs/tags/docs-v1.2.4-2016-08-03 (as per all-projects.yml)
-## machine (in docs/)
-- your checkout e093b1589069c9b4ab90c5b14cc0da0cc66786d6 is at refs/tags/docs-v0.8.0-2016-07-28 (as per all-projects.yml)
-## notary (in docs/)
-- your checkout a6fda67663e158d0f0c1384599a2084724249577 is at refs/tags/docs-v0.3-2016-08-03 (as per all-projects.yml)
-## toolbox (in docs/)
-- your checkout ad9eac89e92e1e684955a7806e198cb68b935aef is at refs/tags/docs-v1.12.0-2016-07-28 (as per all-projects.yml)
-## kitematic (in docs/)
-- your checkout 02c9f9607128802c904a454d6cc900b3e9ec4555 is at refs/tags/v0.12.0 (as per all-projects.yml)
-## hub2-demo (in docs/)
-- your checkout 263fd8d2c1f021481b2833255f9bfe0226b2e354 is at refs/tags/docs-2016-08-16 (as per all-projects.yml)
-## cloud-docs (in docs/)
-- your checkout 33e56428398878f76d083914dbde44a02f7b1fdb is at refs/tags/docs-2016-08-17 (as per all-projects.yml)
-## cloud-docs (in apidocs/layouts/)
-- your checkout 33e56428398878f76d083914dbde44a02f7b1fdb is at refs/tags/docs-2016-08-17 (as per all-projects.yml)
-## cloud-docs (in apidocs/)
-- your checkout 33e56428398878f76d083914dbde44a02f7b1fdb is at refs/tags/docs-2016-08-17 (as per all-projects.yml)
-## mercury-ui (in docs/)
-- your checkout fdf50f7f057a6d24f0e95dcf68e15f3d05e873bd is at refs/tags/docs-2016-06-20 (as per all-projects.yml)
-## opensource (in docs/)
-- your checkout b9b87bed67f42891d3ee73993f85a9dcd1e5028d is at refs/tags/docs-2016-08-03 (as per all-projects.yml)
-
+-- docs-base
+* (detached from d5abfd4)
+  master
+  try-docsearch
+  try-google-search-engine
+Checkout Sha (d5abfd440fde1ca89cccd0d50d212ec4597cbe7c) NOT the same as tip of origin/master (c0825670806d06c5b125029f332f62b6608a94df)
+c082567 Merge pull request #272 from docker/use-https-where-possible
+6ab8edd New version of linkcheck to mae it easier to read errors
+0987a8c Use https where we can
+-- docker
+* (detached from 4879319)
+  master
+Checkout Sha (487931902c1177352e4eceec1b5ef558a5ba24cc) NOT the same as tip of origin/master (2875c5404e87f63d64986fee5f68d31a83f075c8)
+2875c54 Merge pull request #24021 from londoncalling/add-redirect-for-getting-started
+4060eb0 added another alias for getting started stuff
+1c06ebe Merge pull request #23950 from jstarks/no_clone_tp5
+8e8ef7c7 Merge pull request #23182 from crosbymichael/maxkeys
 ```
 
 ## prepare to publish updates
@@ -638,192 +611,89 @@ $ export GITHUB_TOKEN=93cc2675c8f97e1a30b3bf2dbc287f0295ffc4fa
 
 $ gendoc release prepare 
 publish-set: v1.12
-comparing current checkout to upstream/master
-
-## docs-base,  in docs-base at docs-2016-08-12
-Warning: no version field in all-projects.yml for docs-base
-NO merge PR found for (+ 7adec600461e7456366df201af4060878dca215b Skip weaveworks url, as it intermittenly 404's (#304)) 
-
-## engine, v1.12.1 in docker at 23cf638307f030cd8d48c9efc21feec18a6f88f8
-- PR 25726 (88a6a77) Aug 18 15:20:09 from vieux/new_plugin_system_doc
-- 1.12.1 process/docs-cherry-pick status/3-docs-review 
-  - docs/ changes in 98901906523d43b537a3d6a2861ac831ded7df6a adding some documentation about the new plugin system
-- PR 25743 (6fa69d2) Aug 18 17:25:08 from lixiaobing10051267/masterInspect
-- 1.12.1 process/docs-cherry-pick status/3-docs-review 
-  - docs/ changes in 68ef2569842f8ca4dd09a85caca1970d95946547 Check the return message of docker service inspect
-- PR 25756 (79c1cd8) Aug 16 13:31:07 from YuPengZTE/shuold-be--
-- Warning: no version milestone set for PR(25756)
--  status/3-docs-review 
-  - docs/ changes in fe081efa929bab70f72f47ec360cd91a65bd8d46 “ should be "
-- PR 25704 (45cb33e) Aug 17 08:39:45 from thaJeztah/cleanup-api-markdown
-- 1.12.1 process/docs-cherry-pick status/3-docs-review 
-  - docs/ changes in eb24e9bbd312b0d7392e8012b757e7c9022c9add Cleanup API docs Markdown formatting and wording
-- PR 25726 (88a6a77) Aug 18 15:20:09 from vieux/new_plugin_system_doc
-- 1.12.1 process/docs-cherry-pick status/3-docs-review 
-  - docs/ changes in a7a70433cabe5eb210ef81ff61f953ab9d9e332d edit plugin system doc, fix menu system
-- PR 25726 (88a6a77) Aug 18 15:20:09 from vieux/new_plugin_system_doc
-- 1.12.1 process/docs-cherry-pick status/3-docs-review 
-  - docs/ changes in 79aa2b9f6da802ee1380c22c3afc8c0be7c493ce fix broken link
-- PR 25751 (bbd5396) Aug 17 07:59:36 from yuexiao-wang/clean-docs
-- 1.12.1 process/docs-cherry-pick status/3-docs-review 
-  - docs/ changes in f8d5b880722bcc87113a08cbb2069b6311b89f39 remove mess words in installation doc
-- PR 25709 (b4abe38) Aug 17 14:43:35 from thaJeztah/fix-missing-docs-for-binary-remote-context
-- 1.8.0 process/docs-cherry-pick status/3-docs-review 
-  - docs/ changes in a5ba032c7421ef7a429e780d12d0f604a045258a Add missing docs about binary remote contexts
-- PR 25805 (2d93186) Aug 17 18:07:13 from crosbymichael/oci-import-paths
-- Warning: no version milestone set for PR(25805)
--  status/2-code-review 
-  - docs/ changes in 041e5a21dc0a8856448e3a9ad91e8535b8a7d00d Replace old oci specs import with runtime-specs
-- PR 25815 (d854c4f) Aug 18 13:26:59 from justincormack/capdoc
-- Warning: no version milestone set for PR(25815)
--  process/docs-cherry-pick status/3-docs-review 
-  - docs/ changes in bf7a3f010443ecd614baf0450c3193b1f5e52bc2 Split list of capabilities into those added by default and those not
-- PR 25792 (90308fd) Aug 18 15:08:41 from lixiaobing10051267/masterSwarmLeave
-- Warning: no version milestone set for PR(25792)
--  process/docs-cherry-pick status/3-docs-review 
-  - docs/ changes in fd660e21bf6568c3f98424bdff3b9672cd2a3ef8 Specify woker node for docker swarm leave command Signed-off-by: lixiaobing10051267 <li.xiaobing1@zte.com.cn>
-
-## pinata, v1.12.0 in pinata at docs-v1.12.0-beta23-2016-08-16-update1
-
-## cs-engine, v1.11.1-cs2 in cs-docker at 71a04c87ee4654756f870a7c095ce725220da171
-
-## docker-trusted-registry, v2.0.3 in dhe-deploy at docs-v2.0.3-2016-08-11
-- PR 2672 (36fa452) Aug 11 23:31:16 from joaofnfernandes/2.0.3-release-notes
-- Warning: no version milestone set for PR(2672)
-  - docs/ changes in c3b60319e7e3d0dace4edd49b82931b7c78fea89 Fix typo in docs
-
-## apidocs, v2.0.3 in dhe-deploy at docs-v2.0.3-2016-08-11
-
-## ucp, v1.1.2 in orca at docs-v1.1.2-2016-08-03
-- PR 2426 (2ae744e) Aug  3 22:03:31 from alexmavr/system-reqs
-- Warning: no version milestone set for PR(2426)
--  kind/documentation 
-  - docs/ changes in 57a2bdaab3c34c6020a344752a6cf748c0e98efc updated system requirements for UCP Seattle
-- PR 2428 (2a10d40) Aug  4 17:47:41 from alexmavr/install-docs
-- Warning: no version milestone set for PR(2428)
--  kind/documentation 
-  - docs/ changes in 53b3c8636cdd684c55f0e86af744fa114c0b4de7 UCP Seattle Beta installation docs
-- PR 2505 (0e5facc) Aug  8 21:31:02 from joaofnfernandes/install-docs
-- Warning: no version milestone set for PR(2505)
-  - docs/ changes in e5944e1c0977bc61b13d856cbfd13171242c090a Cleanup docs for installing UCP seattle
-- PR 2523 (c21104e) Aug 11 02:21:32 from avuserow/uninstall-docs
-- Warning: no version milestone set for PR(2523)
-  - docs/ changes in 9bc560850f601e95a2a7db16092c8b793fc43c50 [docs] Update uninstall for Seattle
-- PR 2598 (1e2c585) Aug 11 21:03:29 from joaofnfernandes/add-nodes
-- Warning: no version milestone set for PR(2598)
-  - docs/ changes in 6dbbbe4163c059497bf3bd1333a414c6cdace0d0 Add docs for adding/removing nodes
-- PR 2606 (64de39a) Aug 11 22:26:47 from joaofnfernandes/dtr-2.0.3
-- Warning: no version milestone set for PR(2606)
-  - docs/ changes in 4f7a1b6e54953edc77203f7751b372619dd12c50 Update offline install docs for DTR 2.0.3
-- PR 2601 (5325ff4) Aug 11 23:30:58 from joaofnfernandes/uninstall-docs
-- Warning: no version milestone set for PR(2601)
-  - docs/ changes in 47bd31bb04d097763b27f29c06538195f4809a73 Clean docs for uninstalling UCP
-ERROR parsing Version(Seattle-6) in milestone of PR(2624) Invalid character(s) found in major number "Seattle"
-- PR 2624 (aff6f93) Aug 12 19:04:08 from sarahlynnpark/add-alias
-- Seattle-6 kind/documentation 
-  - docs/ changes in 15ebba9ae7a4a134c4bb39d3f0dd4b513ea29494 Add redirect alias from DTR to UCP's LDAP config docs
-- PR 2637 (5f83a95) Aug 16 00:44:22 from joaofnfernandes/permission-levels
-- Warning: no version milestone set for PR(2637)
-  - docs/ changes in a09b75bd296a537aa1d29e1d58ef12bf7113a51a Update permission docs
-- PR 2650 (100af92) Aug 16 01:13:31 from joaofnfernandes/upgrade-major
-- Warning: no version milestone set for PR(2650)
--  kind/documentation 
-  - docs/ changes in b684e89b70e895a09465c23a2198d2632258aa60 Add docs to upgrade from 1.1 to Seattle
-- PR 2693 (4372678) Aug 16 20:53:03 from joaofnfernandes/cli-docs
-- Warning: no version milestone set for PR(2693)
--  kind/documentation 
-  - docs/ changes in 4bf15d5d6101101c6b796a1ce682060ca280fb12 Update CLI reference docs
-NO merge PR found for (+ ae0cd84719a684cbe310b3512474af4a862b1011 Remove WIP tag from reservations (#2703)) 
-NO merge PR found for (+ 18fe9580c03b52bdced1dc1d599f381844a324b4 Remove deploy button from applications list (#2714)) 
-NO merge PR found for (+ 9c3d21f235959498e4c61e6cf672065b9c00c8f9 Spruce up dashboard and fix some reported issues/bugs with it (#2563)) 
-NO merge PR found for (+ bfb25097639d359363e17e5370bfc5c9e41e8231 Zero state pages for images and volumes (#2717)) 
-
-## registry, v2.5.0 in distribution at docs-v2.5.0-2016-07-28
-- PR 1877 (bfa0a9c) Aug  2 16:15:23 from spacexnice/master
-- Warning: no version milestone set for PR(1877)
--  group/distribution status/0-triage 
-  - docs/ changes in 87917f30529e6a7fca8eaff2932424915fb11225 Add 'objectAcl' Option to the S3 Storage Backend (#1867)
-- PR 1839 (c4297ef) Aug 16 18:48:06 from adamvduke/adamvduke/allow-http2-registry-clients
-- Warning: no version milestone set for PR(1839)
--  group/distribution status/0-triage 
-  - docs/ changes in ac009c86f17b4798f8d859503de578bf22e9ad83 Allow registry clients to connect via http2
-- PR 1906 (010e063) Aug 17 22:22:32 from nwt/s3-multipart-copy
-- Warning: no version milestone set for PR(1906)
--  group/distribution status/0-triage 
-  - docs/ changes in 63468ef4a85fabb756e799c2534f0df2f3c8167c Use multipart upload API in S3 Move method
-
-## compose, v1.8.0 in compose at docs-v1.8.0-2016-08-03
-- PR 3704 (c3fd6a8) Jul  7 23:01:55 from aanand/update-install-and-changelog-for-1.7.1
-- 1.7.1 status/0-triage 
-  - docs/ changes in 49d4fd27952433feb20bc22117aba4766c15c1c1 Update install.md and CHANGELOG.md for 1.7.1
-- PR 3778 (dec2c83) Jul 27 22:04:43 from shin-/1.8.0-release-master-changes
-- Warning: no version milestone set for PR(3778)
--  status/0-triage 
-  - docs/ changes in 22c0779a498ee701c22b857669d3f43a0d404f27 Bump 1.8.0-rc1
-- PR 3542 (acfe100) Aug 16 12:58:33 from jfroche/add_swappiness
-- Warning: no version milestone set for PR(3542)
--  status/0-triage 
-  - docs/ changes in d824cb9b0678ec2ad460b034231c00c05df8c0fe Add support for swappiness constraint
-
-## swarm, v1.2.4 in swarm at docs-v1.2.4-2016-08-03
-- PR 2453 (25919db) Aug 18 21:09:32 from RangerMauve/patch-3
-- Warning: no version milestone set for PR(2453)
--  status/3-docs-review 
-  - docs/ changes in c5d5e7341b8fbd3e1d1457d38c5f47b6b075822d Fix name of private key in configure-tls guide
-
-## machine, v0.8.0 in machine at docs-v0.8.0-2016-07-28
-- PR 3572 (c257d87) Jul 29 23:37:21 from StackPointCloud/master
-- 0.8.0 dco/no status/3-docs-review 
-  - docs/ changes in d94d02f4293beed6df7cabc6a3a476370b4050fd ProfitBricks Docker Machine Driver Doc Update
-- PR 3665 (19f0bc4) Aug 16 19:29:34 from ahmetalpbalkan/azure-sp
-- Warning: no version milestone set for PR(3665)
--  status/0-triage 
-  - docs/ changes in 81b76355c63b5b0e8ee0e6e5c093e636ac18f563 azure: Service principal authentication
-- PR 3665 (19f0bc4) Aug 16 19:29:34 from ahmetalpbalkan/azure-sp
-- Warning: no version milestone set for PR(3665)
--  status/0-triage 
-  - docs/ changes in 554637fbd7706498f0fd01e96fb612698435a858 azure: update docs
-
-## notary, v0.3 in notary at docs-v0.3-2016-08-03
-
-## toolbox, v1.12.0 in toolbox at docs-v1.12.0-2016-07-28
-
-## kitematic, v0.12.0 in kitematic at v0.12.0
-
-## docker-hub,  in hub2-demo at docs-2016-08-16
-Warning: no version field in all-projects.yml for docker-hub
-
-## docker-cloud,  in cloud-docs at docs-2016-08-17
-Warning: no version field in all-projects.yml for docker-cloud
-
-## cloud-api-docs-layout,  in cloud-docs at docs-2016-08-17
-Warning: no version field in all-projects.yml for cloud-api-docs-layout
-
-## cloud-api-docs,  in cloud-docs at docs-2016-08-17
-Warning: no version field in all-projects.yml for cloud-api-docs
-
-## docker-store,  in mercury-ui at docs-2016-06-20
-Warning: no version field in all-projects.yml for docker-store
-- PR 248 (17042bc) Aug  4 00:17:27 from sanscontext/menu-edit
-- Warning: no version milestone set for PR(248)
-  - docs/ changes in 6a8a35b99bfd299c2c5c6a763020febb614ba0b3 add note to menu
-NO merge PR found for (+ 5bec7542493f9f3cf6ff7410475876dc1bfd118e 76.0.0) 
-NO merge PR found for (+ 018a19a6c82be24bf634e7097f7b60b060a091a8 accept vendor agreement on update (#264)) 
-NO merge PR found for (+ 8804dd6a0c04c1999b2081510b8d36ff755dab1a 77.0.0) 
-NO merge PR found for (+ 185ef913db594ca2d757de98660a0d0ed82fe161 Update Product Details Page for images to handle multiple rate plans. (#262)) 
-NO merge PR found for (+ bb8e540386b7fd415474332dbbba3b72fbb1fdd0 Rename all Purchase to DDCPurchase. Update styles on DDC Purchase Detail Form (#268)) 
-NO merge PR found for (+ d34bfb69050d551491dbc3df9f4d55c280adef5d Fix hub search results as a result of the 'name' change (#267)) 
-NO merge PR found for (+ 0c47f39a9b1cba75241d5f33f956b1080823c9ea Remove Tags and Comments from Store repos / images (#266)) 
-NO merge PR found for (+ 10b8c315aa2dc6d753f0dc3592962b95e689e8c2 Un-break subscriptions (#265)) 
-NO merge PR found for (+ f48efb6aafab72cbe9a1fb356150877954f34556 MER-787 - Prevent whitespace-only fields for DDC purchase forms (#269)) 
-NO merge PR found for (+ 52b8a246b55a73557bf2667856eba8b9dc8d5fc3 78.0.0) 
-NO merge PR found for (+ 9ca0eee87c9e54d4fc8ff43fc8b09cad99179027 Step 3 - Product Tiers (#260)) 
-NO merge PR found for (+ f68538288854b6f62a25bcc4b87da92ef2785a41 79.0.0) 
-NO merge PR found for (+ 68d3072991cfdc904a9c35515705b8551ee71317 Refactor DDC Purchase and Purchase to fit coding standards and structure (#270)) 
-
-## opensource,  in opensource at docs-2016-08-03
-Warning: no version field in all-projects.yml for opensource
-
+comparing allproject-yml ref's to upstream/master
+## docs-base in docs-base at docs-2016-07-14
+- PR 291 (d414ea9) Jul 14 07:50:25 from docker/skip-http-client-errors
+  - . changes in 660f15c54a13a1f29c6c088783dda4adcd3a70ea Skip http client errors, they cause false negatives
+    - Dockerfile
+- PR 293 (43dd4f2) Jul 19 23:16:26 from FSHA/homepage-icons
+  - . changes in 84912d0e89608028abd42ad280b28586a75c558e increased the vibrancy of the iconography on the homepage
+    - content/index.md
+  - themes/docker-2016/static/assets/css/temporary.css
+  - themes/docker-2016/static/assets/images/icon-apple@2X.png
+  - themes/docker-2016/static/assets/images/icon-cloud@2X.png
+  - themes/docker-2016/static/assets/images/icon-compose@2X.png
+  - themes/docker-2016/static/assets/images/icon-engine@2X.png
+  - themes/docker-2016/static/assets/images/icon-hub@2X.png
+  - themes/docker-2016/static/assets/images/icon-linux@2X.png
+  - themes/docker-2016/static/assets/images/icon-machine@2X.png
+  - themes/docker-2016/static/assets/images/icon-registry@2X.png
+  - themes/docker-2016/static/assets/images/icon-ucp@2X.png
+  - themes/docker-2016/static/assets/images/icon-windows@2X.png
+- PR 295 (a50ddff) Jul 20 17:52:43 from FSHA/accordion-font-weight
+  - . changes in 8984cbb358292a8498bd00bf20e2705f39da4fd8 added font weight to accordion for chrome and legability
+    - themes/docker-2016/static/documentation.css
+## engine in docker at docs-v1.12.0-rc4-2016-07-15
+- PR 24682 (9ad857a) Jul 16 01:00:51 from justincormack/oom-score-adj-doc
+-  process/cherry-pick status/3-docs-review 
+  - docs/ changes in 6ba6265d1ad86680ad7f7750ae1f9abb72f1e728 Document --oom-score-adj flag in docker run
+    - docs/reference/run.md
+- PR 24718 (4139123) Jul 16 13:26:04 from thaJeztah/fix-oracle-support-link
+-  process/cherry-pick status/3-docs-review 
+  - docs/ changes in c15144c4ec25df4234129fbe88b89cd4f709f784 docs: update Oracle support link
+    - docs/installation/linux/oracle.md
+## pinata in pinata at 1caa856152d84434e80eb05dae97b9c0aff81379
+## cs-engine in cs-docker at docs-v1.11.1-cs2-2016-07-07
+- PR 29 (35d0dc7) Jul  8 18:46:01 from mbentley/add-rhel-7.2
+  - docs-cs changes in f5a04d4d62908f3c1dab36050e645776e1ada2e4 Added info for RHEL 7.2 support
+    - docs-cs/install.md
+## docker-trusted-registry in dhe-deploy at docs-v2.0.2-2016-07-19
+## apidocs in dhe-deploy at docs-v2.0.2-2016-07-19
+## ucp in orca at docs-v1.1.2-2016-07-19
+## registry in distribution at docs-v2.4.1-2016-06-28
+- PR 1833 (37b5e3e) Jul 13 17:41:01 from aaronlehmann/document-toomanyrequests
+- Registry/2.5 group/distribution status/0-triage 
+  - docs/ changes in b0099004e249ac7f9df92213c0186f95fa4cbb0f Document TOOMANYREQUESTS error code
+    - docs/spec/api.md
+  - docs/spec/api.md.tmpl
+## compose in compose at docs-v1.7.1-2016-07-20
+- PR 3590 (554dc24) Jul  6 18:45:09 from Knetic/oomscore
+- 1.9.0 status/0-triage 
+  - docs/ changes in 6fe5d2b54351143ee4eab090ccd58c5067985078 Implemented oom_score_adj
+    - docs/compose-file.md
+- PR 3488 (1e60030) Jul 11 19:24:29 from jgiannuzzi/internal_networks
+- 1.9.0 area/networking kind/feature kind/parity 
+  - docs/ changes in 83f35e132b37bf20baec264e49905c3ecc944ace Add support for creating internal networks
+    - docs/compose-file.md
+## swarm in swarm at docs-v1.2.3-2016-06-27
+- PR 2385 (2700d0b) Jul  5 17:15:17 from clhlc/master
+- 1.2.4 area/doc status/3-docs-review 
+  - docs/ changes in 9b156d12305efb6e13a84dc4bc841d5533c9047f fix Switch the primary docs
+    - docs/multi-manager-setup.md
+- PR 2410 (ec5e048) Jul 11 15:18:19 from rmoriz/issue-2409
+- 1.2.3 status/3-docs-review 
+  - docs/ changes in 6c408c3cafdcddfe9211de0c6f26479905c2044f fix off-by-one error in server count
+    - docs/install-manual.md
+- PR 2413 (384d95a) Jul 14 14:03:56 from avsm/typo-in-label-docs
+- 1.2.3 status/3-docs-review 
+  - docs/ changes in 9b809185280f62cb051031bd20c5320ff24abf5a docs: fix extra newline in swarm label addition
+    - docs/scheduler/filter.md
+## machine in machine at docs-v0.8.0-rc2-2016-06-23
+- PR 3573 (eeb35dd) Jul  7 16:49:32 from aculich/patch-1
+- 0.8.0 status/3-docs-review 
+  - docs/ changes in f17137034355d6d8862ef7aeba6de8daa3a30175 remove LTS from Ubuntu 15.10 in aws driver docs
+    - docs/drivers/aws.md
+## notary in notary at docs-v0.3-2016-06-22
+## toolbox in toolbox at docs-v1.12.0-rc4-2016-06-29
+NO merge PR found for (+ fa56475fb204c14d3673d14365c62aba5a838207 Bump versions for 1.12.0-rc4) 
+## kitematic in kitematic at docs-v0.12.0-2016-06-28
+## docker-hub in hub2-demo at docs-2016-06-23
+## docker-cloud in cloud-docs at docs-2016-07-11
+## cloud-api-docs-layout in cloud-docs at docs-2016-07-11
+## cloud-api-docs in cloud-docs at docs-2016-07-11
+## docker-store in mercury-ui at fdf50f7f057a6d24f0e95dcf68e15f3d05e873bd
+NO merge PR found for (+ 88afb715410b474aaa0f44420c59248b9358b89e 62.0.0) 
+## opensource in opensource at docs-2016-07-07
 ```
 
 ## README example updates

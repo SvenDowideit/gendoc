@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/SvenDowideit/gendoc/allprojects"
-	"github.com/SvenDowideit/gendoc/commands"
+	"github.com/docker/gendoc/allprojects"
+	"github.com/docker/gendoc/commands"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
