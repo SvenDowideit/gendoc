@@ -42,8 +42,6 @@ var Status = cli.Command{
 		*p.Path = "."
 		p.Status(logFlag, diffFlag)
 
-		// TODO: confirm what is checked out is the ref from the all-projects
-		// TODO: confirm there are no changes - or list them
 		for _, p := range *projects {
 			// TODO: don't ignore errors.
 			fmt.Printf("## %s (in %s)\n", p.RepoName, *p.Path)

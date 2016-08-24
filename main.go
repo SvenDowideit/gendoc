@@ -60,6 +60,7 @@ func main() {
 		commands.Remote,
 		commands.Render,
 		commands.Status,
+		commands.Test,
 	}
 	app.Before = func(context *cli.Context) error {
 		if context.GlobalBool("debug") {

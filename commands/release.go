@@ -140,20 +140,6 @@ var Release = cli.Command{
 				return nil
 			},
 		},
-		{
-			Name:  "release",
-			Usage: "Publish docs.",
-			Flags: []cli.Flag{},
-			Action: func(context *cli.Context) error {
-				setName, _, err := allprojects.Load(allprojects.AllProjectsPath)
-				if err != nil {
-					return err
-				}
-				fmt.Printf("publish-set: %s\n", setName)
-
-				return fmt.Errorf("i've got nothin")
-			},
-		},
 	},
 }
 
