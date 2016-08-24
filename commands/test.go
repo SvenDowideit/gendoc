@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	allprojects "github.com/SvenDowideit/gendoc/allprojects"
+	"github.com/docker/gendoc/allprojects"
 	"github.com/docker/markdownlint/checkers"
 	"github.com/docker/markdownlint/data"
 	"github.com/docker/markdownlint/linereader"

@@ -191,7 +191,14 @@ Same as all-projects.yml: your checkout 1b9a757a92d83c875284bb2f90fde97f14277be6
 Same as all-projects.yml: your checkout 68d3072991cfdc904a9c35515705b8551ee71317 is at upstream/master
 -- opensource
 Same as all-projects.yml: your checkout 9736bd57db38561847648a612867d0f0f9978836 is at upstream/master
+```
 
+## test
+
+You can use `gendoc` to run a local markdownlint test on your workspace:
+
+```
+$ gendoc test
 ```
 
 ## render
