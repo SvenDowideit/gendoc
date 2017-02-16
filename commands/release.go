@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/docker/gendoc/allprojects"
+	"github.com/SvenDowideit/gendoc/allprojects"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/blang/semver"

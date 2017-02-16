@@ -12,7 +12,7 @@ RUN wget -O github-release.bz2 https://github.com/aktau/github-release/releases/
 ENV GOPATH /go
 ENV USER root
 
-WORKDIR /go/src/github.com/docker/gendoc
+WORKDIR /go/src/github.com/SvenDowideit/gendoc
 
 RUN go get github.com/Sirupsen/logrus \
     && go get github.com/codegangsta/cli \
@@ -23,7 +23,7 @@ RUN go get github.com/Sirupsen/logrus \
     && go get github.com/blang/semver \
     && go get github.com/kardianos/osext
 
-ADD . /go/src/github.com/docker/gendoc
+ADD . /go/src/github.com/SvenDowideit/gendoc
 RUN go get -d -v
 RUN go test -v ./...
 

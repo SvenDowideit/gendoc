@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	gh "github.com/docker/gendoc/render/github"
-	mmark "github.com/docker/gendoc/render/mmark"
+	gh "github.com/SvenDowideit/gendoc/render/github"
+	mmark "github.com/SvenDowideit/gendoc/render/mmark"
 )
 
 type SiteData struct {

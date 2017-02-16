@@ -7,7 +7,7 @@ You need to have a working installation of `git`
 
 ## install
 
-Download the latest release for your platform from https://github.com/docker/gendoc/releases
+Download the latest release for your platform from https://github.com/SvenDowideit/gendoc/releases
 
 then open a terminal and run the following (example for OS X):
 
@@ -234,7 +234,7 @@ Skipping: https://letsencrypt.org/how-it-works/
 Skipping: https://godoc.org/golang.org/x/crypto/ssh
 Skipping: https://support.docker.com
 Skipping: https://cloud.docker.com/account/
-Skipping: https://godoc.org/github.com/docker/distribution/notifications#RequestRecord
+Skipping: https://godoc.org/github.com/SvenDowideit/distribution/notifications#RequestRecord
 Skipping: https://www.weave.works/docs/net/latest/introducing-weave/
 Skipping: https://build.opensuse.org/project/show/Virtualization:containers
 Skipping: https://build.opensuse.org/
